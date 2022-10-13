@@ -1,3 +1,6 @@
 development/**
 CPP/**
-Test/**
+Tests/**
+buildserver/**
+**/.DS_Store
+superstring**
