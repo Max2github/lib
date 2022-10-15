@@ -67,6 +67,8 @@ struct { \
 
 #define SIMPLE_ARRAY_APPEND(arr, Data) SIMPLE_ARRAY_APPEND_DATA(arr, (&Data), 1)
 
+#define SIMPLE_ARRAY_GET(arr, type, index) ((type *) arr.data)[index]
+
 #define SIMPLE_ARRAY_FREE(arr) SIMPLE_ARRAY_H_FREE((void *)arr.data)
 
 #endif
