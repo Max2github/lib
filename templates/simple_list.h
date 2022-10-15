@@ -3,26 +3,26 @@
 
 #ifndef NO_STD_LIB
     #include <stdlib.h>
-    #define SIMPLE_LIST_MALLOC(size) malloc(size)
+    #define SIMPLE_LIST_H_MALLOC(size) malloc(size)
+    #define SIMPLE_LIST_H_FREE(p) free(p)
 #endif
 
 #define SIMPLE_LIST(type) \
-struct \
-{ \
+struct { \
     type data; \
     long next; \
 } *
 
 #define SIMPLE_LIST_CREATE_EL(elP, Data, Next) \
 { \
-    elP = SIMPLE_LIST_MALLOC(sizeof(*elP)); \
+    elP = SIMPLE_LIST_H_MALLOC(sizeof(*elP)); \
     elP->data = Data; \
     elP->next = (long) Next; \
 }
 
 #define SIMPLE_LIST_CREATE_EL_WITHOUT_ANYTHING(elP, size) \
 { \
-    elP = (long) SIMPLE_LIST_MALLOC(size); \
+    elP = (long) SIMPLE_LIST_H_MALLOC(size); \
 }
 
 #define SIMPLE_LIST_SET_DATA_AND_NEXT(elP, Data, Next) \
@@ -89,6 +89,18 @@ struct \
     for (; iterator != NULL; iterator = (void *) iterator->next) { \
         code \
     } \
+}
+
+// #define SIMPLE_LIST_FREE(liste) SIMPLE_LIST_FOREACH(liste, SIMPLE_ARRAY_H_FREE(liste->data))
+
+#define SIMPLE_LIST_FREE(iterator) \
+{ \
+    void * before = NULL; \
+    SIMPLE_LIST_FOREACH(iterator, \
+        SIMPLE_LIST_H_FREE(before); \
+        before = iterator; \
+    ); \
+    SIMPLE_LIST_H_FREE(before); \
 }
 
 #endif

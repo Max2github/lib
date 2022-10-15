@@ -30,6 +30,8 @@ int intLen(int zahl);
 void intToString(int zahl, char * saveto);
 void doubleToString(float zahl, int afterpoint, char * saveto);
 
+const char * word_seek(const char * word, const char * search);
+const char * word_seek_after(const char * word, const char * search);
 unsigned int word_len_until(const char * word, const char * search);
 const char * word_copy_until(char * dest, const char * word, const char * search);
 

@@ -1,6 +1,6 @@
 #ifndef WORDS_H
 #define WORDS_H
-//#pragma once
+
 #ifndef NO_STD_LIB
     #include<stdio.h>
     #include<stdlib.h>
@@ -40,22 +40,6 @@ const char * word_seek(const char * word, const char * search);
 const char * word_seek_after(const char * word, const char * search);
 unsigned int word_len_until(const char * word, const char * search);
 const char * word_copy_until(char * dest, const char * word, const char * search);
-
-struct word_picker
-{
-    const char * begin;
-    const char * end;
-};
-typedef struct word_picker word_picker;
-#define WORD_PICK_INIT(begin, end) { begin, end }
-
-word_picker word_pick_until_index(const char * word, unsigned int index);
-word_picker word_pick_until(const char * word, const char * search);
-word_picker word_pick_from_to_index(const char * word, unsigned int start, unsigned int end);
-word_picker word_pick_from_to(const char * word, const char * search1, const char * search2);
-
-unsigned int word_pick_len(word_picker w);
-int word_pick_compare(word_picker eins, word_picker zwei);
 
 int find(const char text[], const char search[]) {
     int size = word_len(text);
@@ -628,49 +612,6 @@ const char * word_copy_until(char * dest, const char * word, const char * search
         word++; dest++;
     }
     return word;
-}
-
-word_picker word_pick_until_index(const char * word, unsigned int index) {
-    word_picker ret = WORD_PICK_INIT(word, word+index);
-    return ret;
-}
-word_picker word_pick_until(const char * word, const char * search) {
-    word_picker ret = WORD_PICK_INIT(word, NULL);
-    ret.end = word_seek(word, search) - 1;
-    return ret;
-}
-word_picker word_pick_from_to_index(const char * word, unsigned int start, unsigned int end) {
-    word_picker ret = WORD_PICK_INIT(word+start, word+end);
-    return ret;
-}
-word_picker word_pick_from_to(const char * word, const char * search1, const char * search2) {
-    word_picker ret = WORD_PICK_INIT(NULL, NULL);
-    ret.begin = word_seek(word, search1); // include - from the beginning of search1
-    ret.end = word_seek(ret.begin, search2) - 1; // exclude - to the char before the beginning of search2
-    return ret;
-}
-unsigned int word_pick_len(word_picker w) {
-    unsigned int i = 0;
-    while (w.begin != w.end) {
-        w.begin++; i++;
-    }
-    return i;
-}
-int word_pick_compare(word_picker eins, word_picker zwei) {
-    unsigned int einsLen = word_pick_len(eins);
-    unsigned int zweiLen = word_pick_len(zwei);
-    if (einsLen > zweiLen) { return 1; }
-    if (einsLen < zweiLen) { return -1; }
-    unsigned int wahr = 0;
-    while (eins.begin != eins.end) {
-        if (*eins.begin == *zwei.begin) {
-            wahr++;
-        }
-    }
-    if (wahr == einsLen) {
-        return 0;
-    }
-    return 2;
 }
 
 #endif
