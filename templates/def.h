@@ -2,14 +2,23 @@
 #define DEF_H
 
 #ifndef __cplusplus
-    #ifndef NULL
-        #define NULL 0
-    #endif
     #ifndef true
         #define true 1
         #define false 0
         typedef unsigned char bool;
     #endif
+#endif
+
+#ifndef NULL
+    #define NULL 0
+#endif
+
+#if defined(__GCC__) || defined(__APPLE_CC__)
+    #define ATTRIBUTE_PACKED __attribute__ ((__packed__))
+//#elif 
+    //#define ATTRIBUTE_PACKED __attribute__ ((__packed__))
+#else
+    #define ATTRIBUTE_PACKED 
 #endif
 
 typedef signed char int8; // -128 - 127 // 1 byte <-> 8 bit

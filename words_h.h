@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WORDS_H_H
+#define WORDS_H_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,4 +38,6 @@ const char * word_copy_until(char * dest, const char * word, const char * search
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
