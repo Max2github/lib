@@ -29,4 +29,22 @@ struct HEAP_NODE_FIRST {
     HEAP_NODE node;
 } ATTRIBUTE_PACKED;
 
+void memory_copy(void * dest, void * source, index64 nbytes);
+
+// alloc functions
+
+void general_alloc_init(void * memory, index64 size);
+
+void * general_alloc(void * head, index64 size);
+
+void general_free(void * head, void * toFree);
+
+// helper functions
+
+HEAP_NODE * general_alloc_find_best_node(HEAP_LIST_WITH_FIRST head, index64 size);
+
+HEAP_NODE * general_get_prev_node(HEAP_LIST head, HEAP_NODE * node);
+
+bool general_find_node(HEAP_LIST head, index64 totalsize, HEAP_NODE * node);
+
 #endif

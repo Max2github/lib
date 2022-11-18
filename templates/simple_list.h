@@ -10,25 +10,25 @@
 #define SIMPLE_LIST(type) \
 struct { \
     type data; \
-    long next; \
+    unsigned long long next; \
 } *
 
 #define SIMPLE_LIST_CREATE_EL(elP, Data, Next) \
 { \
     elP = SIMPLE_LIST_H_MALLOC(sizeof(*elP)); \
     elP->data = Data; \
-    elP->next = (long) Next; \
+    elP->next = (unsigned long long) Next; \
 }
 
 #define SIMPLE_LIST_CREATE_EL_WITHOUT_ANYTHING(elP, size) \
 { \
-    elP = (long) SIMPLE_LIST_H_MALLOC(size); \
+    elP = (unsigned long long) SIMPLE_LIST_H_MALLOC(size); \
 }
 
 #define SIMPLE_LIST_SET_DATA_AND_NEXT(elP, Data, Next) \
 { \
     elP->data = Data; \
-    elP->next = (long) Next; \
+    elP->next = (unsigned long long) Next; \
 }
 
 #define SIMPLE_LIST_ADDFIRST(liste, Data) \
@@ -36,7 +36,7 @@ struct { \
     if (liste == NULL) { \
         SIMPLE_LIST_CREATE_EL(liste, Data, NULL); \
     } else { \
-        void * temp = liste; \
+        void * temp = (void *) liste; \
         SIMPLE_LIST_CREATE_EL(liste, Data, temp); \
     } \
 }
@@ -89,6 +89,14 @@ struct { \
     for (; iterator != NULL; iterator = (void *) iterator->next) { \
         code \
     } \
+}
+
+#define SIMPLE_LIST_COPY(from_iterator, to_iterator, to) \
+{ \
+    SIMPLE_LIST_FOREACH(from_iterator, \
+        SIMPLE_LIST_ADDLAST(to_iterator, from_iterator->data); \
+        if (to == NULL) { to = to_iterator; } \
+    ) \
 }
 
 // #define SIMPLE_LIST_FREE(liste) SIMPLE_LIST_FOREACH(liste, SIMPLE_ARRAY_H_FREE(liste->data))
