@@ -6,7 +6,7 @@
 // #include<stdio.h>
 // #include<stdlib.h>
 // #include<string.h>
-#include "words.h"
+#include "words.h" // includes the sourcecode !!
 
 #include "../list_h.h"
 
@@ -15,6 +15,16 @@
     #define LIST_H_FREE(p) free(p)
 #endif
 
+/**
+ * TODO
+ * 
+ * - change void * el to index64 or unsigned long long
+ * - save Data < 8 bytes in el itself (no allocation)
+ *   -> change list_types: Char, Integer, Float, Double
+ *   -> add list_type for 8 bytes buffer and / or string
+ *   -> add buffer type in general
+ * 
+ */
 
 // Code
 int list_node_len(list head) {
@@ -28,9 +38,6 @@ int list_node_len(list head) {
 list list_copy(list value) {
     if (value == NULL) { return NULL; }
     list new_list = NULL;
-    /* puts("START:");
-    list_print(value, 0);
-    puts("val-end"); */
 
     while(value != NULL) {
         list_element_pointer copy_el = new_list_element_type(value->type, value->el);
@@ -41,55 +48,99 @@ list list_copy(list value) {
         }
         value = value->next;
     }
-    /* puts("Ergebnis:");
-    list_print(new_list, 0);
-    puts("Fertig!"); */
     return new_list;
 }
 
+void list_element_memcopy(void * dest, void * src, unsigned int nbytes) {
+    for (unsigned char i = 0; i < nbytes; i++) {
+        ((unsigned char *) dest)[i] = ((unsigned char *) src)[i];
+    }
+}
+
 // list_el_el * & list_el_els
+// get values of el (of list_element_pointer->el) / getter
+char get_list_element_value_char(unsigned long long value) {
+    return (char) value;
+}
+int get_list_element_value_int(unsigned long long value) {
+    return (int) value;
+}
+float get_list_element_value_float(unsigned long long value) {
+    float * temp = (float *) (&value);
+    return *temp;
+}
+double get_list_element_value_double(unsigned long long value) {
+    double * temp = (double *) (&value);
+    return *temp;
+}
+
+float get_list_element_float(list_element_pointer eins) {
+    return get_list_element_value_float(eins->el);
+}
+double get_list_element_double(list_element_pointer eins) {
+    return get_list_element_value_double(eins->el);
+}
+// setter
+void set_list_element_char(list_element_pointer eins, char c) {
+    list_element_memcopy(&(eins->el), &c, sizeof(char));
+    eins->type = Char;
+}
+void set_list_element_int(list_element_pointer eins, int zahl) {
+    list_element_memcopy(&(eins->el), &zahl, sizeof(int));
+    eins->type = Integer;
+}
+void set_list_element_float(list_element_pointer eins, float zahl) {
+    list_element_memcopy(&(eins->el), &zahl, sizeof(double));
+    eins->type = Float;
+}
+void set_list_element_double(list_element_pointer eins, double zahl) {
+    list_element_memcopy(&(eins->el), &zahl, sizeof(double));
+    eins->type = Double;
+}
 // create "list_el_el"
 // primitive
 list_element_pointer new_list_element_char(char c) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    eins->el = (void *) LIST_MALLOC(sizeof(char));
-    char * zP = (char *) eins->el;
-    *zP = c;
-    eins->type = Char;
+    set_list_element_char(eins, c);
     eins->next = NULL;
     return eins;
 }
 list_element_pointer new_list_element_int(int zahl) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    eins->el = (void *) LIST_MALLOC(sizeof(int));
-    int * zP = (int *) eins->el;
-    *zP = zahl;
-    eins->type = Integer;
+    set_list_element_int(eins, zahl);
     eins->next = NULL;
     return eins;
 }
 list_element_pointer new_list_element_float(float zahl) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    eins->el = (void *) LIST_MALLOC(sizeof(float));
-    float * zP = (float *) eins->el;
-    *zP = zahl;
-    eins->type = Float;
+    set_list_element_float(eins, zahl);
     eins->next = NULL;
     return eins;
 }
+#include <string.h>
 list_element_pointer new_list_element_double(double zahl) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    eins->el = (void *) LIST_MALLOC(sizeof(double));
-    double * zP = (double *) eins->el;
-    *zP = zahl;
-    eins->type = Double;
+    set_list_element_double(eins, zahl);
+    return eins;
+}
+/*list_element_pointer new_list_element_minibuffer(unsigned char buf[sizeof(unsigned long long)]) {
+    list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+    for (unsigned char i = 0; i < sizeof(unsigned long long); i++) {
+        eins->elbuff[i] = buf[i];
+    }
+    eins->type = MiniBuffer;
     eins->next = NULL;
     return eins;
 }
-// Array
+list_element_pointer new_list_element_ministring(char buf[sizeof(unsigned long long)]) {
+    list_element_pointer eins = new_list_element_minibuffer((unsigned char *) buf);
+    eins->type = MiniString;
+    return eins;
+}*/
+// allocated
 list_element_pointer new_list_element_string(char * str) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    eins->el = (void *) LIST_MALLOC(sizeof(char *) * word_len(str));
+    eins->el = (unsigned long long) LIST_MALLOC(sizeof(char *) * word_len(str));
     word_copy((char *) eins->el, str);
     eins->type = String;
     eins->next = NULL;
@@ -98,32 +149,28 @@ list_element_pointer new_list_element_string(char * str) {
 // pointer
 list_element_pointer new_list_element_char_pointer(char * zP) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    // eins->el = (void *) LIST_MALLOC(sizeof(char *));
-    eins->el = (void *) zP;
+    eins->el = (unsigned long long) zP;
     eins->type = Char_pointer;
     eins->next = NULL;
     return eins;
 }
 list_element_pointer new_list_element_int_pointer(int * zP) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    // eins->el = (void *) LIST_MALLOC(sizeof(int *));
-    eins->el = (void *) zP;
+    eins->el = (unsigned long long) zP;
     eins->type = Integer_pointer;
     eins->next = NULL;
     return eins;
 }
 list_element_pointer new_list_element_float_pointer(float * zP) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    // eins->el = (void *) LIST_MALLOC(sizeof(float *));
-    eins->el = (void *) zP;
+    eins->el = (unsigned long long) zP;
     eins->type = Float_pointer;
     eins->next = NULL;
     return eins;
 }
 list_element_pointer new_list_element_double_pointer(double * zP) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    // eins->el = (void *) LIST_MALLOC(sizeof(double *));
-    eins->el = (void *) zP;
+    eins->el = (unsigned long long) zP;
     eins->type = Double_pointer;
     eins->next = NULL;
     return eins;
@@ -131,59 +178,65 @@ list_element_pointer new_list_element_double_pointer(double * zP) {
 // list & other
 list_element_pointer new_list_element_list(list under) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    eins->el = (void *) under;
+    eins->el = (unsigned long long) under;
     eins->type = List;
     eins->next = NULL;
     return eins;
 }
-list_element_pointer new_list_element_type(list_type type, void * pointer) {
+list_element_pointer new_list_element_type(list_type type, unsigned long long value) {
     list_element_pointer eins = NULL;
     switch (type) {
         // primitive
         case Char : {
-            char * p = (char *) pointer;
-            eins = new_list_element_char(*p);
+            char p = get_list_element_value_char(value);
+            eins = new_list_element_char(p);
             break;
         }
         case Integer : {
-            int * p = (int *) pointer;
-            eins = new_list_element_int(*p);
+            char p = get_list_element_value_char(value);
+            eins = new_list_element_int(p);
             break;
         }
         case Float: {
-            float * p = (float *) pointer;
-            eins = new_list_element_float(*p);
+            char p = get_list_element_value_char(value);
+            eins = new_list_element_float(p);
             break;
         }
         case Double : {
-            double * p = (double *) pointer;
-            eins = new_list_element_double(*p);
+            char p = get_list_element_value_char(value);
+            eins = new_list_element_double(p);
             break;
         }
+        /*case MiniBuffer : {
+            // unsigned char * p = (unsigned char *) pointer;
+            unsigned char * p = (unsigned char[sizeof(unsigned long long)]) pointer;
+            eins = new_list_element_minibuffer(p);
+            break;
+        }*/
         // pointer
         case String :
-            eins = new_list_element_string((char *) pointer);
+            eins = new_list_element_string((char *) value);
             break;
         case Char_pointer :
-            eins = new_list_element_char_pointer((char *) pointer);
+            eins = new_list_element_char_pointer((char *) value);
             break;
         case Integer_pointer :
-            eins = new_list_element_int_pointer((int *) pointer);
+            eins = new_list_element_int_pointer((int *) value);
             break;
         case Float_pointer :
-            eins = new_list_element_float_pointer((float *) pointer);
+            eins = new_list_element_float_pointer((float *) value);
             break;
         case Double_pointer :
-            eins = new_list_element_double_pointer((double *) pointer);
+            eins = new_list_element_double_pointer((double *) value);
             break;
         case Void_pointer :
             /* code */
             break;
         case List : 
-            eins = new_list_element_list(list_copy( (list) pointer ));
+            eins = new_list_element_list(list_copy( (list) value ));
             break;
         case List_pointer : 
-            eins = new_list_element_list( (list) pointer );
+            eins = new_list_element_list( (list) value );
             eins->type = List_pointer;
             break;
         case End : break;
@@ -284,28 +337,34 @@ void list_element_sprint(list_element_pointer head, char * saveto, list separato
     switch(head->type) {
         // primitive
         case Char : {
-            char * el = (char *) head->el;
-            // sprintf(saveto, "%c", *el);
-            saveto[0] = *el;
+            // char * el = (char *) head->el;
+            // saveto[0] = *el;
+            char el = GET_LIST_ELEMENT_CHAR(head);
+            saveto[0] = el;
             saveto[1] = '\0';
             break;
         }
         case Integer : {
-            int * el = (int *) head->el;
-            // sprintf(saveto, "%d", *el);
-            intToString(*el, saveto);
+            // int * el = (int *) head->el;
+            // intToString(*el, saveto);
+            int el = GET_LIST_ELEMENT_INT(head);
+            intToString(el, saveto);
             break;
         }
         case Float : {
-            float * el = (float *) head->el;
-            // sprintf(saveto, "%f", *el);
-            doubleToString(*el, 6, saveto);
+            // float * el = (float *) head->el;
+            // doubleToString(*el, 6, saveto);
+            float el = GET_LIST_ELEMENT_FLOAT(head);
+            // sprintf(saveto, "%f", el);
+            doubleToString(el, 6, saveto);
             break;
         }
         case Double : {
-            double * el = (double *) head->el;
-            // sprintf(saveto, "%f", *el);
-            doubleToString(*el, 6, saveto);
+            // double * el = (double *) head->el;
+            // doubleToString(*el, 6, saveto);
+            double el = GET_LIST_ELEMENT_DOUBLE(head);
+            // sprintf(saveto, "%f", el);
+            doubleToString(el, 6, saveto);
             break;
         }
         // array
@@ -325,7 +384,15 @@ void list_element_sprint(list_element_pointer head, char * saveto, list separato
 void list_toStr(list head, char * saveto, list separatorList) {
     while (head != NULL) {
         list_element_sprint(head, saveto, separatorList);
-        if (head->next != NULL && separatorList != NULL) { word_add(saveto, (const char *) separatorList->el); }
+        if (head->next != NULL && separatorList != NULL) {
+            // this would cause errors, if the element is not a string
+            // word_add(saveto, (const char *) separatorList->el);
+            char * to = saveto + word_len(saveto);
+            list_element_sprint(separatorList, to, NULL);
+            if (separatorList->next != NULL) {
+                separatorList = separatorList->next;
+            }
+        }
         while (*saveto != '\0') {
             saveto++;
         }
@@ -337,28 +404,26 @@ void list_element_print(list_element_pointer head,  unsigned int format) {
     switch(head->type) {
         // primitive
         case Char : {
-            char * el = (char *) head->el;
-            printf("%c", *el);
+            char el = GET_LIST_ELEMENT_CHAR(head);
+            putchar(el);
             break;
         }
         case Integer : {
-            int * el = (int *) head->el;
-            printf("%d", *el);
+            int el = GET_LIST_ELEMENT_INT(head);
+            printf("%d", el);
             break;
         }
         case Float : {
-            float * el = (float *) head->el;
-            //printf("%f", *el);
-            char str[intLen((int)*el)+8]; // + '.' + 6 afterpoint + 1 '\0'
-            doubleToString(*el, 6, str);
-            puts(str);
+            float el = GET_LIST_ELEMENT_FLOAT(head);
+            char str[intLen((int)el)+8]; // + '.' + 6 afterpoint + 1 '\0'
+            doubleToString(el, 6, str);
+            printf("%s", str);
             break;
         }
         case Double : {
-            double * el = (double *) head->el;
-            // printf("%f", *el);
-            char str[intLen((int)*el)+8]; // + '.' + 6 afterpoint + 1 '\0'
-            doubleToString(*el, 6, str);
+            double el = get_list_element_double(head);
+            char str[intLen((int)el)+8]; // + '.' + 6 afterpoint + 1 '\0'
+            doubleToString(el, 6, str);
             printf("%s", str);
             break;
         }
@@ -377,7 +442,6 @@ void list_element_print(list_element_pointer head,  unsigned int format) {
         }
         case Float_pointer : {
             float * eP = (float *) head->el;
-            // printf("-> %f", *eP);
             char str[intLen((int)*eP)+8]; // + '.' + 6 afterpoint + 1 '\0'
             doubleToString(*eP, 6, str);
             printf("-> %s", str);
@@ -385,7 +449,6 @@ void list_element_print(list_element_pointer head,  unsigned int format) {
         }
         case Double_pointer : {
             double * eP = (double *) head->el;
-            // printf("-> %f", *eP);
             char str[intLen((int)*eP)+8]; // + '.' + 6 afterpoint + 1 '\0'
             doubleToString(*eP, 6, str);
             printf("-> %s", str);
@@ -406,9 +469,7 @@ void list_print(list head, unsigned int format) {
     putchar('['); putchar('\n');
     format += 4;
     while (head != NULL) {
-        // if (head->type != List && head->type != List_pointer) {
-            list_print_format(format);
-        // };
+        list_print_format(format);
         switch(head->type) {
             // primitive
             case Char : printf("%s", "Char: "); break;
@@ -438,10 +499,13 @@ void list_print(list head, unsigned int format) {
 }
 // free
 void list_element_free(list_element_pointer head) {
+    // free nested lists
     if (head->type == List) {
         list_free((list) head->el);
-    } else if (head->type != Char_pointer && head->type != Integer_pointer && head->type != Float_pointer && head->type != Double_pointer && head->type != Void_pointer && head->type != List_pointer) {
-        LIST_H_FREE(head->el);
+    }
+    // free allocated
+    else if (head->type == String) {
+        LIST_H_FREE((void *) head->el);
     }
     LIST_H_FREE(head);
 }
@@ -504,20 +568,17 @@ list new_list_element_as_list(va_list elems) {
             case End : return new_list;
         };
         if (new_list == NULL) {
-            // printf("%d\n", list_node_len(new_list_el));
             if (type == List || type == List_pointer) {
                 new_list = new_list_el;
                 new_list->next = NULL;
             } else {
                 new_list = list_addFirst_element(new_list, new_list_el);
             }
-            // list_print(new_list, 8);
         } else {
             list_addLast_element(new_list, new_list_el);
         }
         type = va_arg(elems, list_type); // get the type of the next argument
     }
-    //list_print(new_list, 8);
     return new_list;
 }
 list list_addFirst(list head, ...) {
@@ -534,7 +595,7 @@ list list_addFirst(list head, ...) {
         return newHead_list;
     }
     newHead = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    newHead->el = (void *) newHead_list;
+    newHead->el = (unsigned long long) newHead_list;
     newHead->type = List;
     newHead->next = head;
 
@@ -558,7 +619,7 @@ void list_addLast(list head, ...) {
     }
 
     newLast = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    newLast->el = (void *) newLast_list;
+    newLast->el = (unsigned long long) newLast_list;
     newLast->type = List;
     newLast->next = NULL;
 
@@ -603,7 +664,7 @@ void list_addIndex(list head, unsigned int index, ...) {
     while (head != NULL) {
         if (i == index) {
             newEl = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-            newEl->el = (void *) newEl_list;
+            newEl->el = (unsigned long long) newEl_list;
             newEl->type = List;
 
             beforeHead->next = newEl;
@@ -616,7 +677,7 @@ void list_addIndex(list head, unsigned int index, ...) {
     }
     if (i == index) {
         newEl = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-        newEl->el = (void *) newEl_list;
+        newEl->el = (unsigned long long) newEl_list;
         newEl->type = List;
 
         beforeHead->next = newEl;
@@ -637,7 +698,7 @@ list_element_pointer list_seek(list head, unsigned int index) {
     }
     return head;
 }
-int list_findFirstIndex(list head, int (*cond)(void * , list_type, int)) {
+int list_findFirstIndex(list head, int (*cond)(unsigned long long , list_type, int)) {
     int index = 0;
     if (head == NULL) {
         return -1;
@@ -659,7 +720,7 @@ int list_findFirstIndex(list head, int (*cond)(void * , list_type, int)) {
     }
     return -1;
 }
-int list_element_compare(void * value, list_type type, void * element, list_type eltype) {
+int list_element_compare(unsigned long long value, list_type type, unsigned long long element, list_type eltype) {
     if (eltype == List_pointer) {
         eltype = List;
     }
@@ -672,25 +733,33 @@ int list_element_compare(void * value, list_type type, void * element, list_type
     switch (type) {
         // primitive
         case Char : {
-            if (*((char *) value) == *((char *) element)) {
+            char val = get_list_element_value_char(value);
+            char el = get_list_element_value_char(element);
+            if (val == el) {
                 return 1;
             }
             break;
         }
         case Integer : {
-            if (*((int *) value) == *((int *) element)) {
+            int val = get_list_element_value_int(value);
+            int el = get_list_element_value_int(element);
+            if (val == el) {
                 return 1;
             }
             break;
         }
         case Float: {
-            if (*((float *) value) == *((float *) element)) {
+            float val = get_list_element_value_float(value);
+            float el = get_list_element_value_float(element);
+            if (val == el) {
                 return 1;
             }
             break;
         }
         case Double : {
-            if (*((double *) value) == *((double *) element)) {
+            double val = get_list_element_value_double(value);
+            double el = get_list_element_value_double(element);
+            if (val == el) {
                 return 1;
             }
             break;
@@ -758,7 +827,7 @@ int list_element_compare(void * value, list_type type, void * element, list_type
     };
     return 0;
 }
-int list_find(list head, void * value, list_type type) {
+int list_find(list head, unsigned long long value, list_type type) {
     int found = 0;
     while (head != NULL) {
         if (list_element_compare(head->el, head->type, value, type) == 1) {
@@ -769,7 +838,7 @@ int list_find(list head, void * value, list_type type) {
     return found;
 }
 
-list list_select_one(list head, int (*cond)(void * , list_type, int), select_key keyword, list greatSelect) {
+list list_select_one(list head, int (*cond)(unsigned long long , list_type, int), select_key keyword, list greatSelect) {
     if (head == NULL) {
         return NULL;
     }
@@ -792,12 +861,12 @@ list list_select_one(list head, int (*cond)(void * , list_type, int), select_key
                     break;
                 }
                 case select_Whole_record : {
-                    list_element_pointer sel = new_list_element_type(List, trueHead);
-                    int isAlready = list_find(greatSelect, trueHead, List);
+                    list_element_pointer sel = new_list_element_type(List, (unsigned long long) trueHead);
+                    int isAlready = list_find(greatSelect, (unsigned long long) trueHead, List);
                     if (isAlready != 0) {
                         tf = 2;
                     }
-                    isAlready = list_find(selected, trueHead, List);
+                    isAlready = list_find(selected, (unsigned long long) trueHead, List);
                     if (isAlready != 0) {
                         tf = 2;
                     }
@@ -847,7 +916,7 @@ list list_select_va(select_key keyword, va_list args) {
     list selected = NULL;
     list l = va_arg(args, list);
     while (l != NULL) {
-        int (*cond)(void * , list_type, int) = va_arg(args, int (*)(void * , list_type, int));
+        int (*cond)(unsigned long long , list_type, int) = va_arg(args, int (*)(unsigned long long , list_type, int));
         
         list sel = list_select_one(l, cond, keyword, selected);
         if (sel != NULL) {
@@ -876,7 +945,7 @@ void list_select_remove(select_key keyword, ...) {
 
     list * l = va_arg(args, list * );
     while (*l != NULL) {
-        int (*cond)(void * , list_type, int) = va_arg(args, int (*)(void * , list_type, int));
+        int (*cond)(unsigned long long , list_type, int) = va_arg(args, int (*)(unsigned long long , list_type, int));
         
         switch(keyword) {
             case select_All : break;
@@ -936,7 +1005,7 @@ void list_select_remove(select_key keyword, ...) {
     va_end(args);
 }
 
-list list_select_index_one(list head, int (*cond)(void * , list_type, int), select_key keyword, list greatSelect) {
+list list_select_index_one(list head, int (*cond)(unsigned long long , list_type, int), select_key keyword, list greatSelect) {
     list selected = NULL;
     int index = 0;
     if (head == NULL) {
@@ -976,7 +1045,7 @@ list list_select_index(select_key keyword, ...) {
 
     list l = va_arg(args, list);
     while (l != NULL) {
-        int (*cond)(void * , list_type, int) = va_arg(args, int (*)(void * , list_type, int));
+        int (*cond)(unsigned long long , list_type, int) = va_arg(args, int (*)(unsigned long long , list_type, int));
 
         list isHere = list_select_index_one(l, cond, keyword, selected);
         if (isHere != NULL) {
@@ -1026,7 +1095,7 @@ int list_size(list head) {
 }
 
 void list_swap_element(list_element_pointer a, list_element_pointer b) {
-    void * valueA = a->el; list_type typeA = a->type;
+    unsigned long long valueA = a->el; list_type typeA = a->type;
     a->el = b->el; a->type = b->type;
     b->el = valueA; b->type = typeA;
 }

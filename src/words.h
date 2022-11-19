@@ -550,11 +550,23 @@ void doubleToString(float zahl, int afterpoint, char * saveto) {
         saveto[i] = '.'; // add dot
   
         // multiply by then as long as there needed (afterpoint == max)
-        int ergHoch = afterpoint;
-        for (int nh = 1; nh < 10; nh++) {
-            ergHoch *= afterpoint;
+        int ergHoch = 1;
+        for (int nh = 1; nh < afterpoint; nh++) {
+            ergHoch *= 10;
         }
         fpart = fpart * ergHoch;
+        // remove unneeded 0
+        int before = (int) fpart;
+        int temp = before / 10;
+        unsigned int rmLast = 0;
+        while (temp * 10 == before) {
+            rmLast++;
+            before = temp;
+            temp /= 10;
+        }
+        for (int rml = 0; rml < rmLast; rml++) {
+            fpart /= 10;
+        }
   
         intToString((int) fpart, saveto + i + 1);
     }

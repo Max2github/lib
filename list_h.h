@@ -7,17 +7,31 @@
 extern "C" {
 #endif
 
-typedef enum list_types {
-    Char, Integer, Float, Double, String, // primitive Variables
-    Char_pointer, Integer_pointer, Float_pointer, Double_pointer, // pointer
-    Void_pointer, // for e.g. functions
+enum list_types {
+    Char, Integer, Float, Double, /*MiniBuffer, MiniString,*/ // primitive Variables - no alloction
+    String, /*Buffer,*/ // allocated
+    Char_pointer, Integer_pointer, Float_pointer, Double_pointer, // pointer - no allocation
+    Void_pointer, // for e.g. functions - no alloction
     List, List_pointer, // for e.g. appending a List to another : List -> creates a copy, List_pointer -> only a pointer is given => Memory!
     End // symbolyses the end of the argument list (va_list)
-} list_type;
+};
+typedef enum list_types list_type;
 
 struct list_element {
-    void * el; // points an element to any type
-    list_type type;
+    union {
+        // this is used normally
+        // it either stores the value directly in in or points it (value allocated on the HEAP)
+        unsigned long long el;
+        // this is used for copying bytes to el
+        unsigned char elbuff[sizeof(unsigned long long)];
+    };
+    list_type type : 1;
+    // we should use all of our leftover space
+    // -> e.g. store strings with less than 7 (32 bit) / 15 (64 bit) directly in the list_element
+    // on 64-bit systems: 7 bytes left
+    // unsigned char buf[7]
+    // on 32-bit systems: 3 bytes left
+    unsigned char buf[3];
     struct list_element * next;
 };
 typedef struct list_element list_element;
@@ -28,6 +42,10 @@ typedef enum select_keys {
     select_All, select_Distinct, select_Whole_record, select_First
 } select_key;
 
+/**
+ * only sort_size works for now
+ * sort_value was not implemented yet
+ */
 typedef enum sort_keys {
     sort_size_low, sort_size_high, sort_value_low, sort_value_high
 } sort_key;
@@ -35,6 +53,24 @@ typedef enum sort_keys {
 // little functions
 int list_node_len(list head);
 list list_copy(list value);
+// this is basically just a memcpy (copies nbytes of memory)
+void list_element_memcopy(void * dest, void * src, unsigned int nbytes);
+
+// functions and macros to get and set the value in list_element correctly
+// getter
+char get_list_element_value_char(unsigned long long value);
+int get_list_element_value_int(unsigned long long value);
+float get_list_element_value_float(unsigned long long value);
+double get_list_element_value_double(unsigned long long value);
+#define GET_LIST_ELEMENT_CHAR(list_el_pointer)   get_list_element_value_char(list_el_pointer->el)
+#define GET_LIST_ELEMENT_INT(list_el_pointer)    get_list_element_value_int(list_el_pointer->el)
+#define GET_LIST_ELEMENT_FLOAT(list_el_pointer)  get_list_element_value_float(list_el_pointer->el)
+#define GET_LIST_ELEMENT_DOUBLE(list_el_pointer) get_list_element_value_double(list_el_pointer->el)
+// setter
+void set_list_element_char(list_element_pointer, char);
+void set_list_element_int(list_element_pointer, int);
+void set_list_element_float(list_element_pointer, float);
+void set_list_element_double(list_element_pointer, double);
 
 // functions to create new list_elements
 // primitive
@@ -51,7 +87,7 @@ list_element_pointer new_list_element_float_pointer(float * zP);
 list_element_pointer new_list_element_double_pointer(double * zP);
 // list & other
 list_element_pointer new_list_element_list(list under); // creates a list_element of ->type = List and ->el = list under
-list_element_pointer new_list_element_type(list_type type, void * pointer); // creates a copy of a list_element and gives a pointer to it
+list_element_pointer new_list_element_type(list_type type, unsigned long long pointer); // creates a copy of a list_element and gives a pointer to it
 
 // add, remove, print & free
 // add
@@ -80,16 +116,16 @@ void list_addLast(list head, ...);
 void list_addIndex(list head, unsigned int index, ...);
 
 list_element_pointer list_seek(list head, unsigned int index);
-int list_findFirstIndex(list head, int (*cond)(void * , list_type, int));
-int list_element_compare(void * value, list_type type, void * element, list_type eltype);
-int list_find(list head, void * value, list_type type);
+int list_findFirstIndex(list head, int (*cond)(unsigned long long , list_type, int));
+int list_element_compare(unsigned long long value, list_type type, unsigned long long element, list_type eltype);
+int list_find(list head, unsigned long long value, list_type type);
 
 // selects
-list list_select_one(list head, int (*cond)(void * , list_type, int), select_key keyword, list greatSelect);
+list list_select_one(list head, int (*cond)(unsigned long long , list_type, int), select_key keyword, list greatSelect);
 list list_select_va(select_key keyword, va_list args);
 list list_select(select_key keyword, ...);
 void list_select_remove(select_key keyword, ...);
-list list_select_index_one(list head, int (*cond)(void * , list_type, int), select_key keyword, list greatSelect);
+list list_select_index_one(list head, int (*cond)(unsigned long long , list_type, int), select_key keyword, list greatSelect);
 
 // sorting
 int list_element_size(list_element_pointer head);
