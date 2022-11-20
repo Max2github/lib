@@ -19,8 +19,8 @@ I made a all.c file, in which I included all sourcefiles.
 
 ## Building
 There is a little Makefile.<br>
-Can can build the libraries (.a files -> linux style)
-for words and list:
+You can build the libraries (.a files -> linux style)
+for ""words" and "list":
 - `make words`
 - `make list`
 
