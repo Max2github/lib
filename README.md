@@ -32,3 +32,20 @@ You can install the libraries:
 
 - words : build it + `make target=words install`
 - list : build it + `make target=list install`
+
+They will be installed to 
+- `/usr/local/lib/Max2/`
+- `/usr/local/include/Max2/`
+
+You (may) need to specify the include and library path to your compiler / linker.
+For gcc:
+- `-L /usr/local/lib/Max2/`
+- `-I /usr/local/include/Max2/`
+
+To link the libraries (e.g. gcc):<br>
+`gcc -o test test.c -l{libname}`<br>
+For now you can choose between
+- words
+- list
+
+Please do not link both, because the list library needs / contains the words library already.
