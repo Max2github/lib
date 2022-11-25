@@ -13,9 +13,9 @@
 
 #define SIMPLE_ARRAY(type) \
 struct { \
-    long data; \
-    long count; \
-    long written; \
+    unsigned long long data; \
+    unsigned long long count; \
+    unsigned long long written; \
 }
 
 #define SIMPLE_ARRAY_EXTEND(len) (((long) ((len / SIMPLE_ARRAY_EXTEND_SIZE) * SIMPLE_ARRAY_EXTEND_SIZE)))
