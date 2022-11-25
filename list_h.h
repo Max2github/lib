@@ -25,13 +25,21 @@ struct list_element {
         // this is used for copying bytes to el
         unsigned char elbuff[sizeof(unsigned long long)];
     };
-    list_type type : 1;
+    list_type type : 8;
+    // may use instead (in the future):
+    // unsigned char type;
+
     // we should use all of our leftover space
     // -> e.g. store strings with less than 7 (32 bit) / 15 (64 bit) directly in the list_element
     // on 64-bit systems: 7 bytes left
-    // unsigned char buf[7]
     // on 32-bit systems: 3 bytes left
-    unsigned char buf[3];
+    // unsigned char buf[sizeof(void *) - 1];
+
+    // the bitfield does not work as I thought, so we only have 4 byte left on 64-bit systems
+    // and 0 byte left on 32-bit systems
+    unsigned char buf[sizeof(void *) - 4];
+
+
     struct list_element * next;
 };
 typedef struct list_element list_element;
