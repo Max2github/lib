@@ -18,18 +18,18 @@ struct { \
     unsigned long long written; \
 }
 
-#define SIMPLE_ARRAY_EXTEND(len) (((long) ((len / SIMPLE_ARRAY_EXTEND_SIZE) * SIMPLE_ARRAY_EXTEND_SIZE)))
+#define SIMPLE_ARRAY_EXTEND(len) (((unsigned long long) ((len / SIMPLE_ARRAY_EXTEND_SIZE) * SIMPLE_ARRAY_EXTEND_SIZE)))
 
 #define SIMPLE_ARRAY_MEMCOPY(dest, src, size) \
 { \
-    for (long icp = 0; icp < size; icp++) { \
+    for (unsigned long long icp = 0; icp < size; icp++) { \
         ((char *) dest)[icp] = ((char *)src)[icp]; \
     } \
 }
 
 #define SIMPLE_ARRAY_CREATE_SIZE(type, size) \
 { \
-    (long) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * size), \
+    (unsigned long long) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * size), \
     size, \
     0 \
 }
@@ -38,7 +38,7 @@ struct { \
 
 #define SIMPLE_ARRAY_WRITE_NO_CHECK(arr, index, Data, len) \
 { \
-    long i = 0; \
+    unsigned long long i = 0; \
     for (; i < len; i++) { \
         /*char * dest = ((char *) arr.data) + ((index + i) * sizeof(*Data)); */ \
         SIMPLE_ARRAY_MEMCOPY((arr.data + ((index + i) * sizeof(*Data))), &Data[i], sizeof(*Data)); \
@@ -58,7 +58,7 @@ struct { \
 #define SIMPLE_ARRAY_WRITE(arr, index, Data, len) \
 { \
     if (arr.written + len > arr.count) { \
-        arr.data = (long) SIMPLE_ARRAY_H_REALLOC((void *) arr.data, arr.count * sizeof(*Data) + SIMPLE_ARRAY_EXTEND(len) * sizeof(*Data)); \
+        arr.data = (unsigned long long) SIMPLE_ARRAY_H_REALLOC((void *) arr.data, arr.count * sizeof(*Data) + SIMPLE_ARRAY_EXTEND(len) * sizeof(*Data)); \
     }\
     SIMPLE_ARRAY_WRITE_NO_CHECK(arr, index, Data, len); \
 }
