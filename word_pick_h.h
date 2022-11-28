@@ -23,8 +23,23 @@ word_picker word_pick_from_to(const char * word, const char * search1, const cha
 unsigned int word_picker_len(word_picker w);
 int word_picker_compare(word_picker eins, word_picker zwei);
 int word_pick_compare(word_picker picked, const char * word);
-bool word_picker_find(word_picker w, word_picker s);
+
+// find
+bool word_picker_find(word_picker w, const char * s);
+bool word_picker_findP(word_picker w, word_picker s);
+
+// splitting
+
+// list
 word_picker_list word_pick_splitList(const char * w, const char * search);
+// not yet!
+// word_picker_list word_picker_splitList(const word_picker * w, const char * search);
+// word_picker_list word_picker_splitListP(const word_picker * w, const word_picker * search);
+
+// array
 word_picker_array word_pick_split(const char * w, const char * search);
+word_picker_array word_picker_split(word_picker w, const char * search);
+// not yet!
+// word_picker_array word_picker_splitP(word_picker w, word_picker search);
 
 #endif

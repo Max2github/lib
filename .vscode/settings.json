@@ -22,6 +22,7 @@
         "sstream": "c",
         "__bit_reference": "c",
         "memory": "c",
-        "thread": "c"
+        "thread": "c",
+        "ios": "c"
     }
 }

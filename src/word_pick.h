@@ -64,13 +64,20 @@ int word_pick_compare(word_picker picked, const char * word) {
     return 2;
 }
 
-bool word_picker_find(word_picker w, word_picker s) {
-    FIND_TEMPLATE(w, s, word_picker_len, unsigned int, w.begin[i], s.begin[n])
+bool word_picker_find(word_picker w, const char * s) {
+    FIND_TEMPLATE(w, s, word_picker_len, word_len, unsigned int, w.begin[i], s[n])
+}
+bool word_picker_findP(word_picker w, word_picker s) {
+    FIND_TEMPLATE(w, s, word_picker_len, word_picker_len, unsigned int, w.begin[i], s.begin[n])
 }
 
 index32 word_picker_findIndex_first(word_picker w) {
     return 0;
 }
+
+// splitting
+
+// list
 
 word_picker_list word_pick_splitList(const char * w, const char * search) {
     word_picker_list splitted = NULL;
@@ -99,8 +106,10 @@ word_picker_list word_pick_splitList(const char * w, const char * search) {
     return splitted;
 }
 
+// array
+
 word_picker_array word_pick_split(const char * w, const char * search) {
-    word_picker_array splitted = SIMPLE_ARRAY_CREATE(word_picker_array);
+    word_picker_array splitted = SIMPLE_ARRAY_CREATE(word_picker);
     index32 searchLen = word_len(search);
     while (find(w, search)) {
         word_picker next = word_pick_until(w, search);
@@ -113,3 +122,34 @@ word_picker_array word_pick_split(const char * w, const char * search) {
     SIMPLE_ARRAY_APPEND(splitted, rest);
     return splitted;
 }
+
+word_picker_array word_picker_split(word_picker w, const char * search) {
+    word_picker_array splitted = SIMPLE_ARRAY_CREATE(word_picker);
+    index32 searchLen = word_len(search);
+    while (word_picker_find(w, search)) {
+        word_picker next = word_pick_until(w.begin, search);
+        unsigned int len = word_picker_len(next);
+        index32 toSkip = len + searchLen;
+        SIMPLE_ARRAY_APPEND(splitted, next);
+        w.begin += toSkip;
+    }
+    // append the rest
+    SIMPLE_ARRAY_APPEND(splitted, w);
+    return splitted;
+}
+
+/*
+word_picker_array word_picker_splitP(word_picker w, word_picker search) {
+    word_picker_array splitted = SIMPLE_ARRAY_CREATE(word_picker);
+    index32 searchLen = word_picker_len(search);
+    while (word_picker_findP(w, search)) {
+        word_picker next = word_pick_until(w.begin, search);
+        unsigned int len = word_picker_len(next);
+        index32 toSkip = len + searchLen;
+        SIMPLE_ARRAY_APPEND(splitted, next);
+        w.begin += toSkip;
+    }
+    // append the rest
+    SIMPLE_ARRAY_APPEND(splitted, w);
+    return splitted;
+}*/

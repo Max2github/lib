@@ -3,9 +3,9 @@
 
 #include "def.h"
 
-#define FIND_TEMPLATE(in, what, len_func, len_type, get_index_w, get_index_s) \
-    len_type size = len_func(in); \
-    len_type searchSize = len_func(what); \
+#define FIND_TEMPLATE(in, what, len_func_w, len_func_s, len_type, get_index_w, get_index_s) \
+    len_type size = len_func_w(in); \
+    len_type searchSize = len_func_s(what); \
     int found = 0; \
     int trueN = 0; \
     for (len_type i = 0; i < size; i++) { \
