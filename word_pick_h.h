@@ -42,4 +42,8 @@ word_picker_array word_picker_split(word_picker w, const char * search);
 // not yet!
 // word_picker_array word_picker_splitP(word_picker w, word_picker search);
 
+// to string
+void word_picker_toString(word_picker w, char * saveto);
+// void word_picker_join_toString()
+
 #endif

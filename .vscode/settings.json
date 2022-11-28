@@ -23,6 +23,8 @@
         "__bit_reference": "c",
         "memory": "c",
         "thread": "c",
-        "ios": "c"
+        "ios": "c",
+        "chrono": "c",
+        "variant": "c"
     }
 }

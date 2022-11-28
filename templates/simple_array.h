@@ -18,7 +18,8 @@ struct { \
     unsigned long long written; \
 }
 
-#define SIMPLE_ARRAY_EXTEND(len) (((unsigned long long) ((len / SIMPLE_ARRAY_EXTEND_SIZE) * SIMPLE_ARRAY_EXTEND_SIZE)))
+#define SIMPLE_ARRAY_EXTEND(len) (((unsigned long long) ((len / SIMPLE_ARRAY_EXTEND_SIZE) + SIMPLE_ARRAY_EXTEND_SIZE)))
+// #define SIMPLE_ARRAY_EXTEND(len) ((unsigned long long) len)
 
 #define SIMPLE_ARRAY_MEMCOPY(dest, src, size) \
 { \
@@ -51,6 +52,7 @@ struct { \
     if (arr.written + len > arr.count) { \
         free((void *) arr.data); \
         arr = SIMPLE_ARRAY_CREATE_SIZE(Data, arr.count + SIMPLE_ARRAY_EXTEND(len)); \
+        arr.count = SIMPLE_ARRAY_EXTEND(len); \
     } \
     SIMPLE_ARRAY_WRITE_NO_CHECK(arr, 0, Data, len); \
 }
@@ -59,6 +61,8 @@ struct { \
 { \
     if (arr.written + len > arr.count) { \
         arr.data = (unsigned long long) SIMPLE_ARRAY_H_REALLOC((void *) arr.data, arr.count * sizeof(*Data) + SIMPLE_ARRAY_EXTEND(len) * sizeof(*Data)); \
+        arr.count += SIMPLE_ARRAY_EXTEND(len); \
+        printf("YES - w+l: %lld, c:%lld, ext: %lld\n", arr.written + len, arr.count, SIMPLE_ARRAY_EXTEND(len)); \
     }\
     SIMPLE_ARRAY_WRITE_NO_CHECK(arr, index, Data, len); \
 }

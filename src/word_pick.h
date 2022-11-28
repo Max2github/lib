@@ -153,3 +153,12 @@ word_picker_array word_picker_splitP(word_picker w, word_picker search) {
     SIMPLE_ARRAY_APPEND(splitted, w);
     return splitted;
 }*/
+
+// to string
+void word_picker_toString(word_picker w, char * saveto) {
+    for (; w.begin != w.end; w.begin++) {
+        *saveto = *(w.begin);
+        saveto++;
+    }
+    *saveto = '\0';
+}
