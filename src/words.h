@@ -559,7 +559,7 @@ void doubleToString(float zahl, int afterpoint, char * saveto) {
         int before = (int) fpart;
         int temp = before / 10;
         unsigned int rmLast = 0;
-        while (temp * 10 == before) {
+        while (temp * 10 == before && temp != 0) {
             rmLast++;
             before = temp;
             temp /= 10;
