@@ -111,24 +111,24 @@
 
 #if !defined(_WIN32) && (defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__)))
 	// UNIX-style OS
-    #define PF_UNIX 1
+    #define DEF_PF_UNIX 1
     #include <unistd.h>
 
     #if defined(_POSIX_VERSION)
-        #define PF_POSIX 1
+        #define DEF_PF_POSIX 1
     #else
-        #define PF_POSIX 0
+        #define DEF_PF_POSIX 0
     #endif
 #else
-    #define PF_UNIX 0
+    #define DEF_PF_UNIX 0
 #endif
 
 // POSIX Windows
 #if defined(__CYGWIN__)
-    #define PF_POSIX 1
-// if PF_POSIX was still not defined, define it as 0
-#elif !defined(PF_POSIX)
-    #define PF_POSIX 0
+    #define DEF_PF_POSIX 1
+// if DEF_PF_POSIX was still not defined, define it as 0
+#elif !defined(DEF_PF_POSIX)
+    #define DEF_PF_POSIX 0
 #endif
 
 /**
@@ -136,7 +136,7 @@
  */
 
 #if defined(WINDOWS) || defined(WIN32) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__)
-    #define PF_WINDOWS 1
+    #define DEF_PF_WINDOWS 1
     #include <windows.h>
     #if defined(_WIN64)
         // 64 bit OS (CPU may be different?)
@@ -144,44 +144,44 @@
         // 32 bit OS (CPU may be different?)
     #endif
 #else 
-    #define PF_WINDOWS 0
+    #define DEF_PF_WINDOWS 0
 #endif
 
 /**
  * detect LINUX
  */
 
-#if !PF_WINDOWS && (defined(__linux__))
-    #define PF_LINUX 1
+#if !DEF_PF_WINDOWS && (defined(__linux__))
+    #define DEF_PF_LINUX 1
 #else
-    #define PF_LINUX 0
+    #define DEF_PF_LINUX 0
 #endif
 
 /**
  * detect APPLE
  */ 
 
-#define PF_APPLE_IOS_SIMULATOR 0
-#define PF_APPLE_IOS 0
-#define PF_APPLE_MAC 0
+#define DEF_PF_APPLE_IOS_SIMULATOR 0
+#define DEF_PF_APPLE_IOS 0
+#define DEF_PF_APPLE_MAC 0
 
-#if !PF_WINDOWS && (defined(__APPLE__) || defined(__MACH__))
-    #define PF_APPLE 1
+#if !DEF_PF_WINDOWS && (defined(__APPLE__) || defined(__MACH__))
+    #define DEF_PF_APPLE 1
 
     #include <TargetConditionals.h>
     #if TARGET_IPHONE_SIMULATOR == 1
         // iOS in XCode simulator 
-        #undef PF_APPLE_IOS_SIMULATOR
-        #define PF_APPLE_IOS_SIMULATOR 1
+        #undef DEF_PF_APPLE_IOS_SIMULATOR
+        #define DEF_PF_APPLE_IOS_SIMULATOR 1
     #elif TARGET_OS_IPHONE == 1
-        #undef PF_APPLE_IOS
-        #define PF_APPLE_IOS 1
+        #undef DEF_PF_APPLE_IOS
+        #define DEF_PF_APPLE_IOS 1
     #elif TARGET_OS_MAC == 1
-        #undef PF_APPLE_MAC
-        #define PF_APPLE_MAC 1
+        #undef DEF_PF_APPLE_MAC
+        #define DEF_PF_APPLE_MAC 1
     #endif
 #else
-    #define PF_APPLE 0
+    #define DEF_PF_APPLE 0
 #endif
 
 /**
