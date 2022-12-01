@@ -62,7 +62,6 @@ struct { \
     if (arr.written + len > arr.count) { \
         arr.data = (unsigned long long) SIMPLE_ARRAY_H_REALLOC((void *) arr.data, arr.count * sizeof(*Data) + SIMPLE_ARRAY_EXTEND(len) * sizeof(*Data)); \
         arr.count += SIMPLE_ARRAY_EXTEND(len); \
-        printf("YES - w+l: %lld, c:%lld, ext: %lld\n", arr.written + len, arr.count, SIMPLE_ARRAY_EXTEND(len)); \
     }\
     SIMPLE_ARRAY_WRITE_NO_CHECK(arr, index, Data, len); \
 }
