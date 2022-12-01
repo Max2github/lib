@@ -9,7 +9,7 @@
     #define FILEIO_H_MALLOC SIMPLE_LIST_H_MALLOC
     #define FILEIO_H_FREE SIMPLE_LIST_H_FREE
 
-    #if PF_WINDOWS
+    #if DEF_PF_WINDOWS
         //#include <minwinbase.h>
         #include <windows.h>
         #include <direct.h>
@@ -41,7 +41,7 @@
             } \
             FindClose(hFind); \
         }
-    #else
+    #elif DEF_PF_UNIX
         #include <unistd.h>
         #include <dirent.h>
         #define GetCurrentDir getcwd
