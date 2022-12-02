@@ -84,7 +84,6 @@ word_picker_list word_pick_splitList(const char * w, const char * search) {
     if (*search == '\0') {
         for (; *w != '\0'; w++) {
             word_picker pickedChar = WORD_PICK_INIT(w, w+1);
-            word_picker it = pickedChar;
             word_picker_list iterator = splitted;
             SIMPLE_LIST_ADDLAST(iterator, pickedChar);
             if (splitted == NULL) { splitted = iterator; }
