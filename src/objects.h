@@ -59,22 +59,22 @@ object object_copy(object target) {
 
 void object_print(object target, unsigned int format) {
     // if (target == NULL) { puts("NULL"); return; }
-    putchar('{'); putchar('\n');
+    LIST_H_PUTCHAR('{'); LIST_H_PUTCHAR('\n');
     while(target != NULL) {
         char * name = (char * ) ((list) target->el)->el;
         list_element_pointer Inhalt = ((list) target->el)->next;
 
-        list_print_format(format+4); printf("%s : ", name);
+        list_print_format(format+4); LIST_H_PRINTF("%s : ", name);
         if (Inhalt->type == Object) { object_print((object) Inhalt->el, format+4); }
         else {
-            if (Inhalt->type == String) { putchar('\"'); }
+            if (Inhalt->type == String) { LIST_H_PUTCHAR('\"'); }
             list_element_print(Inhalt, format+4);
-            if (Inhalt->type == String) { putchar('\"'); }
-            if (Inhalt->type != List && Inhalt->type != List_pointer) { putchar('\n'); }
+            if (Inhalt->type == String) { LIST_H_PUTCHAR('\"'); }
+            if (Inhalt->type != List && Inhalt->type != List_pointer) { LIST_H_PUTCHAR('\n'); }
         }
         target = target->next;
     }
-    list_print_format(format); putchar('}'); putchar('\n');
+    list_print_format(format); LIST_H_PUTCHAR('}'); LIST_H_PUTCHAR('\n');
 }
 void object_element_print(object target, unsigned int format) {
     if (target->type == Object) { object_print((object) target->el, format); }
@@ -135,7 +135,7 @@ object object_del(object target, const char * path) {
             path = word_copy_until(name, path, ".");
 
             underObj = object_get_el(underObj, name);
-            if (underObj->type != Object) { printf("!! ERROR: Could not delete %s from object", path); return target; }
+            if (underObj->type != Object) { LIST_H_PRINTF("!! ERROR: Could not delete %s from object", path); return target; }
             underObj_el = underObj;
             underObj = (object) underObj->el;
         }
@@ -168,8 +168,8 @@ void object_mod(object target, const char * path, list_type type, unsigned long 
             path = word_copy_until(name, path, ".");
 
             underObj = object_get_el(underObj, name);
-            if (underObj == NULL) { printf("!! ERROR: Could not modify %s from object", path); return; }
-            if (underObj->type != Object) { printf("!! ERROR: Could not modify %s from object", path); return; }
+            if (underObj == NULL) { LIST_H_PRINTF("!! ERROR: Could not modify %s from object", path); return; }
+            if (underObj->type != Object) { LIST_H_PRINTF("!! ERROR: Could not modify %s from object", path); return; }
             underObj_el = underObj;
             underObj = (object) underObj->el;
         }

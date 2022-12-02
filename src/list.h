@@ -10,11 +10,6 @@
 
 #include "../list_h.h"
 
-#ifndef NO_STD_LIB
-    #define LIST_MALLOC(size) malloc(size)
-    #define LIST_H_FREE(p) free(p)
-#endif
-
 /**
  * TODO
  * 
@@ -330,7 +325,7 @@ void list_removeIndex(list head, unsigned int index) {
 // print
 void list_print_format(unsigned int format) {
     for (int i = 0; i < format; i++) {
-        putchar(' ');
+        LIST_H_PUTCHAR(' ');
     }
 }
 void list_element_sprint(list_element_pointer head, char * saveto, list separatorList) {
@@ -410,51 +405,51 @@ void list_element_print(list_element_pointer head,  unsigned int format) {
         }
         case Integer : {
             int el = GET_LIST_ELEMENT_INT(head);
-            printf("%d", el);
+            LIST_H_PRINTF("%d", el);
             break;
         }
         case Float : {
             float el = GET_LIST_ELEMENT_FLOAT(head);
             char str[intLen((int)el)+8]; // + '.' + 6 afterpoint + 1 '\0'
             doubleToString(el, 6, str);
-            printf("%s", str);
+            LIST_H_PRINTF("%s", str);
             break;
         }
         case Double : {
             double el = get_list_element_double(head);
             char str[intLen((int)el)+8]; // + '.' + 6 afterpoint + 1 '\0'
             doubleToString(el, 6, str);
-            printf("%s", str);
+            LIST_H_PRINTF("%s", str);
             break;
         }
         // array
-        case String : printf("%s", (char *) head->el); break;
+        case String : LIST_H_PRINTF("%s", (char *) head->el); break;
         // pointer
         case Char_pointer : {
             char * eP = (char *) head->el;
-            printf("-> %c", *eP);
+            LIST_H_PRINTF("-> %c", *eP);
             break;
         }
         case Integer_pointer : {
             int * eP = (int *) head->el;
-            printf("-> %d", *eP);
+            LIST_H_PRINTF("-> %d", *eP);
             break;
         }
         case Float_pointer : {
             float * eP = (float *) head->el;
             char str[intLen((int)*eP)+8]; // + '.' + 6 afterpoint + 1 '\0'
             doubleToString(*eP, 6, str);
-            printf("-> %s", str);
+            LIST_H_PRINTF("-> %s", str);
             break;
         }
         case Double_pointer : {
             double * eP = (double *) head->el;
             char str[intLen((int)*eP)+8]; // + '.' + 6 afterpoint + 1 '\0'
             doubleToString(*eP, 6, str);
-            printf("-> %s", str);
+            LIST_H_PRINTF("-> %s", str);
             break;
         }
-        case Void_pointer : printf("Function"); break;
+        case Void_pointer : LIST_H_PRINTF("Function"); break;
         // list
         case List : list_print((list) head->el, format); break;
         case List_pointer : list_print((list) head->el, format); break;
@@ -472,18 +467,18 @@ void list_print(list head, unsigned int format) {
         list_print_format(format);
         switch(head->type) {
             // primitive
-            case Char : printf("%s", "Char: "); break;
-            case Integer : printf("%s", "Integer: "); break;
-            case Float : printf("%s", "Float: "); break;
-            case Double : printf("%s", "Double: "); break;
+            case Char : LIST_H_PRINTF("%s", "Char: "); break;
+            case Integer : LIST_H_PRINTF("%s", "Integer: "); break;
+            case Float : LIST_H_PRINTF("%s", "Float: "); break;
+            case Double : LIST_H_PRINTF("%s", "Double: "); break;
             // array
-            case String : printf("%s", "String: "); break;
+            case String : LIST_H_PRINTF("%s", "String: "); break;
             // pointer
-            case Char_pointer : printf("%s", "Char_pointer : "); break;
-            case Integer_pointer : printf("%s", "Int_pointer : "); break;
-            case Float_pointer : printf("%s", "Float_pointer : "); break;
-            case Double_pointer : printf("%s", "Double_pointer : "); break;
-            case Void_pointer : printf("%s", "Void_pointer : "); break;
+            case Char_pointer : LIST_H_PRINTF("%s", "Char_pointer : "); break;
+            case Integer_pointer : LIST_H_PRINTF("%s", "Int_pointer : "); break;
+            case Float_pointer : LIST_H_PRINTF("%s", "Float_pointer : "); break;
+            case Double_pointer : LIST_H_PRINTF("%s", "Double_pointer : "); break;
+            case Void_pointer : LIST_H_PRINTF("%s", "Void_pointer : "); break;
             case List : break;
             case List_pointer : break;
             case End : break;
@@ -977,7 +972,7 @@ void list_select_remove(select_key keyword, ...) {
             int tf = (*cond)(temp->el, temp->type, index);
             if (tf == 1) {
                 if (index == 0) {
-                    // printf("Error: Unable to remove first element!");
+                    // LIST_H_PRINTF("Error: Unable to remove first element!");
                     beforeTemp = temp;
                     temp = temp->next;
                     *l = list_removeFirst(*l);
