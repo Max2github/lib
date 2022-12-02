@@ -230,8 +230,14 @@
 /**
  * detect COMPILER
  */
+#define CC_CLANG 0
+#define CC_MSC 0
+
 #if defined(__clang__)
     /* Clang/LLVM */
+    #undef CC_CLANG
+    #define CC_CLANG 1
+
     #define COMPILER_VERSION_DEFAULT_FULL __VERSION__
     #define COMPILER_VERSION_DEFAULT_MINI __clang_version__
     #define COMPILER_VERSION_MAJOR __clang_major__
@@ -240,6 +246,9 @@
     #define COMPILER_VERSION STR(__clang_major__ ) "." STR(__clang_minor__) "." STR(__clang_patchlevel__)
 #elif defined(__GNUC__) || defined(__GNUG__)
     /* GNU GCC/G++ */
+    // #define CC_GCC 1
+    // #define CC_GCXX 1
+
     #define COMPILER_VERSION_DEFAULT_FULL __VERSION__
     #define COMPILER_VERSION_DEFAULT_MINI __VERSION__
     #define COMPILER_VERSION_MAJOR __GNUC__
@@ -252,6 +261,9 @@
     #endif
 #elif defined(_MSC_VER)
     /* Microsoft Visual Studio */
+    #undef CC_MSC
+    #define CC_MSC 1
+
     #define COMPILER_VERSION_PATCHLEVEL 0 // don't know what I should paste here, maybe the bukd number
     #if _MSC_VER >= 600 && _MSC_VER < 700
         #define COMPILER_VERSION_DEFAULT_FULL "Microsoft C 6.0"
