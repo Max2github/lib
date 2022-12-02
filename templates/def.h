@@ -131,9 +131,9 @@
     #define OS_POSIX 0
 #endif
 
-#if POSIX
+#if OS_POSIX
     #define LIB_PTHREAD 1
-#elif defined(__MINGW32__)
+#elif defined(__MINGW32__) || defined(__MINGW64__)
     #define LIB_PTHREAD 1
 
     // #undef _WIN32_WINNT
@@ -232,6 +232,9 @@
  */
 #define CC_CLANG 0
 #define CC_MSC 0
+#define CC_MINGW 0
+#define CC_GCC 0
+#define CC_GXX 0
 
 #if defined(__clang__)
     /* Clang/LLVM */
@@ -244,6 +247,9 @@
     #define COMPILER_VERSION_MINOR __clang_minor__
     #define COMPILER_VERSION_PATCHLEVEL __clang_patchlevel__
     #define COMPILER_VERSION STR(__clang_major__ ) "." STR(__clang_minor__) "." STR(__clang_patchlevel__)
+#elif defined(__MINGW32__) || defined(__MINGW64__)
+    #undef CC_MINGW
+    #define CC_MINGW 1
 #elif defined(__GNUC__) || defined(__GNUG__)
     /* GNU GCC/G++ */
     // #define CC_GCC 1
@@ -335,10 +341,11 @@
     #define COMPILER_VERSION_DEFAULT_MINI STR(_MSC_VER)
     #define COMPILER_VERSION STR(_MSC_VER)
 #else
-
+    
 #endif
 
 #if defined(__GCC__) || defined(__APPLE_CC__)
+    #undef CC_GCC
     #define CC_GCC 1
     #define ATTRIBUTE_PACKED __attribute__ ((__packed__))
     #define ATTRIBUTE_DEPRECATED __attribute__((__deprecated__))
