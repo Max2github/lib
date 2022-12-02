@@ -1,41 +1,14 @@
+#include "../objects_h.h"
+
 #include "list.h"
-
-// #define object_free list_free
-#define Object (list_type) (End+1)
-
-typedef list object;
-typedef list_element_pointer object_element_pointer;
-
-void object_element_free(object_element_pointer);
-void object_free(object);
-
-object object_add(object target, const char * name, ...);
-object object_appendChild(object target, const char * name, object child);
-
-object object_copy(object target);
-
-void object_print(object target, unsigned int format);
-
-object_element_pointer object_get_el(object target, const char * name);
-object_element_pointer object_get(object target, const char * path);
-
-object object_del_el(object target, const char * name);
-object object_del(object target, const char * path);
-
-void object_mod_el(object target, const char * name, list_type type, void * value);
-void object_mod(object target, const char * path, list_type type, void * value);
-
-object object_JSON_read_one(object json_as_obj, const char * prep_json_string);
-object object_JSON_read(const char * json_string);
-void object_JSON_stringify(char * dest, object obj);
 
 void object_element_free(object_element_pointer head) {
     if (head->type == List || head->type == Object) {
         object_free((list) head->el);
-    } else if (head->type != Char_pointer && head->type != Integer_pointer && head->type != Float_pointer && head->type != Double_pointer && head->type != Void_pointer && head->type != List_pointer) {
-        free(head->el);
+    } else if (head->type == String) {
+        LIST_H_FREE((void *) head->el);
     }
-    free(head);
+    LIST_H_FREE(head);
 }
 void object_free(object target) {
     while (target != NULL) {
@@ -166,12 +139,12 @@ object object_del(object target, const char * path) {
             underObj_el = underObj;
             underObj = (object) underObj->el;
         }
-        underObj_el->el = (void *) object_del_el(underObj, path);
+        underObj_el->el = (unsigned long long) object_del_el(underObj, path);
         return target;
     }
     return object_del_el(target, path);
 }
-void object_mod_el(object target, const char * name, list_type type, void * value) {
+void object_mod_el(object target, const char * name, list_type type, unsigned long long value) {
     while (target != NULL) {
         char * tempName = (char * ) ((list) target->el)->el;
         if (word_compare(name, tempName) == 0) {
@@ -185,7 +158,7 @@ void object_mod_el(object target, const char * name, list_type type, void * valu
     }
     return;
 }
-void object_mod(object target, const char * path, list_type type, void * value) {
+void object_mod(object target, const char * path, list_type type, unsigned long long value) {
     if (find(path, ".")) {
         object underObj = target; // holds the current object
         object_element_pointer underObj_el = NULL; // holds the current object_element, which holds "underObj" -> Also has type and name of "underObj"

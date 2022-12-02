@@ -24,8 +24,8 @@ object_element_pointer object_get(object target, const char * path);
 object object_del_el(object target, const char * name);
 object object_del(object target, const char * path);
 
-void object_mod_el(object target, const char * name, list_type type, void * value);
-void object_mod(object target, const char * path, list_type type, void * value);
+void object_mod_el(object target, const char * name, list_type type, unsigned long long value);
+void object_mod(object target, const char * path, list_type type, unsigned long long value);
 
 object object_JSON_read_one(object json_as_obj, const char * prep_json_string);
 object object_JSON_read(const char * json_string);

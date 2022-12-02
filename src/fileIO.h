@@ -132,11 +132,11 @@ File_list File_readDir(const char * dirpath) {
     int len = 1;
     while (*(++last) != '\0') { len++; }; // go to last element
     last--;
-    #if PF_WINDOWS
+    #if OS_WINDOWS
         if (*last == '*') {}
         else if (*last == PATH_SEP_CHAR) File_readDir_add(len, dirpath, 1, '*', '-')
         else File_readDir_add(len, dirpath, 2, PATH_SEP_CHAR, '*')
-    #else
+    #elif OS_UNIX
         if (*last == '*') File_readDir_remove(len, dirpath, 1)
         else if (*last == PATH_SEP_CHAR) {  }
         else File_readDir_add(len, dirpath, 1, PATH_SEP_CHAR, '-')
