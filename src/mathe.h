@@ -11,7 +11,7 @@
 #undef min
 
 int Klammern(char text[], char saveto[]);
-long double rechnen(char text[6]);
+long double rechnen(char text[]);
 double hoch(double basis, int exponent);
 int max(int arr[], int len);
 int min(int arr[], int len);
