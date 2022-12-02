@@ -131,8 +131,13 @@
     #define OS_POSIX 0
 #endif
 
-#if POSIX || defined(__MINGW__)
+#if POSIX
     #define LIB_PTHREAD 1
+#elif defined(__MINGW32__)
+    #define LIB_PTHREAD 1
+
+    // #undef _WIN32_WINNT
+    // #define _WIN32_WINNT 0x0600
 #else
     #define LIB_PTHREAD 0
 #endif
