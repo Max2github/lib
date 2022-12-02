@@ -148,7 +148,6 @@
 
 #if defined(WINDOWS) || defined(WIN32) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__)
     #define OS_WINDOWS 1
-    #include <windows.h>
     #if defined(_WIN64)
         // 64 bit OS (CPU may be different?)
     #elif defined(_WIN32)
