@@ -46,7 +46,7 @@ struct { \
     if (iterator == NULL) { \
         SIMPLE_LIST_CREATE_EL(iterator, Data, NULL); \
     } else { \
-        for(; iterator->next != (unsigned long long) NULL; iterator = (void *) iterator->next); \
+        for(; iterator->next != (unsigned long long) NULL; iterator = (void *) iterator->next) {  } \
         SIMPLE_LIST_CREATE_EL_WITHOUT_ANYTHING(iterator->next, sizeof(*iterator)); \
         iterator = (void *) iterator->next; \
         SIMPLE_LIST_SET_DATA_AND_NEXT(iterator, Data, NULL); \
