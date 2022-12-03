@@ -370,6 +370,14 @@ typedef unsigned short index16; // 0 - 65 535
 typedef unsigned int index32; // 0 - 4 294 967 296
 typedef unsigned long long index64; // 
 
+#if CPU_32_BIT
+    typedef unsigned long intP;
+#elif CPU_64_BIT
+    typedef unsigned long long intP;
+#else
+
+#endif
+
 // not really important / needed stuff
 #define TRUE_STRING "true"
 #define FALSE_STRING "false"
