@@ -15,7 +15,7 @@
 /**
  * TODO
  * 
- * - change void * el to index64 or intP
+ * - change void * el to index64 or indexP
  * - save Data < 8 bytes in el itself (no allocation)
  *   -> change list_types: Char, Integer, Float, Double
  *   -> add list_type for 8 bytes buffer and / or string
@@ -56,17 +56,17 @@ void list_element_memcopy(void * dest, void * src, unsigned int nbytes) {
 
 // list_el_el * & list_el_els
 // get values of el (of list_element_pointer->el) / getter
-char get_list_element_value_char(intP value) {
+char get_list_element_value_char(indexP value) {
     return (char) value;
 }
-int get_list_element_value_int(intP value) {
+int get_list_element_value_int(indexP value) {
     return (int) value;
 }
-float get_list_element_value_float(intP value) {
+float get_list_element_value_float(indexP value) {
     float * temp = (float *) (&value);
     return *temp;
 }
-double get_list_element_value_double(intP value) {
+double get_list_element_value_double(indexP value) {
     double * temp = (double *) (&value);
     return *temp;
 }
@@ -120,16 +120,16 @@ list_element_pointer new_list_element_double(double zahl) {
     set_list_element_double(eins, zahl);
     return eins;
 }
-/*list_element_pointer new_list_element_minibuffer(unsigned char buf[sizeof(intP)]) {
+/*list_element_pointer new_list_element_minibuffer(unsigned char buf[sizeof(indexP)]) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    for (unsigned char i = 0; i < sizeof(intP); i++) {
+    for (unsigned char i = 0; i < sizeof(indexP); i++) {
         eins->elbuff[i] = buf[i];
     }
     eins->type = MiniBuffer;
     eins->next = NULL;
     return eins;
 }
-list_element_pointer new_list_element_ministring(char buf[sizeof(intP)]) {
+list_element_pointer new_list_element_ministring(char buf[sizeof(indexP)]) {
     list_element_pointer eins = new_list_element_minibuffer((unsigned char *) buf);
     eins->type = MiniString;
     return eins;
@@ -137,7 +137,7 @@ list_element_pointer new_list_element_ministring(char buf[sizeof(intP)]) {
 // allocated
 list_element_pointer new_list_element_string(char * str) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    eins->el = (intP) LIST_MALLOC(sizeof(char *) * word_len(str));
+    eins->el = (indexP) LIST_MALLOC(sizeof(char *) * word_len(str));
     word_copy((char *) eins->el, str);
     eins->type = String;
     eins->next = NULL;
@@ -146,28 +146,28 @@ list_element_pointer new_list_element_string(char * str) {
 // pointer
 list_element_pointer new_list_element_char_pointer(char * zP) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    eins->el = (intP) zP;
+    eins->el = (indexP) zP;
     eins->type = Char_pointer;
     eins->next = NULL;
     return eins;
 }
 list_element_pointer new_list_element_int_pointer(int * zP) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    eins->el = (intP) zP;
+    eins->el = (indexP) zP;
     eins->type = Integer_pointer;
     eins->next = NULL;
     return eins;
 }
 list_element_pointer new_list_element_float_pointer(float * zP) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    eins->el = (intP) zP;
+    eins->el = (indexP) zP;
     eins->type = Float_pointer;
     eins->next = NULL;
     return eins;
 }
 list_element_pointer new_list_element_double_pointer(double * zP) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    eins->el = (intP) zP;
+    eins->el = (indexP) zP;
     eins->type = Double_pointer;
     eins->next = NULL;
     return eins;
@@ -175,12 +175,12 @@ list_element_pointer new_list_element_double_pointer(double * zP) {
 // list & other
 list_element_pointer new_list_element_list(list under) {
     list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    eins->el = (intP) under;
+    eins->el = (indexP) under;
     eins->type = List;
     eins->next = NULL;
     return eins;
 }
-list_element_pointer new_list_element_type(list_type type, intP value) {
+list_element_pointer new_list_element_type(list_type type, indexP value) {
     list_element_pointer eins = NULL;
     switch (type) {
         // primitive
@@ -206,7 +206,7 @@ list_element_pointer new_list_element_type(list_type type, intP value) {
         }
         /*case MiniBuffer : {
             // unsigned char * p = (unsigned char *) pointer;
-            unsigned char * p = (unsigned char[sizeof(intP)]) pointer;
+            unsigned char * p = (unsigned char[sizeof(indexP)]) pointer;
             eins = new_list_element_minibuffer(p);
             break;
         }*/
@@ -592,7 +592,7 @@ list list_addFirst(list head, ...) {
         return newHead_list;
     }
     newHead = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    newHead->el = (intP) newHead_list;
+    newHead->el = (indexP) newHead_list;
     newHead->type = List;
     newHead->next = head;
 
@@ -616,7 +616,7 @@ void list_addLast(list head, ...) {
     }
 
     newLast = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    newLast->el = (intP) newLast_list;
+    newLast->el = (indexP) newLast_list;
     newLast->type = List;
     newLast->next = NULL;
 
@@ -661,7 +661,7 @@ void list_addIndex(list head, unsigned int index, ...) {
     while (head != NULL) {
         if (i == index) {
             newEl = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-            newEl->el = (intP) newEl_list;
+            newEl->el = (indexP) newEl_list;
             newEl->type = List;
 
             beforeHead->next = newEl;
@@ -674,7 +674,7 @@ void list_addIndex(list head, unsigned int index, ...) {
     }
     if (i == index) {
         newEl = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-        newEl->el = (intP) newEl_list;
+        newEl->el = (indexP) newEl_list;
         newEl->type = List;
 
         beforeHead->next = newEl;
@@ -695,7 +695,7 @@ list_element_pointer list_seek(list head, unsigned int index) {
     }
     return head;
 }
-int list_findFirstIndex(list head, int (*cond)(intP , list_type, int)) {
+int list_findFirstIndex(list head, int (*cond)(indexP , list_type, int)) {
     int index = 0;
     if (head == NULL) {
         return -1;
@@ -717,7 +717,7 @@ int list_findFirstIndex(list head, int (*cond)(intP , list_type, int)) {
     }
     return -1;
 }
-int list_element_compare(intP value, list_type type, intP element, list_type eltype) {
+int list_element_compare(indexP value, list_type type, indexP element, list_type eltype) {
     if (eltype == List_pointer) {
         eltype = List;
     }
@@ -824,7 +824,7 @@ int list_element_compare(intP value, list_type type, intP element, list_type elt
     };
     return 0;
 }
-int list_find(list head, intP value, list_type type) {
+int list_find(list head, indexP value, list_type type) {
     int found = 0;
     while (head != NULL) {
         if (list_element_compare(head->el, head->type, value, type) == 1) {
@@ -835,7 +835,7 @@ int list_find(list head, intP value, list_type type) {
     return found;
 }
 
-list list_select_one(list head, int (*cond)(intP , list_type, int), select_key keyword, list greatSelect) {
+list list_select_one(list head, int (*cond)(indexP , list_type, int), select_key keyword, list greatSelect) {
     if (head == NULL) {
         return NULL;
     }
@@ -858,12 +858,12 @@ list list_select_one(list head, int (*cond)(intP , list_type, int), select_key k
                     break;
                 }
                 case select_Whole_record : {
-                    list_element_pointer sel = new_list_element_type(List, (intP) trueHead);
-                    int isAlready = list_find(greatSelect, (intP) trueHead, List);
+                    list_element_pointer sel = new_list_element_type(List, (indexP) trueHead);
+                    int isAlready = list_find(greatSelect, (indexP) trueHead, List);
                     if (isAlready != 0) {
                         tf = 2;
                     }
-                    isAlready = list_find(selected, (intP) trueHead, List);
+                    isAlready = list_find(selected, (indexP) trueHead, List);
                     if (isAlready != 0) {
                         tf = 2;
                     }
@@ -913,7 +913,7 @@ list list_select_va(select_key keyword, va_list args) {
     list selected = NULL;
     list l = va_arg(args, list);
     while (l != NULL) {
-        int (*cond)(intP , list_type, int) = va_arg(args, int (*)(intP , list_type, int));
+        int (*cond)(indexP , list_type, int) = va_arg(args, int (*)(indexP , list_type, int));
         
         list sel = list_select_one(l, cond, keyword, selected);
         if (sel != NULL) {
@@ -942,7 +942,7 @@ void list_select_remove(select_key keyword, ...) {
 
     list * l = va_arg(args, list * );
     while (*l != NULL) {
-        int (*cond)(intP , list_type, int) = va_arg(args, int (*)(intP , list_type, int));
+        int (*cond)(indexP , list_type, int) = va_arg(args, int (*)(indexP , list_type, int));
         
         switch(keyword) {
             case select_All : break;
@@ -1002,7 +1002,7 @@ void list_select_remove(select_key keyword, ...) {
     va_end(args);
 }
 
-list list_select_index_one(list head, int (*cond)(intP , list_type, int), select_key keyword, list greatSelect) {
+list list_select_index_one(list head, int (*cond)(indexP , list_type, int), select_key keyword, list greatSelect) {
     list selected = NULL;
     int index = 0;
     if (head == NULL) {
@@ -1042,7 +1042,7 @@ list list_select_index(select_key keyword, ...) {
 
     list l = va_arg(args, list);
     while (l != NULL) {
-        int (*cond)(intP , list_type, int) = va_arg(args, int (*)(intP , list_type, int));
+        int (*cond)(indexP , list_type, int) = va_arg(args, int (*)(indexP , list_type, int));
 
         list isHere = list_select_index_one(l, cond, keyword, selected);
         if (isHere != NULL) {
@@ -1092,7 +1092,7 @@ int list_size(list head) {
 }
 
 void list_swap_element(list_element_pointer a, list_element_pointer b) {
-    intP valueA = a->el; list_type typeA = a->type;
+    indexP valueA = a->el; list_type typeA = a->type;
     a->el = b->el; a->type = b->type;
     b->el = valueA; b->type = typeA;
 }

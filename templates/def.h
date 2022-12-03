@@ -203,11 +203,11 @@
     #define CPU_ARM 0
     #define CPU_32_BIT 0
     #define CPU_64_BIT 1
-#elif defined(__i386) || defined(_M_IX86)
+#elif defined(__i386) || defined(_M_IX86) || defined(_x86_)
     #define CPU_x86 1
     #define CPU_ARM 0
-    #define CPU_32_BIT 0
-    #define CPU_64_BIT 1
+    #define CPU_32_BIT 1
+    #define CPU_64_BIT 0
 #elif defined(__arm64) || defined(__arm64__) || defined(__arm64) || defined(__aarch64__)
     #define CPU_ARM 1
     #define CPU_x86 0
@@ -371,9 +371,11 @@ typedef unsigned int index32; // 0 - 4 294 967 296
 typedef unsigned long long index64; // 
 
 #if CPU_32_BIT
-    typedef unsigned long intP;
+    typedef int32 intP;
+    typedef index32 indexP;
 #elif CPU_64_BIT
-    typedef unsigned long long intP;
+    typedef int32 intP;
+    typedef index64 indexP;
 #else
 
 #endif

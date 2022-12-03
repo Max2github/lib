@@ -12,25 +12,25 @@
 #define SIMPLE_LIST(type) \
 struct { \
     type data; \
-    intP next; \
+    indexP next; \
 } *
 
 #define SIMPLE_LIST_CREATE_EL(elP, Data, Next) \
 { \
     elP = SIMPLE_LIST_H_MALLOC(sizeof(*elP)); \
     elP->data = Data; \
-    elP->next = (intP) Next; \
+    elP->next = (indexP) Next; \
 }
 
 #define SIMPLE_LIST_CREATE_EL_WITHOUT_ANYTHING(elP, size) \
 { \
-    elP = (intP) SIMPLE_LIST_H_MALLOC(size); \
+    elP = (indexP) SIMPLE_LIST_H_MALLOC(size); \
 }
 
 #define SIMPLE_LIST_SET_DATA_AND_NEXT(elP, Data, Next) \
 { \
     elP->data = Data; \
-    elP->next = (intP) Next; \
+    elP->next = (indexP) Next; \
 }
 
 #define SIMPLE_LIST_ADDFIRST(liste, Data) \
@@ -48,7 +48,7 @@ struct { \
     if (iterator == NULL) { \
         SIMPLE_LIST_CREATE_EL(iterator, Data, NULL); \
     } else { \
-        for(; iterator->next != (intP) NULL; iterator = (void *) iterator->next) {  } \
+        for(; iterator->next != (indexP) NULL; iterator = (void *) iterator->next) {  } \
         SIMPLE_LIST_CREATE_EL_WITHOUT_ANYTHING(iterator->next, sizeof(*iterator)); \
         iterator = (void *) iterator->next; \
         SIMPLE_LIST_SET_DATA_AND_NEXT(iterator, Data, NULL); \
@@ -62,7 +62,7 @@ struct { \
     } \
     int i = 0; \
     unsigned char wasSet = 0; \
-    while(iterator->next != (intP) NULL) { \
+    while(iterator->next != (indexP) NULL) { \
         if (i == index) { \
             void * temp = (void *) iterator->next; \
             SIMPLE_LIST_CREATE_EL(iterator, Data, temp); \

@@ -59,7 +59,7 @@ void * general_alloc(void * head, index64 size) {
     best->size = size;
     best->used = true;
 
-    return (void *) ((int64) best + GENERAL_ALLOC_NODE_SIZE); // return the memory excluding the space for the node itself
+    return (void *) ((indexP) best + GENERAL_ALLOC_NODE_SIZE); // return the memory excluding the space for the node itself
 }
 
 HEAP_NODE * general_get_prev_node(HEAP_LIST head, HEAP_NODE * node) {
@@ -75,7 +75,7 @@ bool general_find_node(HEAP_LIST head, index64 totalsize, HEAP_NODE * node) {
 }
 
 void general_free(void * head, void * toFree) {
-    HEAP_NODE * node = (HEAP_NODE *) ( (int64) toFree - GENERAL_ALLOC_NODE_SIZE);
+    HEAP_NODE * node = (HEAP_NODE *) ( (indexP) toFree - GENERAL_ALLOC_NODE_SIZE);
     index64 totalSize = GENERAL_ALLOC_TOTALSIZE(head);
     HEAP_NODE * end = GENERAL_ALLOC_POINTER_PLUS(head, totalSize);
     index64 totalsize = GENERAL_ALLOC_TOTALSIZE(head);

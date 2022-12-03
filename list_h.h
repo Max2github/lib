@@ -30,9 +30,9 @@ struct list_element {
     union {
         // this is used normally
         // it either stores the value directly in in or points it (value allocated on the HEAP)
-        intP el;
+        indexP el;
         // this is used for copying bytes to el
-        unsigned char elbuff[sizeof(intP)];
+        unsigned char elbuff[sizeof(indexP)];
     };
     list_type type : 8;
     // may use instead (in the future):
@@ -75,10 +75,10 @@ void list_element_memcopy(void * dest, void * src, unsigned int nbytes);
 
 // functions and macros to get and set the value in list_element correctly
 // getter
-char get_list_element_value_char(intP value);
-int get_list_element_value_int(intP value);
-float get_list_element_value_float(intP value);
-double get_list_element_value_double(intP value);
+char get_list_element_value_char(indexP value);
+int get_list_element_value_int(indexP value);
+float get_list_element_value_float(indexP value);
+double get_list_element_value_double(indexP value);
 #define GET_LIST_ELEMENT_CHAR(list_el_pointer)   get_list_element_value_char(list_el_pointer->el)
 #define GET_LIST_ELEMENT_INT(list_el_pointer)    get_list_element_value_int(list_el_pointer->el)
 #define GET_LIST_ELEMENT_FLOAT(list_el_pointer)  get_list_element_value_float(list_el_pointer->el)
@@ -104,7 +104,7 @@ list_element_pointer new_list_element_float_pointer(float * zP);
 list_element_pointer new_list_element_double_pointer(double * zP);
 // list & other
 list_element_pointer new_list_element_list(list under); // creates a list_element of ->type = List and ->el = list under
-list_element_pointer new_list_element_type(list_type type, intP pointer); // creates a copy of a list_element and gives a pointer to it
+list_element_pointer new_list_element_type(list_type type, indexP pointer); // creates a copy of a list_element and gives a pointer to it
 
 // add, remove, print & free
 // add
@@ -133,16 +133,16 @@ void list_addLast(list head, ...);
 void list_addIndex(list head, unsigned int index, ...);
 
 list_element_pointer list_seek(list head, unsigned int index);
-int list_findFirstIndex(list head, int (*cond)(intP , list_type, int));
-int list_element_compare(intP value, list_type type, intP element, list_type eltype);
-int list_find(list head, intP value, list_type type);
+int list_findFirstIndex(list head, int (*cond)(indexP , list_type, int));
+int list_element_compare(indexP value, list_type type, indexP element, list_type eltype);
+int list_find(list head, indexP value, list_type type);
 
 // selects
-list list_select_one(list head, int (*cond)(intP , list_type, int), select_key keyword, list greatSelect);
+list list_select_one(list head, int (*cond)(indexP , list_type, int), select_key keyword, list greatSelect);
 list list_select_va(select_key keyword, va_list args);
 list list_select(select_key keyword, ...);
 void list_select_remove(select_key keyword, ...);
-list list_select_index_one(list head, int (*cond)(intP , list_type, int), select_key keyword, list greatSelect);
+list list_select_index_one(list head, int (*cond)(indexP , list_type, int), select_key keyword, list greatSelect);
 
 // sorting
 int list_element_size(list_element_pointer head);
