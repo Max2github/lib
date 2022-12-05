@@ -242,6 +242,7 @@
  * detect COMPILER
  */
 #define CC_CLANG 0
+#define CC_CLANG_CL 0
 #define CC_MSC 0
 #define CC_MINGW 0
 #define CC_GCC 0
@@ -249,8 +250,13 @@
 
 #if defined(_MSC_VER)
     /* Microsoft Visual Studio */
-    #undef CC_MSC
-    #define CC_MSC 1
+    #if defined(__clang__)
+        #undef CC_CLANG_CL
+        #define CC_CLANG_CL 1
+    #else
+        #undef CC_MSC
+        #define CC_MSC 1
+    #endif
 
     #define COMPILER_VERSION_PATCHLEVEL 0 // don't know what I should paste here, maybe the bukd number
     #if _MSC_VER >= 600 && _MSC_VER < 700
