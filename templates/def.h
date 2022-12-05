@@ -203,27 +203,39 @@
     #define CPU_ARM 0
     #define CPU_32_BIT 0
     #define CPU_64_BIT 1
-#elif defined(__i386) || defined(_M_IX86) || defined(_x86_)
+    #define SIZE_POINTER 64
+
+    // in case we are on X32 linux: basically x86_64, but pointers are 32 Bit
+    // also look at https://stackoverflow.com/questions/7635013/difference-between-x86-x32-and-x64-architectures
+    #if defined(__ILP32__)
+        #undef SIZE_POINTER
+        #define SIZE_POINTER 32
+    #endif
+#elif defined(__i386) || defined(__i386__) || defined(_M_IX86) || defined(_x86_)
     #define CPU_x86 1
     #define CPU_ARM 0
     #define CPU_32_BIT 1
     #define CPU_64_BIT 0
+    #define SIZE_POINTER 32
 #elif defined(__arm64) || defined(__arm64__) || defined(__arm64) || defined(__aarch64__)
     #define CPU_ARM 1
     #define CPU_x86 0
     #define CPU_32_BIT 0
     #define CPU_64_BIT 1
+    #define SIZE_POINTER 64
 #elif defined(__arm) || defined(__arm__)
     #define CPU_ARM 1
     #define CPU_x86 0
     #define CPU_32_BIT 1
     #define CPU_64_BIT 0
+    #define SIZE_POINTER 32
 #else
     // unknown -> may change this
     #define CPU_x86 0
     #define CPU_ARM 0
     #define CPU_32_BIT 0
     #define CPU_64_BIT 0
+    #define SIZE_POINTER 0
 #endif
 
 /**
@@ -370,11 +382,11 @@ typedef unsigned short index16; // 0 - 65 535
 typedef unsigned int index32; // 0 - 4 294 967 296
 typedef unsigned long long index64; // 
 
-#if CPU_32_BIT
+#if SIZE_POINTER == 32
     typedef int32 intP;
     typedef index32 indexP;
-#elif CPU_64_BIT
-    typedef int32 intP;
+#elif SIZE_POINTER == 64
+    typedef int64 intP;
     typedef index64 indexP;
 #else
 
