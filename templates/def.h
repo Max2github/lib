@@ -247,36 +247,7 @@
 #define CC_GCC 0
 #define CC_GXX 0
 
-#if defined(__clang__)
-    /* Clang/LLVM */
-    #undef CC_CLANG
-    #define CC_CLANG 1
-
-    #define COMPILER_VERSION_DEFAULT_FULL __VERSION__
-    #define COMPILER_VERSION_DEFAULT_MINI __clang_version__
-    #define COMPILER_VERSION_MAJOR __clang_major__
-    #define COMPILER_VERSION_MINOR __clang_minor__
-    #define COMPILER_VERSION_PATCHLEVEL __clang_patchlevel__
-    #define COMPILER_VERSION STR(__clang_major__ ) "." STR(__clang_minor__) "." STR(__clang_patchlevel__)
-#elif defined(__MINGW32__) || defined(__MINGW64__)
-    #undef CC_MINGW
-    #define CC_MINGW 1
-#elif defined(__GNUC__) || defined(__GNUG__)
-    /* GNU GCC/G++ */
-    // #define CC_GCC 1
-    // #define CC_GCXX 1
-
-    #define COMPILER_VERSION_DEFAULT_FULL __VERSION__
-    #define COMPILER_VERSION_DEFAULT_MINI __VERSION__
-    #define COMPILER_VERSION_MAJOR __GNUC__
-    #define COMPILER_VERSION_MINOR __GNUC_MINOR__
-    #define COMPILER_VERSION_PATCHLEVEL __GNUC_PATCHLEVEL__
-    #if defined(__GNUC__)
-        #define COMPILER_VERSION STR(__GNUC__) "." STR(__GNUC_MINOR__) "." STR(__GNUC_PATCHLEVEL__)
-    #elif defined(__GNUG__)
-
-    #endif
-#elif defined(_MSC_VER)
+#if defined(_MSC_VER)
     /* Microsoft Visual Studio */
     #undef CC_MSC
     #define CC_MSC 1
@@ -351,6 +322,35 @@
     #define COMPILER_VERSION_DEFAULT_FULL STR(_MSC_FULL_VER)
     #define COMPILER_VERSION_DEFAULT_MINI STR(_MSC_VER)
     #define COMPILER_VERSION STR(_MSC_VER)
+#elif defined(__MINGW32__) || defined(__MINGW64__)
+    #undef CC_MINGW
+    #define CC_MINGW 1
+#elif defined(__clang__)
+    /* Clang/LLVM */
+    #undef CC_CLANG
+    #define CC_CLANG 1
+
+    #define COMPILER_VERSION_DEFAULT_FULL __VERSION__
+    #define COMPILER_VERSION_DEFAULT_MINI __clang_version__
+    #define COMPILER_VERSION_MAJOR __clang_major__
+    #define COMPILER_VERSION_MINOR __clang_minor__
+    #define COMPILER_VERSION_PATCHLEVEL __clang_patchlevel__
+    #define COMPILER_VERSION STR(__clang_major__ ) "." STR(__clang_minor__) "." STR(__clang_patchlevel__)
+#elif defined(__GNUC__) || defined(__GNUG__)
+    /* GNU GCC/G++ */
+    // #define CC_GCC 1
+    // #define CC_GCXX 1
+
+    #define COMPILER_VERSION_DEFAULT_FULL __VERSION__
+    #define COMPILER_VERSION_DEFAULT_MINI __VERSION__
+    #define COMPILER_VERSION_MAJOR __GNUC__
+    #define COMPILER_VERSION_MINOR __GNUC_MINOR__
+    #define COMPILER_VERSION_PATCHLEVEL __GNUC_PATCHLEVEL__
+    #if defined(__GNUC__)
+        #define COMPILER_VERSION STR(__GNUC__) "." STR(__GNUC_MINOR__) "." STR(__GNUC_PATCHLEVEL__)
+    #elif defined(__GNUG__)
+
+    #endif
 #else
     
 #endif
