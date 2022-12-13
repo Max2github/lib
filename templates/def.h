@@ -86,10 +86,6 @@
     #define LANG_C_STD 0
 #endif
 
-#ifndef NULL
-    #define NULL ((void *)0)
-#endif
-
 /**
  * stringify anything at compile-time
  * does not resolve macros
@@ -112,7 +108,9 @@
 #if !defined(_WIN32) && (defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__)))
 	// UNIX-style OS
     #define OS_UNIX 1
-    #include <unistd.h>
+    #ifndef NO_STD_LIB
+        #include <unistd.h>
+    #endif
 
     #if defined(_POSIX_VERSION)
         #define OS_POSIX 1
@@ -177,18 +175,19 @@
 
 #if !OS_WINDOWS && (defined(__APPLE__) || defined(__MACH__))
     #define OS_APPLE 1
-
-    #include <TargetConditionals.h>
-    #if TARGET_IPHONE_SIMULATOR == 1
-        // iOS in XCode simulator 
-        #undef OS_APPLE_IOS_SIMULATOR
-        #define OS_APPLE_IOS_SIMULATOR 1
-    #elif TARGET_OS_IPHONE == 1
-        #undef OS_APPLE_IOS
-        #define OS_APPLE_IOS 1
-    #elif TARGET_OS_MAC == 1
-        #undef OS_APPLE_MAC
-        #define OS_APPLE_MAC 1
+    #ifndef NO_STD_LIB
+        #include <TargetConditionals.h>
+        #if TARGET_IPHONE_SIMULATOR == 1
+            // iOS in XCode simulator 
+            #undef OS_APPLE_IOS_SIMULATOR
+            #define OS_APPLE_IOS_SIMULATOR 1
+        #elif TARGET_OS_IPHONE == 1
+            #undef OS_APPLE_IOS
+            #define OS_APPLE_IOS 1
+        #elif TARGET_OS_MAC == 1
+            #undef OS_APPLE_MAC
+            #define OS_APPLE_MAC 1
+        #endif
     #endif
 #else
     #define OS_APPLE 0
