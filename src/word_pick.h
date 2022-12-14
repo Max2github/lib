@@ -1,7 +1,5 @@
 #include "../word_pick_h.h"
 
-#include <stdio.h>
-
 #include "../templates/words_template.h"
 #include "../words_h.h"
 
