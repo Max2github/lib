@@ -10,18 +10,23 @@ void memory_copy(void * dest, void * source, index64 nbytes) {
     }
 }
 
-void general_alloc_init(void * memory, index64 size) {
-    HEAP_NODE_FIRST head;
+bool general_alloc_init(void * memory, index64 size) {
+    if (size <= GENERAL_ALLOC_FIRST_NODE_SIZE) {
+        // size too little
+        return false;
+    }
+    GENERAL_ALLOC_NODE_FIRST head;
     head.totalsize = size;
     head.node.size = size - GENERAL_ALLOC_FIRST_NODE_SIZE;
     head.node.used = false;
-    memory_copy(memory, &head, sizeof(HEAP_NODE_FIRST));
+    memory_copy(memory, &head, sizeof(GENERAL_ALLOC_NODE_FIRST));
+    return true;
 }
 
-HEAP_NODE * general_alloc_find_best_node(HEAP_LIST_WITH_FIRST head, index64 size) {
-    HEAP_NODE * best = NULL;
+GENERAL_ALLOC_NODE * general_alloc_find_best_node(GENERAL_ALLOC_LIST_WITH_FIRST head, index64 size) {
+    GENERAL_ALLOC_NODE * best = NULL;
     index64 totalsize = GENERAL_ALLOC_TOTALSIZE(head);
-    HEAP_NODE * end = (HEAP_NODE *) ((index8 *) head + totalsize);
+    GENERAL_ALLOC_NODE * end = (GENERAL_ALLOC_NODE *) ((index8 *) head + totalsize);
 
     head = GENERAL_ALLOC_START_OF_LIST(head);
     index64 best_size = totalsize - GENERAL_ALLOC_FIRST_NODE_SIZE;
@@ -42,7 +47,7 @@ HEAP_NODE * general_alloc_find_best_node(HEAP_LIST_WITH_FIRST head, index64 size
 }
 
 void * general_alloc(void * head, index64 size) {
-    HEAP_NODE * best = general_alloc_find_best_node(head, size);
+    GENERAL_ALLOC_NODE * best = general_alloc_find_best_node(head, size);
     if (best == NULL) { return NULL; }
 
     /** create a new Node that holds the spare memory of "best" / the memory of best that is not needed
@@ -51,7 +56,7 @@ void * general_alloc(void * head, index64 size) {
      * -) memory of best not needed = spare = newNode
      * */
     index64 totalSizeBest = (GENERAL_ALLOC_NODE_SIZE + size); // total size of node "best" -> also size until next node
-    HEAP_NODE * newNode = GENERAL_ALLOC_POINTER_PLUS(best, totalSizeBest);// (HEAP_NODE *) ((index8 *) best + totalSizeBest);
+    GENERAL_ALLOC_NODE * newNode = GENERAL_ALLOC_POINTER_PLUS(best, totalSizeBest);// (GENERAL_ALLOC_NODE *) ((index8 *) best + totalSizeBest);
     newNode->used = false;
     newNode->size = best->size - totalSizeBest;
 
@@ -62,48 +67,49 @@ void * general_alloc(void * head, index64 size) {
     return (void *) ((indexP) best + GENERAL_ALLOC_NODE_SIZE); // return the memory excluding the space for the node itself
 }
 
-HEAP_NODE * general_get_prev_node(HEAP_LIST head, HEAP_NODE * node) {
+GENERAL_ALLOC_NODE * general_get_prev_node(GENERAL_ALLOC_LIST head, GENERAL_ALLOC_NODE * node) {
     for (; GENERAL_ALLOC_NODE_NEXT(head) != node; head = GENERAL_ALLOC_NODE_NEXT(head));
     return head;
 }
-bool general_find_node(HEAP_LIST head, index64 totalsize, HEAP_NODE * node) {
-    HEAP_LIST end = head + totalsize;
-    for (; head->used && head < end; head = GENERAL_ALLOC_NODE_NEXT(head)) {
+bool general_find_node(GENERAL_ALLOC_LIST head, index64 totalsize, GENERAL_ALLOC_NODE * node) {
+    GENERAL_ALLOC_LIST end = head + totalsize;
+    for (; head < end; head = GENERAL_ALLOC_NODE_NEXT(head)) {
         if (head == node) { return true; }
     }
     return false;
 }
 
-void general_free(void * head, void * toFree) {
-    HEAP_NODE * node = (HEAP_NODE *) ( (indexP) toFree - GENERAL_ALLOC_NODE_SIZE);
+bool general_free(void * head, void * toFree) {
+    GENERAL_ALLOC_NODE * node = (GENERAL_ALLOC_NODE *) ( (indexP) toFree - GENERAL_ALLOC_NODE_SIZE);
     index64 totalSize = GENERAL_ALLOC_TOTALSIZE(head);
-    HEAP_NODE * end = GENERAL_ALLOC_POINTER_PLUS(head, totalSize);
+    GENERAL_ALLOC_NODE * end = GENERAL_ALLOC_POINTER_PLUS(head, totalSize);
     index64 totalsize = GENERAL_ALLOC_TOTALSIZE(head);
 
     head = GENERAL_ALLOC_START_OF_LIST(head);
-    if (!general_find_node(head, totalsize, node)) { return; } // if it was not allocated
+    if (!general_find_node(head, totalsize, node)) { return false; } // if it was not allocated
     if (head == node) {
         if (GENERAL_ALLOC_NODE_NEXT(node) != end && !GENERAL_ALLOC_NODE_NEXT(node)->used) {
             index64 totalSizeNextNode = (GENERAL_ALLOC_NODE_SIZE + GENERAL_ALLOC_NODE_NEXT(node)->size);
             node->size += totalSizeNextNode;
         }
         node->used = false;
-        return;
+        return true;
     }
     // if possible merge with the next node
     if (GENERAL_ALLOC_NODE_NEXT(node) != end && !GENERAL_ALLOC_NODE_NEXT(node)->used) {
         index64 totalSizeNextNode = (GENERAL_ALLOC_NODE_SIZE + GENERAL_ALLOC_NODE_NEXT(node)->size);
         node->size += totalSizeNextNode;
     }
-    HEAP_NODE * prev = general_get_prev_node(head, node);
+    GENERAL_ALLOC_NODE * prev = general_get_prev_node(head, node);
     if (prev->used) { // if the previous node is already used, just set the node to "free"
         node->used = false;
-        return;
+        return true;
     }
 
     // else merge the node into the previous
     index64 totalSizeNode = (GENERAL_ALLOC_NODE_SIZE + node->size);
     prev->size += totalSizeNode;
+    return true;
 }
 
 #endif
