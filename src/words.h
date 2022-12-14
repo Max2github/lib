@@ -564,7 +564,7 @@ void doubleToString(float zahl, int afterpoint, char * saveto) {
             before = temp;
             temp /= 10;
         }
-        for (int rml = 0; rml < rmLast; rml++) {
+        for (unsigned int rml = 0; rml < rmLast; rml++) {
             fpart /= 10;
         }
   

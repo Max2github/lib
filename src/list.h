@@ -262,7 +262,7 @@ list list_addFirst_list(list head, list newHead) {
 void list_addIndex_list(list head, list newEl, unsigned int index) {
     list temp = head;
     list beforeTemp = NULL;
-    int i = 0;
+    unsigned int i = 0;
     while(temp != NULL) {
         if (i == index) {
             beforeTemp->next = newEl;
@@ -302,7 +302,7 @@ void list_removeLast(list head) {
 }
 void list_removeIndex(list head, unsigned int index) {
     list before = NULL;
-    int i = 0;
+    unsigned int i = 0;
     while (head != NULL) {
         if (i == index) {
             before->next = head->next;
@@ -322,7 +322,7 @@ void list_removeIndex(list head, unsigned int index) {
 // print & free
 // print
 void list_print_format(unsigned int format) {
-    for (int i = 0; i < format; i++) {
+    for (unsigned int i = 0; i < format; i++) {
         LIST_H_PUTCHAR(' ');
     }
 }
@@ -634,7 +634,7 @@ void list_addIndex(list head, unsigned int index, ...) {
 
     if (list_node_len(newEl_list) == 1) {
         list beforeHead = NULL;
-        int i = 0;
+        unsigned int i = 0;
         while (head != NULL) {
             if (i == index) {
                 beforeHead->next = newEl_list;
@@ -653,7 +653,7 @@ void list_addIndex(list head, unsigned int index, ...) {
     }
 
     list beforeHead = NULL;
-    int i = 0;
+    unsigned int i = 0;
     while (head != NULL) {
         if (i == index) {
             newEl = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
@@ -681,7 +681,7 @@ void list_addIndex(list head, unsigned int index, ...) {
 
 // getting data from lists
 list_element_pointer list_seek(list head, unsigned int index) {
-    int i = 0;
+    unsigned int i = 0;
     while (head != NULL) {
         if (i == index) {
             break;
