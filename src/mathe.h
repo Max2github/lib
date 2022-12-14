@@ -99,7 +99,7 @@ long double rechnen(char text[]) {
                     long double erHO;
 
                     for (int h = 0; h < teileHO + 1; h++) {
-                        long double newH = atof(ho[h]);
+                        long double newH = MATHE_H_STRING_TO_DOUBLE(ho[h]);
                         // printf("newH: %ld\n", newH);
                         if (h == 0) {
                             erHO = newH;
@@ -176,10 +176,9 @@ int min(int arr[], int len) {
     return Min;
 }
 double Random(int MIN, int MAX, int Komma) {
-    // srand(time(0));
     MIN = MIN * hoch(10, Komma);
     MAX = MAX * hoch(10, Komma);
-    double zahl = (rand() % (MAX - MIN +1)) + MIN;
+    double zahl = (MATHE_H_RANDOM() % (MAX - MIN +1)) + MIN;
     zahl = zahl / hoch(10, Komma);
     return zahl;
 }
