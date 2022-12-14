@@ -2,12 +2,8 @@
 #define LIST_H
 
 
-
 // verkettete liste mit void * - pointern machen und diese in einer anderen verketteten liste speichern!
-#include<stdarg.h>
-// #include<stdio.h>
-// #include<stdlib.h>
-// #include<string.h>
+
 #include "words.h" // includes the sourcecode !!
 
 #include "../list_h.h"
@@ -97,31 +93,31 @@ void set_list_element_double(list_element_pointer eins, double zahl) {
 // create "list_el_el"
 // primitive
 list_element_pointer new_list_element_char(char c) {
-    list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+    list_element_pointer eins = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
     set_list_element_char(eins, c);
     eins->next = NULL;
     return eins;
 }
 list_element_pointer new_list_element_int(int zahl) {
-    list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+    list_element_pointer eins = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
     set_list_element_int(eins, zahl);
     eins->next = NULL;
     return eins;
 }
 list_element_pointer new_list_element_float(float zahl) {
-    list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+    list_element_pointer eins = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
     set_list_element_float(eins, zahl);
     eins->next = NULL;
     return eins;
 }
-#include <string.h>
+
 list_element_pointer new_list_element_double(double zahl) {
-    list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+    list_element_pointer eins = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
     set_list_element_double(eins, zahl);
     return eins;
 }
 /*list_element_pointer new_list_element_minibuffer(unsigned char buf[sizeof(indexP)]) {
-    list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+    list_element_pointer eins = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
     for (unsigned char i = 0; i < sizeof(indexP); i++) {
         eins->elbuff[i] = buf[i];
     }
@@ -136,8 +132,8 @@ list_element_pointer new_list_element_ministring(char buf[sizeof(indexP)]) {
 }*/
 // allocated
 list_element_pointer new_list_element_string(char * str) {
-    list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
-    eins->el = (indexP) LIST_MALLOC(sizeof(char *) * word_len(str));
+    list_element_pointer eins = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
+    eins->el = (indexP) LIST_H_MALLOC(sizeof(char *) * word_len(str));
     word_copy((char *) eins->el, str);
     eins->type = String;
     eins->next = NULL;
@@ -145,28 +141,28 @@ list_element_pointer new_list_element_string(char * str) {
 }
 // pointer
 list_element_pointer new_list_element_char_pointer(char * zP) {
-    list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+    list_element_pointer eins = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
     eins->el = (indexP) zP;
     eins->type = Char_pointer;
     eins->next = NULL;
     return eins;
 }
 list_element_pointer new_list_element_int_pointer(int * zP) {
-    list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+    list_element_pointer eins = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
     eins->el = (indexP) zP;
     eins->type = Integer_pointer;
     eins->next = NULL;
     return eins;
 }
 list_element_pointer new_list_element_float_pointer(float * zP) {
-    list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+    list_element_pointer eins = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
     eins->el = (indexP) zP;
     eins->type = Float_pointer;
     eins->next = NULL;
     return eins;
 }
 list_element_pointer new_list_element_double_pointer(double * zP) {
-    list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+    list_element_pointer eins = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
     eins->el = (indexP) zP;
     eins->type = Double_pointer;
     eins->next = NULL;
@@ -174,7 +170,7 @@ list_element_pointer new_list_element_double_pointer(double * zP) {
 }
 // list & other
 list_element_pointer new_list_element_list(list under) {
-    list_element_pointer eins = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+    list_element_pointer eins = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
     eins->el = (indexP) under;
     eins->type = List;
     eins->next = NULL;
@@ -591,7 +587,7 @@ list list_addFirst(list head, ...) {
         newHead_list->next = head;
         return newHead_list;
     }
-    newHead = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+    newHead = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
     newHead->el = (indexP) newHead_list;
     newHead->type = List;
     newHead->next = head;
@@ -615,7 +611,7 @@ void list_addLast(list head, ...) {
         return;
     }
 
-    newLast = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+    newLast = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
     newLast->el = (indexP) newLast_list;
     newLast->type = List;
     newLast->next = NULL;
@@ -660,7 +656,7 @@ void list_addIndex(list head, unsigned int index, ...) {
     int i = 0;
     while (head != NULL) {
         if (i == index) {
-            newEl = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+            newEl = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
             newEl->el = (indexP) newEl_list;
             newEl->type = List;
 
@@ -673,7 +669,7 @@ void list_addIndex(list head, unsigned int index, ...) {
         i++;
     }
     if (i == index) {
-        newEl = (list_element_pointer) LIST_MALLOC(sizeof(list_element));
+        newEl = (list_element_pointer) LIST_H_MALLOC(sizeof(list_element));
         newEl->el = (indexP) newEl_list;
         newEl->type = List;
 

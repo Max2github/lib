@@ -1,21 +1,10 @@
 // #include<stdio.h>
 // #include<stdlib.h>
 // #include<string.h>
-#include <time.h>
 
 #include "words.h"
 
-// if some idiot made a min / max function in stdlib.h
-// -> happens on windows
-#undef max
-#undef min
-
-int Klammern(char text[], char saveto[]);
-long double rechnen(char text[]);
-double hoch(double basis, int exponent);
-int max(int arr[], int len);
-int min(int arr[], int len);
-double Random(int MIN, int MAX, int Komma);
+#include "../mathe_h.h"
 
 int Klammern(char text[], char saveto[]) {
     if (find(text, "(") != 0) {

@@ -6,7 +6,7 @@
 #ifndef NO_STD_LIB
     #include <stdarg.h>
     
-    #define LIST_MALLOC(size) malloc(size)
+    #define LIST_H_MALLOC(size) malloc(size)
     #define LIST_H_FREE(p) free(p)
     #define LIST_H_PUTCHAR(c) putchar(c)
     #define LIST_H_PRINTF(...) printf(__VA_ARGS__)
