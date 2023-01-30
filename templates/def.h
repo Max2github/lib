@@ -1,3 +1,37 @@
+/**
+ * @file def.h
+ * @author Max2
+ * @brief General definitions for cross-platform use
+ * 
+ * This file just defines some information about the used
+ * - C / C++ version
+ * - Compiler
+ * - OS
+ * - CPU architecture (x86 or ARM) + bit (32 or 64)
+ * 
+ * Furthermore there are some other useful macros
+ * and typedefs:
+ * - int8, -16, -32 and int64 for signied numbers
+ * - index8, -16, -32 and index64 for unsigned numbers
+ * - STR(x) - stringify expression at compile time
+ *   + expands macro
+ *   + e.g. STR(LANG_C_STD)
+ *     expands the macro LANG_C_STD to the C version as a number
+ *     and stringifies it.
+ * - SIZE_POINTER for knowing the size of the pointer
+ *   this is most likely the same as the bit of the CPU (32 or 64),
+ *   but e.g. X32 uses a 64 bit CPU with 32-bit pointers...
+ * - intP (signed) and indexP (unsigned) are numbers with the size of SIZE_POINTER
+ * - BOOL_TO_STRING(bool) expands a bool (0 or 1) at compile time (!!!) to
+ *   a string "true", or "false"
+ *   + resolves macros
+ *   + e.g. BOOL_TO_STRING(1) -> "true"
+ *   + e.g. BOOL_TO_STRING(LANG_C) -> if the current language is C,
+ *     this will expand to "true", else to "false"
+ *   + to what true and false should expand is defined in TRUE_STRING
+ *     and FALSE_STRING (you could redefine it)
+ */
+
 #ifndef DEF_H
 #define DEF_H
 
