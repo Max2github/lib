@@ -3,6 +3,8 @@
 
 #include "templates/def.h"
 
+#include "freestanding/format_options.h"
+
 #ifndef NO_STD_LIB
     #include <stdarg.h>
     
@@ -120,8 +122,8 @@ void list_removeIndex(list head, unsigned int index);
 void list_print_format(unsigned int format);
 void list_element_sprint(list_element_pointer head, char * saveto, list separatorList);
 void list_toStr(list head, char * saveto, list separatorList);
-void list_element_print(list_element_pointer head, unsigned int format);
-void list_print(list head, unsigned int format);
+void list_element_print(list_element_pointer head, format_options format);
+void list_print(list head, format_options format);
 // free
 void list_element_free(list_element_pointer head);
 void list_free(list head);

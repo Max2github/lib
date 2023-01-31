@@ -16,7 +16,7 @@ object object_appendChild(object target, const char * name, object child);
 
 object object_copy(object target);
 
-void object_print(object target, unsigned int format);
+void object_print(object target, format_options f);
 
 object_element_pointer object_get_el(object target, const char * name);
 object_element_pointer object_get(object target, const char * path);
@@ -29,6 +29,6 @@ void object_mod(object target, const char * path, list_type type, unsigned long 
 
 object object_JSON_read_one(object json_as_obj, const char * prep_json_string);
 object object_JSON_read(const char * json_string);
-void object_JSON_stringify(char * dest, object obj, bool multi_line, int8 tabsize, int8 format);
+void object_JSON_stringify(char * dest, object obj, format_options f);
 
 #endif

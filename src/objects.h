@@ -57,28 +57,32 @@ object object_copy(object target) {
     return Copy;
 }
 
-void object_print(object target, unsigned int format) {
+void object_print(object target, format_options f) {
     // if (target == NULL) { puts("NULL"); return; }
     LIST_H_PUTCHAR('{'); LIST_H_PUTCHAR('\n');
+
+    FORMAT_OPTIONS_TAB(f, 1);
     while(target != NULL) {
         char * name = (char * ) ((list) target->el)->el;
         list_element_pointer Inhalt = ((list) target->el)->next;
 
-        list_print_format(format+4); LIST_H_PRINTF("%s : ", name);
-        if (Inhalt->type == Object) { object_print((object) Inhalt->el, format+4); }
+        list_print_format(FORMAT_OPTIONS_SUM(f)); LIST_H_PRINTF("%s : ", name);
+        if (Inhalt->type == Object) { object_print((object) Inhalt->el, f); }
         else {
             if (Inhalt->type == String) { LIST_H_PUTCHAR('\"'); }
-            list_element_print(Inhalt, format+4);
+            list_element_print(Inhalt, f);
             if (Inhalt->type == String) { LIST_H_PUTCHAR('\"'); }
             if (Inhalt->type != List && Inhalt->type != List_pointer) { LIST_H_PUTCHAR('\n'); }
         }
         target = target->next;
     }
-    list_print_format(format); LIST_H_PUTCHAR('}'); LIST_H_PUTCHAR('\n');
+    FORMAT_OPTIONS_BACK(f, 1);
+    list_print_format(FORMAT_OPTIONS_SUM(f));
+    LIST_H_PUTCHAR('}'); LIST_H_PUTCHAR('\n');
 }
-void object_element_print(object target, unsigned int format) {
-    if (target->type == Object) { object_print((object) target->el, format); }
-    else { list_element_print((list_element_pointer) target, format); }
+void object_element_print(object target, format_options f) {
+    if (target->type == Object) { object_print((object) target->el, f); }
+    else { list_element_print((list_element_pointer) target, f); }
 }
 
 object_element_pointer object_get_el(object target, const char * name) {
@@ -263,35 +267,49 @@ char * object_sprint_format(char * dest, int8 format) {
     return dest;
 }
 
-void object_JSON_stringify(char * dest, object obj, bool multi_line, int8 tabsize, int8 format) {
+void object_JSON_stringify(char * dest, object obj, format_options f) {
     #define OBJECT_JSON_STRINGIFY_PUTCHAR(c) (*dest++ = c); (*dest = '\0')
     #define OBJECT_JSON_STRINGIFY_RESETPOS() (dest += word_len(dest));
     #define OBJECT_JSON_STRINGIFY_PUTS(str) word_add(dest, str); OBJECT_JSON_STRINGIFY_RESETPOS()
 
     *dest = '\0';
     OBJECT_JSON_STRINGIFY_PUTCHAR('{');
-    if (multi_line) { OBJECT_JSON_STRINGIFY_PUTCHAR('\n'); }
+    if (f.multi_line) { OBJECT_JSON_STRINGIFY_PUTCHAR('\n'); }
+
+    FORMAT_OPTIONS_TAB(f, 1);
     while(obj != NULL) {
         char * name = (char * ) ((list) obj->el)->el;
         list_element_pointer Inhalt = ((list) obj->el)->next;
 
-        // OBJECT_JSON_STRINGIFY_RESETPOS();
-        dest = object_sprint_format(dest, format+tabsize);
-        OBJECT_JSON_STRINGIFY_PUTS(name); OBJECT_JSON_STRINGIFY_PUTS(" : ");
+        dest = object_sprint_format(dest, FORMAT_OPTIONS_SUM(f));
+        // name
+        OBJECT_JSON_STRINGIFY_PUTCHAR('\"'); OBJECT_JSON_STRINGIFY_PUTS(name); OBJECT_JSON_STRINGIFY_PUTCHAR('\"');
+        // column
+        if (f.allow_spaces) { OBJECT_JSON_STRINGIFY_PUTCHAR(' '); }
+        OBJECT_JSON_STRINGIFY_PUTCHAR(':');
+        if (f.allow_spaces) { OBJECT_JSON_STRINGIFY_PUTCHAR(' '); }
+
+        // value
         if (Inhalt->type == Object) {
-            object_JSON_stringify(dest, (object) Inhalt->el, multi_line, tabsize, format+tabsize);
+            object_JSON_stringify(dest, (object) Inhalt->el, f);
             OBJECT_JSON_STRINGIFY_RESETPOS();
         }
         else {
             if (Inhalt->type == String) { OBJECT_JSON_STRINGIFY_PUTCHAR('\"'); }
-            /*if (multi_line) {*/ list_element_sprint(Inhalt, dest, NULL); //}
+            list_element_sprint(Inhalt, dest, NULL); // this may be no good with lists - change in list library
             OBJECT_JSON_STRINGIFY_RESETPOS();
             if (Inhalt->type == String) { OBJECT_JSON_STRINGIFY_PUTCHAR('\"'); }
-            if (Inhalt->type != List && Inhalt->type != List_pointer && multi_line) { OBJECT_JSON_STRINGIFY_PUTCHAR('\n'); }
         }
+        // end
+        if (obj->next != NULL) { OBJECT_JSON_STRINGIFY_PUTCHAR(','); }
+        if (Inhalt->type != List && Inhalt->type != List_pointer) {
+            if (f.multi_line) { OBJECT_JSON_STRINGIFY_PUTCHAR('\n'); }
+            else if (f.allow_spaces) { OBJECT_JSON_STRINGIFY_PUTCHAR(' '); }
+        }
+        // next element
         obj = obj->next;
     }
-    dest = object_sprint_format(dest, format);
+    FORMAT_OPTIONS_BACK(f, 1);
+    dest = object_sprint_format(dest, FORMAT_OPTIONS_SUM(f));
     OBJECT_JSON_STRINGIFY_PUTCHAR('}');
-    if (multi_line) { OBJECT_JSON_STRINGIFY_PUTCHAR('\n'); }
 }

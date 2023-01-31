@@ -393,7 +393,7 @@ void list_toStr(list head, char * saveto, list separatorList) {
     }
 }
 
-void list_element_print(list_element_pointer head,  unsigned int format) {
+void list_element_print(list_element_pointer head,  format_options format) {
     switch(head->type) {
         // primitive
         case Char : {
@@ -454,41 +454,52 @@ void list_element_print(list_element_pointer head,  unsigned int format) {
         case End : break;
     }
 }
-void list_print(list head, unsigned int format) {
+void list_print(list head, format_options format) {
     if (head == NULL) {
-        list_print_format(format); puts("NULL");
+        puts("NULL");
         return;
     }
-    putchar('['); putchar('\n');
-    format += 4;
+
+    putchar('[');
+    if (format.multi_line) { putchar('\n'); }
+    else if (format.allow_spaces) { putchar(' '); }
+
+    FORMAT_OPTIONS_TAB(format, 1);
     while (head != NULL) {
-        list_print_format(format);
+        list_print_format(FORMAT_OPTIONS_SUM(format));
         switch(head->type) {
             // primitive
-            case Char : LIST_H_PRINTF("%s", "Char: "); break;
-            case Integer : LIST_H_PRINTF("%s", "Integer: "); break;
-            case Float : LIST_H_PRINTF("%s", "Float: "); break;
-            case Double : LIST_H_PRINTF("%s", "Double: "); break;
+            case Char : LIST_H_PRINTF("%s", "Char"); break;
+            case Integer : LIST_H_PRINTF("%s", "Integer"); break;
+            case Float : LIST_H_PRINTF("%s", "Float"); break;
+            case Double : LIST_H_PRINTF("%s", "Double"); break;
             // array
-            case String : LIST_H_PRINTF("%s", "String: "); break;
+            case String : LIST_H_PRINTF("%s", "String"); break;
             // pointer
-            case Char_pointer : LIST_H_PRINTF("%s", "Char_pointer : "); break;
-            case Integer_pointer : LIST_H_PRINTF("%s", "Int_pointer : "); break;
-            case Float_pointer : LIST_H_PRINTF("%s", "Float_pointer : "); break;
-            case Double_pointer : LIST_H_PRINTF("%s", "Double_pointer : "); break;
-            case Void_pointer : LIST_H_PRINTF("%s", "Void_pointer : "); break;
+            case Char_pointer : LIST_H_PRINTF("%s", "Char_pointer"); break;
+            case Integer_pointer : LIST_H_PRINTF("%s", "Int_pointer"); break;
+            case Float_pointer : LIST_H_PRINTF("%s", "Float_pointer"); break;
+            case Double_pointer : LIST_H_PRINTF("%s", "Double_pointer"); break;
+            case Void_pointer : LIST_H_PRINTF("%s", "Void_pointer"); break;
             case List : break;
             case List_pointer : break;
             case End : break;
         }
-        list_element_print(head, format);
-        if (head->type != List) {
-            putchar('\n');
+        if (head->type != List && head->type != List_pointer && head->type != End) {
+            if (format.allow_spaces) { LIST_H_PUTCHAR(' '); }
+            LIST_H_PUTCHAR(':');
+            if (format.allow_spaces) { LIST_H_PUTCHAR(' '); }
         }
+
+        list_element_print(head, format);
+        if (head->type != List && format.multi_line) {
+            putchar('\n');
+        } else { putchar(' '); }
         head = head->next;
     }
-    format -= 4;
-    list_print_format(format); putchar(']'); putchar('\n');
+    FORMAT_OPTIONS_BACK(format, 1);
+    list_print_format(FORMAT_OPTIONS_SUM(format)); putchar(']');
+    if (format.multi_line) { putchar('\n'); }
 }
 // free
 void list_element_free(list_element_pointer head) {
