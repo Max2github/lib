@@ -257,6 +257,41 @@ object object_JSON_read(const char * json_string) {
 
     return object_JSON_read_one(json_as_obj, derzeitJSON);
 }
-void object_JSON_stringify(char * dest, object obj) {
 
+char * object_sprint_format(char * dest, int8 format) {
+    for (int8 i = 0; i < format; i++) { *dest++ = ' '; }
+    return dest;
+}
+
+void object_JSON_stringify(char * dest, object obj, bool multi_line, int8 tabsize, int8 format) {
+    #define OBJECT_JSON_STRINGIFY_PUTCHAR(c) (*dest++ = c); (*dest = '\0')
+    #define OBJECT_JSON_STRINGIFY_RESETPOS() (dest += word_len(dest));
+    #define OBJECT_JSON_STRINGIFY_PUTS(str) word_add(dest, str); OBJECT_JSON_STRINGIFY_RESETPOS()
+
+    *dest = '\0';
+    OBJECT_JSON_STRINGIFY_PUTCHAR('{');
+    if (multi_line) { OBJECT_JSON_STRINGIFY_PUTCHAR('\n'); }
+    while(obj != NULL) {
+        char * name = (char * ) ((list) obj->el)->el;
+        list_element_pointer Inhalt = ((list) obj->el)->next;
+
+        // OBJECT_JSON_STRINGIFY_RESETPOS();
+        dest = object_sprint_format(dest, format+tabsize);
+        OBJECT_JSON_STRINGIFY_PUTS(name); OBJECT_JSON_STRINGIFY_PUTS(" : ");
+        if (Inhalt->type == Object) {
+            object_JSON_stringify(dest, (object) Inhalt->el, multi_line, tabsize, format+tabsize);
+            OBJECT_JSON_STRINGIFY_RESETPOS();
+        }
+        else {
+            if (Inhalt->type == String) { OBJECT_JSON_STRINGIFY_PUTCHAR('\"'); }
+            /*if (multi_line) {*/ list_element_sprint(Inhalt, dest, NULL); //}
+            OBJECT_JSON_STRINGIFY_RESETPOS();
+            if (Inhalt->type == String) { OBJECT_JSON_STRINGIFY_PUTCHAR('\"'); }
+            if (Inhalt->type != List && Inhalt->type != List_pointer && multi_line) { OBJECT_JSON_STRINGIFY_PUTCHAR('\n'); }
+        }
+        obj = obj->next;
+    }
+    dest = object_sprint_format(dest, format);
+    OBJECT_JSON_STRINGIFY_PUTCHAR('}');
+    if (multi_line) { OBJECT_JSON_STRINGIFY_PUTCHAR('\n'); }
 }
