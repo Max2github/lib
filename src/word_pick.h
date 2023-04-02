@@ -23,11 +23,12 @@ word_picker word_pick_from_to(const char * word, const char * search1, const cha
     return ret;
 }
 unsigned int word_picker_len(word_picker w) {
-    unsigned int i = 0;
+    /*unsigned int i = 0;
     while (w.begin != w.end) {
         w.begin++; i++;
     }
-    return i;
+    return i;*/
+    return w.end - w.begin;
 }
 int word_picker_compare(word_picker eins, word_picker zwei) {
     unsigned int einsLen = word_picker_len(eins);
