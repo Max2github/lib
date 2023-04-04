@@ -28,7 +28,8 @@ unsigned int word_picker_len(word_picker w) {
         w.begin++; i++;
     }
     return i;*/
-    return w.end - w.begin;
+    int len = w.end - w.begin;
+    return (len > 0) ? len : 0;
 }
 int word_picker_compare(word_picker eins, word_picker zwei) {
     unsigned int einsLen = word_picker_len(eins);
