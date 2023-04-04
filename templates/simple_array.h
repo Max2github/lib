@@ -5,9 +5,15 @@
 
 #ifndef NO_STD_LIB
     #include <stdlib.h>
+    #ifndef SIMPLE_ARRAY_H_MALLOC
     #define SIMPLE_ARRAY_H_MALLOC(size) malloc(size)
+    #endif
+    #ifndef SIMPLE_ARRAY_H_REALLOC
     #define SIMPLE_ARRAY_H_REALLOC(ptr, size) realloc(ptr, size)
+    #endif
+    #ifndef SIMPLE_ARRAY_H_FREE
     #define SIMPLE_ARRAY_H_FREE(p) free(p)
+    #endif
 #endif
 
 #define SIMPLE_ARRAY_DEFAULT_SIZE 10
@@ -20,8 +26,7 @@ struct { \
     indexP written; \
 }
 
-#define SIMPLE_ARRAY_EXTEND(len) (((indexP) ((len / SIMPLE_ARRAY_EXTEND_SIZE) + SIMPLE_ARRAY_EXTEND_SIZE)))
-// #define SIMPLE_ARRAY_EXTEND(len) ((indexP) len)
+#define SIMPLE_ARRAY_EXTEND(len) (((indexP) ((len / SIMPLE_ARRAY_EXTEND_SIZE) * SIMPLE_ARRAY_EXTEND_SIZE + SIMPLE_ARRAY_EXTEND_SIZE)))
 
 #define SIMPLE_ARRAY_MEMCOPY(dest, src, size) \
 { \
@@ -43,8 +48,7 @@ struct { \
 { \
     indexP i = 0; \
     for (; i < len; i++) { \
-        /*char * dest = ((char *) arr.data) + ((index + i) * sizeof(*Data)); */ \
-        SIMPLE_ARRAY_MEMCOPY((arr.data + ((index + i) * sizeof(*Data))), &Data[i], sizeof(*Data)); \
+        SIMPLE_ARRAY_MEMCOPY((arr.data + ((index + i) * sizeof(*Data))), Data + i, sizeof(*Data)); \
     } \
     arr.written += i; \
 }

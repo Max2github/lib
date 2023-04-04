@@ -5,8 +5,12 @@
 
 #ifndef NO_STD_LIB
     #include <stdlib.h>
+    #ifndef SIMPLE_LIST_H_MALLOC
     #define SIMPLE_LIST_H_MALLOC(size) malloc(size)
+    #endif
+    #ifndef SIMPLE_LIST_H_FREE
     #define SIMPLE_LIST_H_FREE(p) free(p)
+    #endif
 #endif
 
 #define SIMPLE_LIST(type) \
