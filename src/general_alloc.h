@@ -3,6 +3,10 @@
 
 #include "../freestanding/general_alloc.h"
 
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
+
 void memory_copy(void * dest, void * source, index64 nbytes) {
     index64 i = 0;
     for (; i < nbytes; i++) {
