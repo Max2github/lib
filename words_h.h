@@ -5,6 +5,14 @@
 extern "C" {
 #endif
 
+#ifndef NO_STD_LIB
+    #include <stdarg.h>
+    #define WORDS_H_VA_LIST             va_list
+    #define WORDS_H_VA_ARG(ap, type)    va_arg(ap, type)
+    #define WORDS_H_VA_START(ap, param) va_start(ap, param)
+    #define WORDS_H_VA_END(ap)          va_end(ap)
+#endif
+
 int find(const char text[], const char search[]);
 int findIndex(const char text[], const char search[], int * saveto);
 int findWords(const int found[], int size, int searchNumber, int wordsFound, int words[][2]);
@@ -33,6 +41,8 @@ void doubleToString(float zahl, int afterpoint, char * saveto);
 
 const char * word_seek(const char * word, const char * search);
 const char * word_seek_after(const char * word, const char * search);
+const char * word_seek_first(const char * word, unsigned int number, ...);
+const char * word_seek_first_v(const char * word, unsigned int number, WORDS_H_VA_LIST search);
 unsigned int word_len_until(const char * word, const char * search);
 const char * word_copy_until(char * dest, const char * word, const char * search);
 

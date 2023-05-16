@@ -5,3 +5,4 @@ buildserver/**
 **/.DS_Store
 superstring**
 build/**
+.vs/*

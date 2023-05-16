@@ -3,10 +3,11 @@
         {
             "type": "cppbuild",
             "label": "C/C++: gcc Aktive Datei kompilieren",
-            "command": "/usr/bin/gcc",
+            "command": "/usr/bin/g++",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
+                "-std=c++17",
                 "${file}",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"

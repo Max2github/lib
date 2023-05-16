@@ -58,16 +58,16 @@
     #if defined(__STDC_VERSION__)
         #if __STDC_VERSION__ == 199901L
             // c99
-            #define LANG_C_STD 99
+            #define LANG_C_STD 1999
         #elif __STDC_VERSION__ == 201112L
             // c11
-            #define LANG_C_STD 11
+            #define LANG_C_STD 2011
         #elif __STDC_VERSION__ == 201112L
             // c11
-            #define LANG_C_STD 11
+            #define LANG_C_STD 2011
         #elif __STDC_VERSION__ == 201710L
             // c17 or c18
-            #define LANG_C_STD 17
+            #define LANG_C_STD 2017
         #else
             // unknown
             #define LANG_C_STD 0
@@ -96,22 +96,22 @@
     #define LANG_CPP 1
     #if __cplusplus == 1
         // older than c++98
-        #define LANG_CPP_STD -98
-    #elif __STDC_VERSION__ == 199711L
+        #define LANG_CPP_STD -1998
+    #elif __cplusplus == 199711L
         // c++98 or c++03
-        #define LANG_CPP_STD 98
-    #elif __STDC_VERSION__ == 201103L
+        #define LANG_CPP_STD 1998
+    #elif __cplusplus == 201103L
         // c++11
-        #define LANG_CPP_STD 11
-    #elif __STDC_VERSION__ == 201402L
+        #define LANG_CPP_STD 2011
+    #elif __cplusplus == 201402L
         // c++14
-        #define LANG_CPP_STD 14
-    #elif __STDC_VERSION__ == 201703L
+        #define LANG_CPP_STD 2014
+    #elif __cplusplus == 201703L
         // c++17
-        #define LANG_CPP_STD 17
-    #elif __STDC_VERSION__ == 202002L
+        #define LANG_CPP_STD 2017
+    #elif __cplusplus == 202002L
         // c++20
-        #define LANG_CPP_STD 20
+        #define LANG_CPP_STD 2020
     #else
         // unknown
         #define LANG_CPP_STD 0
@@ -374,7 +374,7 @@
     #define COMPILER_VERSION_MAJOR __clang_major__
     #define COMPILER_VERSION_MINOR __clang_minor__
     #define COMPILER_VERSION_PATCHLEVEL __clang_patchlevel__
-    #define COMPILER_VERSION STR(__clang_major__ ) "." STR(__clang_minor__) "." STR(__clang_patchlevel__)
+    #define COMPILER_VERSION STR(__clang_major__.__clang_minor__.__clang_patchlevel__)
 #elif defined(__GNUC__) || defined(__GNUG__)
     /* GNU GCC/G++ */
     // #define CC_GCC 1
@@ -431,6 +431,26 @@ typedef unsigned long long index64; //
 
 #endif
 
+// casts
+#define CAST_REINTERPRETE_DANGEROUS(type, data) (*( (type *) &(data) ))
+
+#ifndef CAST_REINTERPRETE_ALWAYS_USE_DANGEROUS
+    #define CAST_REINTERPRETE_ALWAYS_USE_DANGEROUS 0
+#endif
+
+#if LANG_CPP && !CAST_REINTERPRETE_ALWAYS_USE_DANGEROUS
+    #define CAST_REINTERPRETE(type, data) reinterpret_cast<type>(data)
+#else
+    #define CAST_REINTERPRETE(type, data) CAST_REINTERPRETE_DANGEROUS(type, data)
+#endif
+
+// The above code defines a macro `ASSERT_COMPILE_TIME` that is used to check a condition at compile time.
+// It creates an array of characters with a size of 1 if the expression passed to it is true, and a size of 0 if the expression is false.
+// The `sizeof` operator is then used to determine the size of the array, which will be either 1 or 0.
+// If the expression is false, the array will have a negative size, which is why the `!` operator is used to invert the result.
+// This technique is often used to generate a compile-time
+#define ASSERT_COMPILE_TIME(expr) (sizeof(char[1-2*!(expr)]))
+
 // not really important / needed stuff
 #define TRUE_STRING "true"
 #define FALSE_STRING "false"
@@ -438,5 +458,14 @@ typedef unsigned long long index64; //
 #define BOOL_0 FALSE_STRING
 #define BOOL_TO_STRING_IMPL(bool) BOOL_##bool
 #define BOOL_TO_STRING(bool) BOOL_TO_STRING_IMPL(bool)
+
+#define EXPAND_1(toExpand) toExpand
+#define EXPAND_2(toExpand) EXPAND_1(toExpand)
+#define EXPAND_3(toExpand) EXPAND_2(toExpand)
+#define EXPAND_4(toExpand) EXPAND_3(toExpand)
+#define EXPAND_5(toExpand) EXPAND_4(toExpand)
+#define EXPAND_6(toExpand) EXPAND_5(toExpand)
+
+#define EXPAND(toExpand) EXPAND_6(toExpand)
 
 #endif

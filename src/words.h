@@ -4,10 +4,15 @@
 #ifndef NO_STD_LIB
     #include<stdio.h>
     #include<stdlib.h>
+    #include<stdarg.h>
 
     #define WORDS_H_MALLOC(size) malloc(size)
     #define WORDS_H_FREE(p) free(p)
     #define WORDS_H_PRINTF(...) printf(__VA_ARGS__)
+    #define WORDS_H_VA_LIST             va_list
+    #define WORDS_H_VA_ARG(ap, type)    va_arg(ap, type)
+    #define WORDS_H_VA_START(ap, param) va_start(ap, param)
+    #define WORDS_H_VA_END(ap)          va_end(ap)
 #endif
 
 int find(const char text[], const char search[]);
@@ -29,6 +34,7 @@ void freeWordArr(char ** arr, int words);
 void word_copy(char dest[], const char word[]);
 int word_len(const char word[]);
 int word_compare(const char word1[], const char word2[]);
+int word_compare_n(const char word1[], const char word2[], unsigned int size);
 void word_add(char dest[], const char word[]);
 int zwischen(const char text[], const char word1[], const char word2[], char saveto[]);
 
@@ -38,6 +44,8 @@ void doubleToString(float zahl, int afterpoint, char * saveto);
 
 const char * word_seek(const char * word, const char * search);
 const char * word_seek_after(const char * word, const char * search);
+const char * word_seek_first(const char * word, unsigned int number, ...);
+const char * word_seek_first_v(const char * word, unsigned int number, WORDS_H_VA_LIST args);
 unsigned int word_len_until(const char * word, const char * search);
 const char * word_copy_until(char * dest, const char * word, const char * search);
 
@@ -481,6 +489,20 @@ int word_compare(const char word1[], const char word2[]) {
     }
     return 2;
 }
+int word_compare_n(const char word1[], const char word2[], unsigned int size) {
+    int i = 0;
+    int wahr = 0;
+    while (i < size) {
+        if (word1[i] == word2[i]) {
+            wahr++;
+        }
+        i++;
+    }
+    if (wahr == i) {
+        return 0;
+    }
+    return 2;
+}
 
 void word_add(char dest[], const char word[]) {
     int curlen = word_len(dest);
@@ -591,6 +613,31 @@ const char * word_seek_after(const char * word, const char * search) {
         while (*temp == *tempSearch) {
             tempSearch++; temp++;
             if (*tempSearch == '\0') { return temp; }
+        }
+        word++;
+    }
+    return word;
+}
+const char * word_seek_first(const char * word, unsigned int number, ...) {
+    WORDS_H_VA_LIST args;
+    WORDS_H_VA_START(args, number);
+
+    const char * ret = word_seek_first_v(word, number, args);
+
+    WORDS_H_VA_END(args);
+
+    return ret;
+}
+const char * word_seek_first_v(const char * word, unsigned int number, WORDS_H_VA_LIST args) {
+    const char ** searches = (const char **) WORDS_H_MALLOC(number * sizeof(const char **));
+    for (unsigned int i = 0; i < number; i++) {
+        searches[i] = WORDS_H_VA_ARG(args, const char *);
+    }
+
+    while (*word != '\0') {
+        for (unsigned int i = 0; i < number; i++) {
+            const char * search = searches[i];
+            if (word_compare_n(word, search, word_len(search)) == 0) { return word; }
         }
         word++;
     }

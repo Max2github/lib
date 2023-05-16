@@ -65,11 +65,13 @@ struct { \
 
 #define SIMPLE_ARRAY_WRITE(arr, index, Data, len) \
 { \
-    if ((arr).written + len > (arr).count) { \
-        (arr).data = (indexP) SIMPLE_ARRAY_H_REALLOC((void *) (arr).data, (arr).count * sizeof(*Data) + SIMPLE_ARRAY_EXTEND(len) * sizeof(*Data)); \
-        (arr).count += SIMPLE_ARRAY_EXTEND(len); \
-    }\
-    SIMPLE_ARRAY_WRITE_NO_CHECK(arr, index, Data, len); \
+    if ((arr).written + (len) > (index)) { \
+        if ((arr).written + (len) > (arr).count) { \
+            (arr).data = (indexP) SIMPLE_ARRAY_H_REALLOC((void *) (arr).data, (arr).count * sizeof(*Data) + SIMPLE_ARRAY_EXTEND(len) * sizeof(*Data)); \
+            (arr).count += SIMPLE_ARRAY_EXTEND(len); \
+        }\
+        SIMPLE_ARRAY_WRITE_NO_CHECK(arr, index, Data, len); \
+    } \
 }
 
 #define SIMPLE_ARRAY_APPEND_DATA(arr, Data, len) SIMPLE_ARRAY_WRITE(arr, (arr).written, Data, len)

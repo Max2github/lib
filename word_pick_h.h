@@ -17,6 +17,7 @@ typedef SIMPLE_ARRAY(word_picker) word_picker_array;
 
 word_picker word_pick_until_index(const char * word, unsigned int index);
 word_picker word_pick_until(const char * word, const char * search);
+word_picker word_pick_until_any(const char * word, index32 number, ...);
 word_picker word_pick_from_to_index(const char * word, unsigned int start, unsigned int end);
 word_picker word_pick_from_to(const char * word, const char * search1, const char * search2);
 

@@ -3,6 +3,14 @@
 #include "../templates/words_template.h"
 #include "../words_h.h"
 
+#ifndef NO_STD_LIB
+    #include <stdarg.h>
+    #define WORD_PICK_H_VA_LIST             va_list
+    #define WORD_PICK_H_VA_ARG(ap, type)    va_arg(ap, type)
+    #define WORD_PICK_H_VA_START(ap, param) va_start(ap, param)
+    #define WORD_PICK_H_VA_END(ap)          va_end(ap)
+#endif
+
 word_picker word_pick_until_index(const char * word, unsigned int index) {
     word_picker ret = WORD_PICK_INIT(word, word+index);
     return ret;
@@ -10,6 +18,17 @@ word_picker word_pick_until_index(const char * word, unsigned int index) {
 word_picker word_pick_until(const char * word, const char * search) {
     word_picker ret = WORD_PICK_INIT(word, NULL);
     ret.end = word_seek(word, search);
+    return ret;
+}
+word_picker word_pick_until_any(const char * word, index32 number, ...) {
+    WORD_PICK_H_VA_LIST args;
+    WORD_PICK_H_VA_START(args, number);
+
+    word_picker ret = WORD_PICK_INIT(word, NULL);
+    ret.end = word_seek_first_v(word, (unsigned int) number, args);
+
+    WORD_PICK_H_VA_END(args);
+
     return ret;
 }
 word_picker word_pick_from_to_index(const char * word, unsigned int start, unsigned int end) {
@@ -23,11 +42,6 @@ word_picker word_pick_from_to(const char * word, const char * search1, const cha
     return ret;
 }
 unsigned int word_picker_len(word_picker w) {
-    /*unsigned int i = 0;
-    while (w.begin != w.end) {
-        w.begin++; i++;
-    }
-    return i;*/
     int len = w.end - w.begin;
     return (len > 0) ? len : 0;
 }
