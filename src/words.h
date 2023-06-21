@@ -15,6 +15,10 @@
     #define WORDS_H_VA_END(ap)          va_end(ap)
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int find(const char text[], const char search[]);
 int findIndex(const char text[], const char search[], int * saveto);
 int findWords(const int found[], int size, int searchNumber, int wordsFound, int words[][2]);
@@ -673,4 +677,8 @@ const char * word_copy_until(char * dest, const char * word, const char * search
     return word;
 }
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif
