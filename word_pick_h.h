@@ -5,6 +5,10 @@
 #include "templates/simple_list.h"
 #include "templates/simple_array.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct word_picker {
     const char * begin;
     const char * end;
@@ -46,5 +50,9 @@ word_picker_array word_picker_split(word_picker w, const char * search);
 // to string
 void word_picker_toString(word_picker w, char * saveto);
 // void word_picker_join_toString()
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

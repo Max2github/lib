@@ -375,10 +375,15 @@
     #define COMPILER_VERSION_MINOR __clang_minor__
     #define COMPILER_VERSION_PATCHLEVEL __clang_patchlevel__
     #define COMPILER_VERSION STR(__clang_major__.__clang_minor__.__clang_patchlevel__)
-#elif defined(__GNUC__) || defined(__GNUG__)
+#elif defined(__GNUC__) || defined(__GNUG__) || defined(__GCC__) || defined(__APPLE_CC__)
     /* GNU GCC/G++ */
-    // #define CC_GCC 1
-    // #define CC_GCXX 1
+    #if defined(__GNUG__)
+        #undef CC_GCXX
+        #define CC_GCXX 1
+    #else
+        #undef CC_GCC
+        #define CC_GCC 1
+    #endif
 
     #define COMPILER_VERSION_DEFAULT_FULL __VERSION__
     #define COMPILER_VERSION_DEFAULT_MINI __VERSION__
@@ -394,13 +399,9 @@
     
 #endif
 
-#if defined(__GCC__) || defined(__APPLE_CC__)
-    #undef CC_GCC
-    #define CC_GCC 1
+#if CC_GCC
     #define ATTRIBUTE_PACKED __attribute__ ((__packed__))
     #define ATTRIBUTE_DEPRECATED __attribute__((__deprecated__))
-//#elif 
-    //#define ATTRIBUTE_PACKED __attribute__ ((__packed__))
 #else
     #define CC_GCC 0
     #define ATTRIBUTE_PACKED

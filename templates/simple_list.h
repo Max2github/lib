@@ -13,6 +13,14 @@
     #endif
 #endif
 
+#if LANG_CPP
+    #define TYPEOF(var) decltype(var)
+    #define CAST_TYPEOF(var) (TYPEOF(var))
+#else
+    #define TYPEOF(var)
+    #define CAST_TYPEOF(var)
+#endif
+
 #define SIMPLE_LIST(type) \
 struct { \
     type data; \
@@ -21,7 +29,7 @@ struct { \
 
 #define SIMPLE_LIST_CREATE_EL(elP, Data, Next) \
 { \
-    elP = SIMPLE_LIST_H_MALLOC(sizeof(*elP)); \
+    elP = CAST_TYPEOF(elP) SIMPLE_LIST_H_MALLOC(sizeof(*elP)); \
     elP->data = Data; \
     elP->next = (indexP) Next; \
 }
@@ -52,9 +60,9 @@ struct { \
     if (iterator == NULL) { \
         SIMPLE_LIST_CREATE_EL(iterator, Data, NULL); \
     } else { \
-        for(; iterator->next != (indexP) NULL; iterator = (void *) iterator->next) {  } \
+        for(; iterator->next != (indexP) NULL; iterator = CAST_TYPEOF(iterator) ((void *) iterator->next)) {  } \
         SIMPLE_LIST_CREATE_EL_WITHOUT_ANYTHING(iterator->next, sizeof(*iterator)); \
-        iterator = (void *) iterator->next; \
+        iterator = CAST_TYPEOF(iterator) ((void *) iterator->next); \
         SIMPLE_LIST_SET_DATA_AND_NEXT(iterator, Data, NULL); \
     } \
 }
@@ -73,7 +81,7 @@ struct { \
             wasSet = 1; \
             break; \
         } \
-        i++; iterator = (void *) iterator->next; \
+        i++; iterator = CAST_TYPEOF(iterator) ((void *) iterator->next); \
     } \
     if (!wasSet) { \
         if (i == index) { \
@@ -83,7 +91,7 @@ struct { \
             i++; \
             if (i == index) { \
                 SIMPLE_LIST_CREATE_EL_WITHOUT_ANYTHING(iterator->next, sizeof(*iterator)); \
-                iterator = (void *) iterator->next; \
+                iterator = CAST_TYPEOF(iterator) ((void *) iterator->next); \
                 SIMPLE_LIST_SET_DATA_AND_NEXT(iterator, Data, NULL); \
             } \
         } \

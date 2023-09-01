@@ -35,6 +35,13 @@ struct { \
     } \
 }
 
+#define SIMPLE_ARRAY_INIT(arr, type, size) \
+{ \
+    (arr).data = (indexP) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * size); \
+    (arr).count = size; \
+    (arr).written = 0; \
+}
+
 #define SIMPLE_ARRAY_CREATE_SIZE(type, size) \
 { \
     (indexP) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * (size)), \
@@ -86,6 +93,14 @@ struct { \
     (arr).data = 0; \
     (arr).written = 0; \
     (arr).count = 0; \
+}
+
+#define SIMPLE_ARRAY_COPY(dest, arr, type) \
+{ \
+    SIMPLE_ARRAY_INIT(dest, type, (arr).count); \
+    for (indexP i = 0; i < (arr).written; i++) { \
+        SIMPLE_ARRAY_APPEND(dest, (SIMPLE_ARRAY_GET(arr, type, i))); \
+    } \
 }
 
 #endif

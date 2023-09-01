@@ -11,6 +11,10 @@
     #define WORD_PICK_H_VA_END(ap)          va_end(ap)
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 word_picker word_pick_until_index(const char * word, unsigned int index) {
     word_picker ret = WORD_PICK_INIT(word, word+index);
     return ret;
@@ -175,3 +179,7 @@ void word_picker_toString(word_picker w, char * saveto) {
     }
     *saveto = '\0';
 }
+
+#ifdef __cplusplus
+}
+#endif
