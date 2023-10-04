@@ -8,7 +8,7 @@
 sBuffer_single_data sBuffer_single_data_create(SMARTBUFFER_LEN_T size) { return (sBuffer_single_data) SIMPLE_ARRAY_CREATE_SIZE(SMARTBUFFER_CHAR, size); }
 sBuffer_single_data sBuffer_single_data_create_static(SMARTBUFFER_CHAR * buf, SMARTBUFFER_LEN_T len) {
     sBuffer_single_data data;
-    data.data = (indexP) buf;
+    data.pointer = buf;
     data.written = len;
     data.count = 0;
     return data;
@@ -118,7 +118,7 @@ void sBuffer_add(sBuffer * buf, const sBuffer_single_ptr innerbuf) {
     SIMPLE_ARRAY_APPEND(*buf, innerbuf);
     sBuffer_single_usageCount_increase(innerbuf);
 }
-sBuffer_single_ptr sBuffer_get(const sBuffer * buf, SMARTBUFFER_LEN_T index) { return SIMPLE_ARRAY_GET(*buf, sBuffer_single_ptr, index); }
+sBuffer_single_ptr sBuffer_get(const sBuffer * buf, SMARTBUFFER_LEN_T index) { return SIMPLE_ARRAY_GET(*buf, index); }
 SMARTBUFFER_LEN_T sBuffer_count_single(const sBuffer * buf) { return (SMARTBUFFER_LEN_T) buf->written; }
 SMARTBUFFER_LEN_T sBuffer_count(const sBuffer * buf) {
     SMARTBUFFER_LEN_T count = 0;

@@ -16,7 +16,7 @@ struct word_picker {
 typedef struct word_picker word_picker;
 typedef SIMPLE_LIST(word_picker)  word_picker_list;
 typedef SIMPLE_ARRAY(word_picker) word_picker_array;
-#define WORD_PICKER_ARRAY_GET(arr, index) SIMPLE_ARRAY_GET(arr, word_picker, index)
+#define WORD_PICKER_ARRAY_GET(arr, index) SIMPLE_ARRAY_GET(arr, index)
 #define WORD_PICK_INIT(begin, end) { begin, end }
 
 word_picker word_pick_until_index(const char * word, unsigned int index);

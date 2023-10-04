@@ -21,7 +21,10 @@
 
 #define SIMPLE_ARRAY(type) \
 struct { \
-    indexP data; \
+    union { \
+        type * pointer; \
+        indexP data; \
+    }; \
     indexP count; \
     indexP written; \
 }
@@ -44,7 +47,7 @@ struct { \
 
 #define SIMPLE_ARRAY_CREATE_SIZE(type, size) \
 { \
-    (indexP) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * (size)), \
+    (type *) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * (size)), \
     size, \
     0 \
 }
@@ -85,7 +88,7 @@ struct { \
 
 #define SIMPLE_ARRAY_APPEND(arr, Data) SIMPLE_ARRAY_APPEND_DATA(arr, (&Data), 1)
 
-#define SIMPLE_ARRAY_GET(arr, type, index) ((type *) (arr).data)[index]
+#define SIMPLE_ARRAY_GET(arr, index) ((arr).pointer)[index]
 
 #define SIMPLE_ARRAY_FREE(arr) \
 { \
@@ -99,7 +102,7 @@ struct { \
 { \
     SIMPLE_ARRAY_INIT(dest, type, (arr).count); \
     for (indexP i = 0; i < (arr).written; i++) { \
-        SIMPLE_ARRAY_APPEND(dest, (SIMPLE_ARRAY_GET(arr, type, i))); \
+        SIMPLE_ARRAY_APPEND(dest, (SIMPLE_ARRAY_GET(arr, i))); \
     } \
 }
 
