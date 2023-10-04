@@ -5,6 +5,10 @@
 
 #define Object (list_type) (End+1)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef list object;
 typedef list_element_pointer object_element_pointer;
 
@@ -30,5 +34,9 @@ void object_mod(object target, const char * path, list_type type, unsigned long 
 object object_JSON_read_one(object json_as_obj, const char * prep_json_string);
 object object_JSON_read(const char * json_string);
 void object_JSON_stringify(char * dest, object obj, format_options f);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

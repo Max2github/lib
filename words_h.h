@@ -37,7 +37,7 @@ int zwischen(const char text[], const char word1[], const char word2[], char sav
 
 int intLen(int zahl);
 void intToString(int zahl, char * saveto);
-void doubleToString(float zahl, int afterpoint, char * saveto);
+void doubleToString(double zahl, int afterpoint, char * saveto);
 
 const char * word_seek(const char * word, const char * search);
 const char * word_seek_after(const char * word, const char * search);

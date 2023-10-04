@@ -83,7 +83,7 @@ void set_list_element_int(list_element_pointer eins, int zahl) {
     eins->type = Integer;
 }
 void set_list_element_float(list_element_pointer eins, float zahl) {
-    list_element_memcopy(&(eins->el), &zahl, sizeof(double));
+    list_element_memcopy(&(eins->el), &zahl, sizeof(float));
     eins->type = Float;
 }
 void set_list_element_double(list_element_pointer eins, double zahl) {
@@ -186,17 +186,17 @@ list_element_pointer new_list_element_type(list_type type, indexP value) {
             break;
         }
         case Integer : {
-            char p = get_list_element_value_char(value);
+            int p = get_list_element_value_int(value);
             eins = new_list_element_int(p);
             break;
         }
         case Float: {
-            char p = get_list_element_value_char(value);
+            float p = get_list_element_value_float(value);
             eins = new_list_element_float(p);
             break;
         }
         case Double : {
-            char p = get_list_element_value_char(value);
+            double p = get_list_element_value_double(value);
             eins = new_list_element_double(p);
             break;
         }
