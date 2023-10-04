@@ -47,8 +47,8 @@ struct { \
 
 #define SIMPLE_ARRAY_CREATE_SIZE(type, size) \
 { \
-    (type *) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * (size)), \
-    size, \
+    ((type *) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * (size))), \
+    (size), \
     0 \
 }
 

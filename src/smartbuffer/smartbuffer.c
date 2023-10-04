@@ -123,7 +123,7 @@ SMARTBUFFER_LEN_T sBuffer_count_single(const sBuffer * buf) { return (SMARTBUFFE
 SMARTBUFFER_LEN_T sBuffer_count(const sBuffer * buf) {
     SMARTBUFFER_LEN_T count = 0;
     // for (SMARTBUFFER_LEN_T i = 0; i < sBuffer_count_single(buf); i++) {
-    SMARTBUFFER_FOREACH_P(i, current, buf,
+    SMARTBUFFER_FOR_P(i, buf,
         count += sBuffer_single_count(sBuffer_get(buf, i));
     )
     //}
@@ -142,7 +142,7 @@ void sBuffer_usageCount_decreaseAll(sBuffer * buf) {
     // for (SMARTBUFFER_LEN_T i = 0; i < sBuffer_count_single(buf); i++) {
         // sBuffer_single_usageCount_decrease(sBuffer_get(buf, i));
     // }
-    SMARTBUFFER_FOREACH_P(i, current, buf,
+    SMARTBUFFER_FOR_P(i, buf,
         sBuffer_single_usageCount_decrease(sBuffer_get(buf, i));
     )
 }
@@ -239,7 +239,7 @@ sBuffer_single_ptr sBuffer_join(const sBuffer * toJoin) {
 }
 
 void sBuffer_free(sBuffer * buf) {
-    SMARTBUFFER_LEN_T len = sBuffer_count_single(buf);
+    //SMARTBUFFER_LEN_T len = sBuffer_count_single(buf);
     // for (SMARTBUFFER_LEN_T i = 0; i < len; i++) {
         // sBuffer_single_ptr ptr = sBuffer_get(buf, i);
     SMARTBUFFER_FOREACH_P(i, ptr, buf,

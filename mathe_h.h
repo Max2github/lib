@@ -19,8 +19,8 @@ extern "C" {
     #define MATHE_H_RANDOM() rand()
 #endif
 
-int Klammern(char text[], char saveto[]);
-long double rechnen(char text[6]);
+int Klammern(const char text[], char saveto[]);
+long double rechnen(const char text[]);
 double hoch(double basis, int exponent);
 int max(int arr[], int len);
 int min(int arr[], int len);

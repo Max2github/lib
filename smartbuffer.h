@@ -75,7 +75,15 @@ typedef void (*sBuffer_readHandler)(void *, const SMARTBUFFER_CHAR *, SMARTBUFFE
     } \
 }
 
+#define SMARTBUFFER_FOR_P(countVarName, bufferP, code) \
+{ \
+    for (SMARTBUFFER_LEN_T countVarName = 0; countVarName < sBuffer_count_single(bufferP); i++) { \
+        code \
+    } \
+}
+
 #define SMARTBUFFER_FOREACH_V(countVarName, iteratorVarName, bufferV, code) SMARTBUFFER_FOREACH_P(countVarName, iteratorVarName, &(bufferV), code)
+#define SMARTBUFFER_FOR_V(countVarName, bufferV, code) SMARTBUFFER_FOR_P(countVarName, &(bufferV), code)
 
 // sBuffer_single_ptr
 

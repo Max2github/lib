@@ -6,7 +6,7 @@
 
 #include "../mathe_h.h"
 
-int Klammern(char text[], char saveto[]) {
+int Klammern(const char text[], char saveto[]) {
     if (find(text, "(") != 0) {
         int size = word_len(text);
         int AnfangArr[size];
@@ -27,7 +27,7 @@ int Klammern(char text[], char saveto[]) {
     }
     return 0;
 }
-long double rechnen(char text[]) {
+long double rechnen(const char text[]) {
     int size = word_len(text);
     char newText[size];
     word_copy(newText, text);
