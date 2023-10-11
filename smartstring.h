@@ -117,9 +117,12 @@ typedef struct sString sString;
 typedef SMARTBUFFER_CHAR sString_char_t;
 typedef SMARTBUFFER_LEN_T sString_len_t;
 typedef SMARTBUFFER_BOOL_T sString_bool_t;
+typedef sBuffer_readHandler sString_readHandler;
 
 sString sString_create();
 sString sString_init(sString_char_t *, sString_len_t, sString_flags_u);
+
+void sString_free(sString *);
 
 sString_len_t sString_count(const sString *);
 sString_len_t sString_len(const sString *);
@@ -149,6 +152,8 @@ sString sString_get(const sString *, sString_len_t);
  * @return a sString (elements are static const) that just points to a part of the sString 
  */
 sString sString_subStr(const sString *, sString_len_t, sString_len_t);
+
+void sString_read(const sString *, sString_readHandler, sString_len_t, void * userData);
 
 char * sString_toCstr(sString *);
 

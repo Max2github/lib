@@ -30,6 +30,8 @@ sString sString_init(sString_char_t * str, sString_len_t len, sString_flags_u fl
     return s;
 }
 
+void sString_free(sString * str) { return sBuffer_free(SSTRING_GETBUF_ADDR_P(str)); }
+
 sString_len_t sString_count(const sString * s) { return sBuffer_count_single(&(s->buf)); }
 sString_len_t sString_len(const sString * s) { return sBuffer_count(&(s->buf)); }
 
@@ -113,6 +115,8 @@ sString sString_subStr(const sString * s, sString_len_t from, sString_len_t len)
         return ret;
     }
 }
+
+void sString_read(const sString * str, sString_readHandler reader, sString_len_t len, void * userData) { return sBuffer_read(SSTRING_GETBUF_ADDR_P(str), reader, len, userData); }
 
 void sString_toCstr_reader(void * userData, const sString_char_t * str, sString_len_t len) {
     char * dest = (char *) userData;
