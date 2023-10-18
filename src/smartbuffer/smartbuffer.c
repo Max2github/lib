@@ -91,6 +91,12 @@ sBuffer_single_ptr sBuffer_single_copy(const sBuffer_single_ptr buf, SMARTBUFFER
     return newBuf;
 }
 
+SMARTBUFFER_LEN_T sBuffer_single_clear(sBuffer_single_ptr buf) {
+    const SMARTBUFFER_LEN_T size = sBuffer_single_count(buf);
+    buf->data.written = 0;
+    return size;
+}
+
 SMARTBUFFER_BOOL_T sBuffer_single_freeData(sBuffer_single_ptr buf) {
     if (buf && buf->is_data_allocated && buf->usage_count == 0) {
         sBuffer_single_data_free(&(buf->data));
@@ -103,6 +109,12 @@ void sBuffer_single_freePtr(sBuffer_single_ptr buf) {
         buf->is_this_allocated = false;
         SMARTBUFFER_H_FREE(buf);
     }
+}
+
+void sBuffer_single_free(sBuffer_single_ptr buf) {
+    sBuffer_single_usageCount_decrease(buf);
+    sBuffer_single_freeData(buf);
+    sBuffer_single_freePtr(buf);
 }
 
 // sBuffer
@@ -119,29 +131,38 @@ void sBuffer_add(sBuffer * buf, const sBuffer_single_ptr innerbuf) {
     sBuffer_single_usageCount_increase(innerbuf);
 }
 sBuffer_single_ptr sBuffer_get(const sBuffer * buf, SMARTBUFFER_LEN_T index) { return SIMPLE_ARRAY_GET(*buf, index); }
+
+SMARTBUFFER_BOOL_T sBuffer_remove_single(sBuffer * buf, const sBuffer_single_ptr toRemove) {
+    SMARTBUFFER_LEN_T len = sBuffer_count_single(buf);
+    SMARTBUFFER_FOREACH_P(i, current, buf,
+        if (current == toRemove) {
+            sBuffer_single_free(current);
+            if (i+1 < len) {
+                // advance the bufers afterwards
+                for (SMARTBUFFER_LEN_T n = i+1; n < len; n++) {
+                    SIMPLE_ARRAY_GET(*buf, n-1) = SIMPLE_ARRAY_GET(*buf, n);
+                }
+            }
+        }
+    )
+    return false;
+}
+
 SMARTBUFFER_LEN_T sBuffer_count_single(const sBuffer * buf) { return (SMARTBUFFER_LEN_T) buf->written; }
 SMARTBUFFER_LEN_T sBuffer_count(const sBuffer * buf) {
     SMARTBUFFER_LEN_T count = 0;
-    // for (SMARTBUFFER_LEN_T i = 0; i < sBuffer_count_single(buf); i++) {
     SMARTBUFFER_FOR_P(i, buf,
         count += sBuffer_single_count(sBuffer_get(buf, i));
     )
-    //}
     return count;
 }
 
 void sBuffer_usageCount_increaseAll(sBuffer * buf) {
-    // for (SMARTBUFFER_LEN_T i = 0; i < sBuffer_count_single(buf); i++) {
-        // sBuffer_single_usageCount_increase(sBuffer_get(buf, i));
-    //}
     SMARTBUFFER_FOREACH_P(i, current, buf,
         sBuffer_single_usageCount_increase(current);
     )
 }
 void sBuffer_usageCount_decreaseAll(sBuffer * buf) {
-    // for (SMARTBUFFER_LEN_T i = 0; i < sBuffer_count_single(buf); i++) {
-        // sBuffer_single_usageCount_decrease(sBuffer_get(buf, i));
-    // }
     SMARTBUFFER_FOR_P(i, buf,
         sBuffer_single_usageCount_decrease(sBuffer_get(buf, i));
     )
@@ -151,11 +172,6 @@ sBuffer sBuffer_copy(const sBuffer * buf) {
     SMARTBUFFER_LEN_T parts = sBuffer_count_single(buf);
     sBuffer ret = sBuffer_create(parts);
 
-    /*for (SMARTBUFFER_LEN_T i = 0; i < parts; i++) {
-        sBuffer_single_ptr current = sBuffer_get(buf, i);
-        sBuffer_single_usageCount_increase(current);
-        sBuffer_add(&ret, current);
-    }*/
     SMARTBUFFER_FOREACH_P(i, current, buf,
         sBuffer_single_usageCount_increase(current);
         sBuffer_add(&ret, current);
@@ -167,11 +183,6 @@ sBuffer sBuffer_copy_deep(const sBuffer * buf) {
     SMARTBUFFER_LEN_T parts = sBuffer_count_single(buf);
     sBuffer ret = sBuffer_create(parts);
 
-    /*for (SMARTBUFFER_LEN_T i = 0; i < parts; i++) {
-        const sBuffer_single_ptr current = sBuffer_get(buf, i);
-        sBuffer_single_ptr newBuf = sBuffer_single_copy(current, 0, sBuffer_single_count(current));
-        sBuffer_add(&ret, newBuf);
-    }*/
     SMARTBUFFER_FOREACH_P(i, current, buf,
         sBuffer_single_ptr newBuf = sBuffer_single_copy(current, 0, sBuffer_single_count(current));
         sBuffer_add(&ret, newBuf);
@@ -224,8 +235,6 @@ SMARTBUFFER_LEN_T sBuffer_write(sBuffer * buf, SMARTBUFFER_LEN_T startIndex, con
 sBuffer_single_ptr sBuffer_join(const sBuffer * toJoin) {
     sBuffer_single_ptr ret = sBuffer_single_create(sBuffer_count(toJoin));
 
-    // for (SMARTBUFFER_LEN_T i = 0; i < sBuffer_single_count(ret); i++) {
-        // sBuffer_single_ptr current = sBuffer_get(toJoin, i);
     SMARTBUFFER_FOREACH_P(i, current, toJoin,
         SMARTBUFFER_LEN_T toWrite = sBuffer_single_count(current);
         SMARTBUFFER_LEN_T written = sBuffer_single_add(ret, sBuffer_single_get(current), toWrite);
@@ -233,20 +242,23 @@ sBuffer_single_ptr sBuffer_join(const sBuffer * toJoin) {
             return NULL;
         }
     )
-    // }
 
     return ret;
 }
 
-void sBuffer_free(sBuffer * buf) {
-    //SMARTBUFFER_LEN_T len = sBuffer_count_single(buf);
-    // for (SMARTBUFFER_LEN_T i = 0; i < len; i++) {
-        // sBuffer_single_ptr ptr = sBuffer_get(buf, i);
+void sBuffer_clear(sBuffer * buf) {
     SMARTBUFFER_FOREACH_P(i, ptr, buf,
-        sBuffer_single_usageCount_decrease(ptr);
-        sBuffer_single_freeData(ptr);
-        sBuffer_single_freePtr(ptr);
-    // }
+        if (ptr->is_readonly) { sBuffer_remove_single(buf, ptr); }
+        if (ptr->usage_count > 1) { sBuffer_remove_single(buf, ptr); }
+        else {
+            sBuffer_single_clear(ptr);
+        }
+    )
+}
+
+void sBuffer_free(sBuffer * buf) {
+    SMARTBUFFER_FOREACH_P(i, ptr, buf,
+        sBuffer_single_free(ptr);
     )
     SIMPLE_ARRAY_FREE((*buf));
 }

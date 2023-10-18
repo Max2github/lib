@@ -40,8 +40,8 @@ typedef SIMPLE_ARRAY(SMARTBUFFER_CHAR) sBuffer_single_data;
 
 struct sBuffer_flags {
     SMARTBUFFER_BOOL_T is_readonly : 1;  // can this change?
-    SMARTBUFFER_BOOL_T is_data_allocated /*: 1*/; // does the data need to be freed?
-    SMARTBUFFER_BOOL_T is_this_allocated /*: 1*/; // does the pointer to this (sBuffer_single) need to be freed?
+    SMARTBUFFER_BOOL_T is_data_allocated : 1; // does the data need to be freed?
+    SMARTBUFFER_BOOL_T is_this_allocated : 1; // does the pointer to this (sBuffer_single) need to be freed?
 };
 
 struct sBuffer_single {
@@ -117,22 +117,47 @@ sBuffer_single_ptr sBuffer_single_copy(const sBuffer_single_ptr, SMARTBUFFER_LEN
 SMARTBUFFER_LEN_T sBuffer_single_write(const sBuffer_single_ptr,SMARTBUFFER_LEN_T, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
 
 /**
- * @brief Decrease the usage_counter and free the data if the usage counter reaches 0 and the content was allocated
+ * @brief Clears the buffer, but does NOT free
+ * 
+ * @return SMARTBUFFER_LEN_T the bytes that were cleared
+ */
+SMARTBUFFER_LEN_T sBuffer_single_clear(sBuffer_single_ptr);
+
+/**
+ * @brief Free the data if the usage counter reaches 0 and the content was allocated
  * 
  * @return SMARTBUFFER_TRUE if the data was freed
  * @return SMARTBUFFER_FALSE if no data was freed
  */
 SMARTBUFFER_BOOL_T sBuffer_single_freeData(sBuffer_single_ptr);
 /**
- * @brief Free the pointer
+ * @brief Free the pointer if it was allocated
  * This has no effect on the content.
  */
 void sBuffer_single_freePtr(sBuffer_single_ptr);
+
+/**
+ * @brief Free an sBuffer_single
+ * Calls
+ * @ref Buffer_single_usageCount_decrease,
+ * @ref sBuffer_single_freeData and
+ * @ref sBuffer_single_freePtr
+ */
+void sBuffer_single_free(sBuffer_single_ptr);
 
 sBuffer sBuffer_create(SMARTBUFFER_LEN_T size);
 void sBuffer_addStr(sBuffer *, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
 void sBuffer_add(sBuffer *, sBuffer_single_ptr);
 sBuffer_single_ptr sBuffer_get(const sBuffer *, SMARTBUFFER_LEN_T);
+
+/**
+ * @brief Search for a sBuffer_single_ptr in the buffer and remove it
+ * @attention removes all occurences
+ * 
+ * @return SMARTBUFFER_BOOL_T if the buffer was removed
+ */
+SMARTBUFFER_BOOL_T sBuffer_remove_single(sBuffer *, const sBuffer_single_ptr);
+
 SMARTBUFFER_LEN_T sBuffer_count_single(const sBuffer *);
 SMARTBUFFER_LEN_T sBuffer_count(const sBuffer *);
 
@@ -162,6 +187,14 @@ SMARTBUFFER_LEN_T sBuffer_read(const sBuffer *, sBuffer_readHandler, SMARTBUFFER
 SMARTBUFFER_LEN_T sBuffer_write(sBuffer *, SMARTBUFFER_LEN_T, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
 
 sBuffer_single_ptr sBuffer_join(const sBuffer *);
+
+/**
+ * @brief Clear the buffer, but does NOT free
+ * - All readonly buffers will be removed
+ * - All shared buffers (usagecount > 1) will be removed
+ * - All non-shared buffers (usagecount == 1) will be cleared
+ */
+void sBuffer_clear(sBuffer *);
 
 /**
  * @brief free the whole buffer

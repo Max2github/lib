@@ -102,7 +102,7 @@ sString sString_subStr(const sString * s, sString_len_t from, sString_len_t len)
                 len -= curLen;
             } else {
                 // we are finished
-                sBuffer_single_ptr part = sBuffer_single_create_static(sBuffer_single_get(curBuf), len);
+                //sBuffer_single_ptr part = sBuffer_single_create_static(sBuffer_single_get(curBuf), len);
                 sString_addSingleBuf(&ret, curBuf);
                 break;
             }
@@ -116,7 +116,7 @@ sString sString_subStr(const sString * s, sString_len_t from, sString_len_t len)
     }
 }
 
-void sString_read(const sString * str, sString_readHandler reader, sString_len_t len, void * userData) { return sBuffer_read(SSTRING_GETBUF_ADDR_P(str), reader, len, userData); }
+void sString_read(const sString * str, sString_readHandler reader, sString_len_t len, void * userData) { sBuffer_read(SSTRING_GETBUF_ADDR_P(str), reader, len, userData); }
 
 void sString_toCstr_reader(void * userData, const sString_char_t * str, sString_len_t len) {
     char * dest = (char *) userData;
