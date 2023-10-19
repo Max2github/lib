@@ -60,7 +60,8 @@ struct { \
     for (; i < (len); i++) { \
         SIMPLE_ARRAY_MEMCOPY(((arr).data + (((index) + i) * sizeof(*(Data)))), (Data) + i, sizeof(*(Data))); \
     } \
-    (arr).written += i; \
+    indexP newSize = ((index) + (len)); \
+    if (newSize > (arr).written) { (arr).written = newSize; } \
 }
 
 #define SIMPLE_ARRAY_SET(arr, Data, len) \
@@ -76,7 +77,7 @@ struct { \
 #define SIMPLE_ARRAY_WRITE(arr, index, Data, len) \
 { \
     if ((arr).written + (len) > (index)) { \
-        if ((arr).written + (len) > (arr).count) { \
+        if ((index) + (len) > (arr).count) { \
             (arr).data = (indexP) SIMPLE_ARRAY_H_REALLOC((void *) (arr).data, (arr).count * sizeof(*Data) + SIMPLE_ARRAY_EXTEND(len) * sizeof(*Data)); \
             (arr).count += SIMPLE_ARRAY_EXTEND(len); \
         }\
@@ -89,6 +90,21 @@ struct { \
 #define SIMPLE_ARRAY_APPEND(arr, Data) SIMPLE_ARRAY_APPEND_DATA(arr, (&Data), 1)
 
 #define SIMPLE_ARRAY_GET(arr, index) ((arr).pointer)[index]
+
+#define SIMPLE_ARRAY_SHIFT_RIGHT(arr, index, amount) \
+{ \
+    if ((amount) > 0) { \
+        SMARTBUFFER_LEN_T endIndex = (arr).written; \
+        /* append the last elements*/ \
+        for (SMARTBUFFER_LEN_T curAmount = (amount); curAmount > 0; curAmount--) { \
+            SIMPLE_ARRAY_APPEND(arr, SIMPLE_ARRAY_GET(arr, endIndex - curAmount)); \
+        } \
+        /* move the previous element to the current index (from end to beginning) */ \
+        for (SMARTBUFFER_LEN_T curIndex = endIndex - 1; curIndex > (index) && curIndex >= (amount); curIndex--) { \
+            SIMPLE_ARRAY_GET(arr, curIndex) = SIMPLE_ARRAY_GET(arr, curIndex - (amount)); \
+        } \
+    } \
+}
 
 #define SIMPLE_ARRAY_FREE(arr) \
 { \
