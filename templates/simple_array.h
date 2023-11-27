@@ -22,8 +22,8 @@
 #define SIMPLE_ARRAY(type) \
 struct { \
     union { \
-        type * pointer; \
         indexP data; \
+        type * pointer; \
     }; \
     indexP count; \
     indexP written; \
@@ -47,7 +47,7 @@ struct { \
 
 #define SIMPLE_ARRAY_CREATE_SIZE(type, size) \
 { \
-    ((type *) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * (size))), \
+    ((indexP) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * (size))), \
     (size), \
     0 \
 }
@@ -67,8 +67,8 @@ struct { \
 #define SIMPLE_ARRAY_SET(arr, Data, len) \
 { \
     if ((arr).written + (len) > (arr).count) { \
-        SIMPLE_ARRAY_FREE((void *) (arr).data); \
-        arr = SIMPLE_ARRAY_CREATE_SIZE(Data, (arr).count + SIMPLE_ARRAY_EXTEND(len)); \
+        SIMPLE_ARRAY_H_FREE((void *) (arr).data); \
+        arr = SIMPLE_ARRAY_CREATE_SIZE(*Data, (arr).count + SIMPLE_ARRAY_EXTEND(len)); \
         (arr).count = SIMPLE_ARRAY_EXTEND(len); \
     } \
     SIMPLE_ARRAY_WRITE_NO_CHECK(arr, 0, Data, len); \
@@ -93,15 +93,20 @@ struct { \
 
 #define SIMPLE_ARRAY_SHIFT_RIGHT(arr, index, amount) \
 { \
-    if ((amount) > 0) { \
-        SMARTBUFFER_LEN_T endIndex = (arr).written; \
+    if ((amount) > 0 && (index) < (arr).written) { \
+        indexP endIndex = (arr).written; \
+        indexP maxAmount = endIndex - (index); \
+        indexP realAmount = (amount); \
+        if (maxAmount < (amount)) { \
+            realAmount = maxAmount; \
+        } \
         /* append the last elements*/ \
-        for (SMARTBUFFER_LEN_T curAmount = (amount); curAmount > 0; curAmount--) { \
+        for (indexP curAmount = realAmount; curAmount > 0; curAmount--) { \
             SIMPLE_ARRAY_APPEND(arr, SIMPLE_ARRAY_GET(arr, endIndex - curAmount)); \
         } \
         /* move the previous element to the current index (from end to beginning) */ \
-        for (SMARTBUFFER_LEN_T curIndex = endIndex - 1; curIndex > (index) && curIndex >= (amount); curIndex--) { \
-            SIMPLE_ARRAY_GET(arr, curIndex) = SIMPLE_ARRAY_GET(arr, curIndex - (amount)); \
+        for (indexP curIndex = endIndex - 1; curIndex > (index) && curIndex >= realAmount; curIndex--) { \
+            SIMPLE_ARRAY_GET(arr, curIndex) = SIMPLE_ARRAY_GET(arr, curIndex - realAmount); \
         } \
     } \
 }

@@ -445,13 +445,6 @@ typedef unsigned long long index64; //
     #define CAST_REINTERPRETE(type, data) CAST_REINTERPRETE_DANGEROUS(type, data)
 #endif
 
-// The above code defines a macro `ASSERT_COMPILE_TIME` that is used to check a condition at compile time.
-// It creates an array of characters with a size of 1 if the expression passed to it is true, and a size of 0 if the expression is false.
-// The `sizeof` operator is then used to determine the size of the array, which will be either 1 or 0.
-// If the expression is false, the array will have a negative size, which is why the `!` operator is used to invert the result.
-// This technique is often used to generate a compile-time
-#define ASSERT_COMPILE_TIME(expr) (sizeof(char[1-2*!(expr)]))
-
 // not really important / needed stuff
 #define TRUE_STRING "true"
 #define FALSE_STRING "false"
@@ -459,6 +452,8 @@ typedef unsigned long long index64; //
 #define BOOL_0 FALSE_STRING
 #define BOOL_TO_STRING_IMPL(bool) BOOL_##bool
 #define BOOL_TO_STRING(bool) BOOL_TO_STRING_IMPL(bool)
+
+// macro specialities
 
 #define EXPAND_1(toExpand) toExpand
 #define EXPAND_2(toExpand) EXPAND_1(toExpand)
@@ -468,5 +463,55 @@ typedef unsigned long long index64; //
 #define EXPAND_6(toExpand) EXPAND_5(toExpand)
 
 #define EXPAND(toExpand) EXPAND_6(toExpand)
+
+#define GET_VARIADIC_MACRO_1(_0, NAME, ...) NAME
+#define GET_VARIADIC_MACRO_2(_0, _1, NAME, ...) NAME
+#define GET_VARIADIC_MACRO_3(_0, _1, _2, NAME, ...) NAME
+#define GET_VARIADIC_MACRO_4(_0, _1, _2, _3, NAME, ...) NAME
+#define GET_VARIADIC_MACRO_5(_0, _1, _2, _3, _4, NAME, ...) NAME
+#define GET_VARIADIC_MACRO_6(_0, _1, _2, _3, _4, _5, NAME, ...) NAME
+#define GET_VARIADIC_MACRO_7(_0, _1, _2, _3, _4, _5, _6, NAME, ...) NAME
+#define GET_VARIADIC_MACRO_8(_0, _1, _2, _3, _4, _5, _6, _7, NAME, ...) NAME
+#define GET_VARIADIC_MACRO_9(_0, _1, _2, _3, _4, _5, _6, _7, _8, NAME, ...) NAME
+#define GET_VARIADIC_MACRO_10(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, NAME, ...) NAME
+
+/**
+ * @brief Use this to create a variadic overloaded macro.
+ * It calls the correct macro (up to ten) based on the number of arguments.
+ * 
+ * @details
+ * Each variation be an own macro:
+ * #define MYMACRO_FIRST(<args>) <dosomething>
+ * 
+ * Use it then like so:
+ * #define MYMACRO(...) GET_VARIADIC_MACRO(<number of "overloads">, __VA_ARGS__, <names of all variations beginning with the one with the most arguments>)(__VA_ARGS__)
+ * 
+ * For MSVC (problem with _VA_ARGS__) encapsulate the GET_VARIADIC_MACRO in an EXPAND macro:
+ * #define MYMACRO(...) EXPAND(GET_VARIADIC_MACRO(<number of "overloads">, __VA_ARGS__, <names of all variations>)(__VA_ARGS__))
+ * 
+ */
+#define GET_VARIADIC_MACRO(n, ...) EXPAND(GET_VARIADIC_MACRO_##n(__VA_ARGS__))
+
+#if LANG_C_STD >= 2011 && LANG_C_STD < 2023
+    #define ASSERT_COMPILE_TIME_MSG(expr, message) _Static_assert(expr, message)
+    #define ASSERT_COMPILE_TIME_NOMSG(expr) ASSERT_COMPILE_TIME_MSG(expr, "")
+#elif LANG_C_STD >= 2023 || LANG_CPP_STD >= 2011
+    #define ASSERT_COMPILE_TIME_MSG(expr, message) static_assert((expr), message)
+    #define ASSERT_COMPILE_TIME_NOMSG(expr) static_assert(expr)
+    #if LANG_CPP_STD < 2017
+        #undef ASSERT_COMPILE_TIME_NOMSG
+        #define ASSERT_COMPILE_TIME_NOMSG(expr) ASSERT_COMPILE_TIME_MSG(expr, "")
+    #endif
+#else
+    // The above code defines a macro `ASSERT_COMPILE_TIME` that is used to check a condition at compile time.
+    // It creates an array of characters with a size of 1 if the expression passed to it is true, and a size of 0 if the expression is false.
+    // The `sizeof` operator is then used to determine the size of the array, which will be either 1 or 0.
+    // If the expression is false, the array will have a negative size, which is why the `!` operator is used to invert the result.
+    // This technique is often used to generate a compile-time
+    #define ASSERT_COMPILE_TIME_NOMSG(expr) ((void)(sizeof(char[1-2*!(expr)])))
+    #define ASSERT_COMPILE_TIME_MSG(expr, message) ASSERT_COMPILE_TIME_NOMSG(expr)
+#endif
+
+#define ASSERT_COMPILE_TIME(...) EXPAND(GET_VARIADIC_MACRO(2, __VA_ARGS__, ASSERT_COMPILE_TIME_MSG, ASSERT_COMPILE_TIME_NOMSG)(__VA_ARGS__))
 
 #endif

@@ -494,7 +494,7 @@ int word_compare(const char word1[], const char word2[]) {
     return 2;
 }
 int word_compare_n(const char word1[], const char word2[], unsigned int size) {
-    int i = 0;
+    unsigned int i = 0;
     int wahr = 0;
     while (i < size) {
         if (word1[i] == word2[i]) {
