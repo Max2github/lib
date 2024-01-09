@@ -34,30 +34,69 @@
     #define SMARTBUFFER_FALSE false
 #endif
 
+// TODO: may not work everywhere
+ASSERT_COMPILE_TIME(sizeof(SMARTBUFFER_CHAR) == 1, "SMARTBUFFER_CHAR must be of size 1!");
+
 #define SMARTBUFFER_H_MEMCOPY(dest, src, size) SIMPLE_ARRAY_MEMCOPY(dest, src, size)
 
 typedef SIMPLE_ARRAY(SMARTBUFFER_CHAR) sBuffer_single_data;
 
 struct sBuffer_flags {
+    SMARTBUFFER_BOOL_T is_child : 1;
     SMARTBUFFER_BOOL_T is_readonly : 1;  // can this change?
     SMARTBUFFER_BOOL_T is_data_allocated : 1; // does the data need to be freed?
     SMARTBUFFER_BOOL_T is_this_allocated : 1; // does the pointer to this (sBuffer_single) need to be freed?
 };
+typedef struct sBuffer_flags sBuffer_flags;
+
+
 
 struct sBuffer_single {
-    sBuffer_single_data data;        // the real data
-    SMARTBUFFER_LEN_T usage_count;   // how often is this used?
+    sBuffer_flags flags;
 
-    //struct {
-    SMARTBUFFER_BOOL_T is_readonly /*: 1*/;  // can this change?
-    SMARTBUFFER_BOOL_T is_data_allocated /*: 1*/; // does the data need to be freed?
-    SMARTBUFFER_BOOL_T is_this_allocated /*: 1*/; // does the pointer to this (sBuffer_single) need to be freed?
-    //};
+    union {
+        // "real" data
+        struct {
+            sBuffer_single_data data;        // the real data
+            SMARTBUFFER_LEN_T usage_count;   // how often is this used?
+
+            #if 0
+            #if SIZE_POINTER == 16
+            index8 restbuf[1];
+            #elif SIZE_POINTER == 32
+            index8 restbuf[3];
+            #elif SIZE_POINTER == 64
+            index8 restbuf[7];
+            #endif
+            #endif
+        };
+
+        // this buffer is just a child of another buffer
+        struct {
+            struct sBuffer_single * parent;
+            SMARTBUFFER_LEN_T begin;
+            SMARTBUFFER_LEN_T size;
+        } child;
+    };
 };
 typedef struct sBuffer_single sBuffer_single;
 typedef sBuffer_single * sBuffer_single_ptr;
 
+int x = sizeof(sBuffer_single);
+
 typedef SIMPLE_ARRAY(sBuffer_single_ptr) sBuffer;
+
+struct sBuffer_single_with_index {
+    sBuffer_single_ptr buf;
+    SMARTBUFFER_LEN_T index; // index in buf
+};
+typedef struct sBuffer_single_with_index sBuffer_single_with_index;
+
+struct sBuffer_index_descr {
+    sBuffer_single_with_index single;
+    SMARTBUFFER_LEN_T index; // index inside sBuffer
+};
+typedef struct sBuffer_index_descr sBuffer_index_descr;
 
 /**
  * @brief A reader funtion pointer used for sBuffer_read
@@ -102,19 +141,64 @@ sBuffer_single_ptr sBuffer_single_create(SMARTBUFFER_LEN_T);
  * @return sBuffer_single_ptr
  */
 sBuffer_single_ptr sBuffer_single_create_static(const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
+
+/**
+ * @brief Create a new sBuffer_single, which is a child of another sBuffer_single
+ * @param 0 (sBuffer_single_ptr) the parent buffer
+ * @param 1 (SMARTBUFFER_LEN_T) at which index the child begins
+ * @param 2 (SMARTBUFFER_BOOL_T) the size of the child buffer
+ * @return sBuffer_single_ptr
+ */
+sBuffer_single_ptr sBuffer_single_create_child(const sBuffer_single_ptr, SMARTBUFFER_LEN_T, SMARTBUFFER_LEN_T);
+
 SMARTBUFFER_BOOL_T sBuffer_single_add_char(sBuffer_single_ptr, const SMARTBUFFER_CHAR);
 SMARTBUFFER_LEN_T sBuffer_single_add(sBuffer_single_ptr, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
+
+/**
+ * @brief Insert data into an sBuffer_single
+ * 
+ * @param buf
+ * @param index
+ * @param data
+ * @param size
+ * 
+ * @return SMARTBUFFER_LEN_T amount inserted
+ */
+SMARTBUFFER_LEN_T sBuffer_single_insert(sBuffer_single_ptr, SMARTBUFFER_LEN_T, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
+
 const SMARTBUFFER_CHAR * sBuffer_single_get(const sBuffer_single_ptr);
 SMARTBUFFER_LEN_T sBuffer_single_count(const sBuffer_single_ptr);
+SMARTBUFFER_BOOL_T sBuffer_single_is_empty(const sBuffer_single_ptr);
+SMARTBUFFER_LEN_T sBuffer_single_count_remaining(const sBuffer_single_ptr);
 
-sBuffer_single_ptr sBuffer_single_copy(const sBuffer_single_ptr, SMARTBUFFER_LEN_T from, SMARTBUFFER_LEN_T to);
+/**
+ * @brief Shift all element to the "right" (the memory after -> appends)
+ * The shifting starts a the index given (second argument).
+ * The third arguments specifies by which amount it should be shifted (usually 1).
+ * 
+ * @details e.g.
+ * buffer = Hello World
+ * shift_righ(buffer, 0, 2)
+ * -> buffer == HeHello World
+ * "Hello World" was shifted by two, but the cells before are NOT overwritten!
+ * 
+ * This is mainly used for inserting a SMARTBUFFER_CHAR at the given index
+ * 
+ * @param buf sBuffer_single_ptr
+ * @param index SMARTBUFFER_LEN_T
+ * @param amount SMARTBUFFER_LEN_T
+ * @return actual amount shifted
+ */
+SMARTBUFFER_LEN_T sBuffer_single_shift_right(sBuffer_single_ptr, SMARTBUFFER_LEN_T, SMARTBUFFER_LEN_T);
 
 /**
  * @brief 
  * 
  * @return SMARTBUFFER_LEN_T size of SMARTBUFFER_CHAR's written
  */
-SMARTBUFFER_LEN_T sBuffer_single_write(const sBuffer_single_ptr,SMARTBUFFER_LEN_T, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
+SMARTBUFFER_LEN_T sBuffer_single_write(sBuffer_single_ptr,SMARTBUFFER_LEN_T, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
+
+sBuffer_single_ptr sBuffer_single_copy(const sBuffer_single_ptr, SMARTBUFFER_LEN_T from, SMARTBUFFER_LEN_T to);
 
 /**
  * @brief Clears the buffer, but does NOT free
@@ -146,17 +230,45 @@ void sBuffer_single_freePtr(sBuffer_single_ptr);
 void sBuffer_single_free(sBuffer_single_ptr);
 
 sBuffer sBuffer_create(SMARTBUFFER_LEN_T size);
-void sBuffer_addStr(sBuffer *, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
+SMARTBUFFER_LEN_T sBuffer_append(sBuffer *, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
 void sBuffer_add(sBuffer *, sBuffer_single_ptr);
+
+/**
+ * @brief Shift all element to the "right" (the memory after -> appends)
+ * The shifting starts a the index given (second argument).
+ * The third arguments specifies by which amount it should be shifted (usually 1).
+ * 
+ * This is mainly used for inserting a sBuffer_single_ptr at the given index
+ * 
+ * @param buf sBuffer *
+ * @param index SMARTBUFFER_LEN_T
+ * @param amount SMARTBUFFER_LEN_T
+ */
+void sBuffer_shift_right(sBuffer *, SMARTBUFFER_LEN_T, SMARTBUFFER_LEN_T);
+
+/**
+ * @brief Inserts an element without shifting the array
+ * @attention This is dangerous, as it may overwrite data, which should NOT be overwritten and this may lead to data loss and memory leaks!
+ * @attention Please used sBuffer_shift_right beforehand!
+ * 
+ */
+void sBuffer_insert_single_noShift(sBuffer *, SMARTBUFFER_LEN_T, sBuffer_single_ptr);
+
+/**
+ * @brief Insert an sBuffer_single_ptr at the given index
+ * 
+ */
+void sBuffer_insert_single(sBuffer *, SMARTBUFFER_LEN_T, sBuffer_single_ptr);
+
 sBuffer_single_ptr sBuffer_get(const sBuffer *, SMARTBUFFER_LEN_T);
 
 /**
  * @brief Search for a sBuffer_single_ptr in the buffer and remove it
  * @attention removes all occurences
  * 
- * @return SMARTBUFFER_BOOL_T if the buffer was removed
+ * @return SMARTBUFFER_BOOL_T how many buffers were removed
  */
-SMARTBUFFER_BOOL_T sBuffer_remove_single(sBuffer *, const sBuffer_single_ptr);
+SMARTBUFFER_LEN_T sBuffer_remove_single(sBuffer *, const sBuffer_single_ptr);
 
 SMARTBUFFER_LEN_T sBuffer_count_single(const sBuffer *);
 SMARTBUFFER_LEN_T sBuffer_count(const sBuffer *);
@@ -184,7 +296,41 @@ sBuffer sBuffer_copy_deep(const sBuffer *);
  */
 SMARTBUFFER_LEN_T sBuffer_read(const sBuffer *, sBuffer_readHandler, SMARTBUFFER_LEN_T, void *);
 
+/**
+ * @brief Search in which sBuffer_single a index is
+ * 
+ * 
+ * @return sBuffer_index_tuple
+ *         index1: the index of the sBuffer_single in the sBuffer
+ *         index2: the local index (in the sBuffer_single) corresponding to the given index
+ */
+sBuffer_index_descr sBuffer_find_index(const sBuffer *, SMARTBUFFER_LEN_T);
+
+/**
+ * @brief Write data into an sBuffer starting at a given index.
+ * This overwrites existing data and appends data,
+ * when writing at/after the end of the buffer.
+ * 
+ * @param buffer
+ * @param index where to start writing
+ * @param data
+ * @param len
+ * 
+ * @return SMARTBUFFER_LEN_T amount written
+ */
 SMARTBUFFER_LEN_T sBuffer_write(sBuffer *, SMARTBUFFER_LEN_T, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
+
+/**
+ * @brief Insert data into an sBuffer at a given index.
+ * 
+ * @param buffer
+ * @param index where to start writing
+ * @param data
+ * @param len
+ * 
+ * @return SMARTBUFFER_LEN_T amount written
+ */
+SMARTBUFFER_LEN_T sBuffer_insert(sBuffer *, SMARTBUFFER_LEN_T, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
 
 sBuffer_single_ptr sBuffer_join(const sBuffer *);
 

@@ -20,8 +20,7 @@ sString sString_init(sString_char_t * str, sString_len_t len, sString_flags_u fl
     } else {
         newInner = sBuffer_single_create(len);
         sBuffer_single_add(newInner, str, len);
-        newInner->is_data_allocated = true;
-        newInner->is_readonly = flags.obj.is_const;
+        newInner->flags.is_readonly = flags.obj.is_const;
     }
 
     sBuffer_add(&(s.buf), newInner);
@@ -55,15 +54,13 @@ void sString_add(sString * s, sString other) {
         )
     }
 }
-void sString_addStr(sString * s, const sString_char_t * str, sString_len_t len) {
-    if (s->flags.obj.is_const) { return; }
+sString_len_t sString_append(sString * s, const sString_char_t * str, sString_len_t len) {
+    if (s->flags.obj.is_const) { return 0; }
     if (s->flags.obj.on_add_join) {
         sBuffer_single_ptr last = sBuffer_get(&(s->buf), sBuffer_count_single(&(s->buf)) - 1);
-        sBuffer_single_add(last, str, len);
+        return sBuffer_single_add(last, str, len);
     } else {
-        sBuffer_single_ptr newInner = sBuffer_single_create(len);
-        sBuffer_single_add(newInner, str, len);
-        sBuffer_add(&(s->buf), newInner);
+        return sBuffer_append(&(s->buf), str, len);
     }
 }
 

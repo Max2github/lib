@@ -129,7 +129,7 @@ sString_len_t sString_len(const sString *);
 
 void sString_addSingleBuf(sString *, sBuffer_single_ptr);
 void sString_add(sString *, sString);
-void sString_addStr(sString *, const sString_char_t *, sString_len_t);
+sString_len_t sString_append(sString *, const sString_char_t *, sString_len_t);
 
 /**
  * @brief Get an element of an sString by index
