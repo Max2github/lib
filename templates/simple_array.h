@@ -31,12 +31,14 @@ struct { \
 
 #define SIMPLE_ARRAY_EXTEND(len) (((indexP) (((len) / SIMPLE_ARRAY_EXTEND_SIZE) * SIMPLE_ARRAY_EXTEND_SIZE + SIMPLE_ARRAY_EXTEND_SIZE)))
 
+#ifndef SIMPLE_ARRAY_MEMCOPY
 #define SIMPLE_ARRAY_MEMCOPY(dest, src, size) \
 { \
     for (indexP icp = 0; icp < (size); icp++) { \
         ((char *) (dest))[icp] = ((char *)(src))[icp]; \
     } \
 }
+#endif
 
 #define SIMPLE_ARRAY_INIT(arr, type, size) \
 { \

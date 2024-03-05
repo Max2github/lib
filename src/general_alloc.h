@@ -51,7 +51,7 @@ GENERAL_ALLOC_NODE * general_alloc_find_best_node(GENERAL_ALLOC_LIST_WITH_FIRST 
 }
 
 void * general_alloc(void * head, index64 size) {
-    GENERAL_ALLOC_NODE * best = general_alloc_find_best_node(head, size);
+    GENERAL_ALLOC_NODE * best = general_alloc_find_best_node((GENERAL_ALLOC_LIST_WITH_FIRST) head, size);
     if (best == NULL) { return NULL; }
 
     /** create a new Node that holds the spare memory of "best" / the memory of best that is not needed
@@ -60,7 +60,7 @@ void * general_alloc(void * head, index64 size) {
      * -) memory of best not needed = spare = newNode
      * */
     index64 totalSizeBest = (GENERAL_ALLOC_NODE_SIZE + size); // total size of node "best" -> also size until next node
-    GENERAL_ALLOC_NODE * newNode = GENERAL_ALLOC_POINTER_PLUS(best, totalSizeBest);// (GENERAL_ALLOC_NODE *) ((index8 *) best + totalSizeBest);
+    GENERAL_ALLOC_NODE * newNode = (GENERAL_ALLOC_NODE *) GENERAL_ALLOC_POINTER_PLUS(best, totalSizeBest);// (GENERAL_ALLOC_NODE *) ((index8 *) best + totalSizeBest);
     newNode->used = false;
     newNode->size = best->size - totalSizeBest;
 
@@ -86,11 +86,11 @@ bool general_find_node(GENERAL_ALLOC_LIST head, index64 totalsize, GENERAL_ALLOC
 bool general_free(void * head, void * toFree) {
     GENERAL_ALLOC_NODE * node = (GENERAL_ALLOC_NODE *) ( (indexP) toFree - GENERAL_ALLOC_NODE_SIZE);
     index64 totalSize = GENERAL_ALLOC_TOTALSIZE(head);
-    GENERAL_ALLOC_NODE * end = GENERAL_ALLOC_POINTER_PLUS(head, totalSize);
+    GENERAL_ALLOC_NODE * end = (GENERAL_ALLOC_NODE *) GENERAL_ALLOC_POINTER_PLUS(head, totalSize);
     index64 totalsize = GENERAL_ALLOC_TOTALSIZE(head);
 
     head = GENERAL_ALLOC_START_OF_LIST(head);
-    if (!general_find_node(head, totalsize, node)) { return false; } // if it was not allocated
+    if (!general_find_node((GENERAL_ALLOC_LIST) head, totalsize, node)) { return false; } // if it was not allocated
     if (head == node) {
         if (GENERAL_ALLOC_NODE_NEXT(node) != end && !GENERAL_ALLOC_NODE_NEXT(node)->used) {
             index64 totalSizeNextNode = (GENERAL_ALLOC_NODE_SIZE + GENERAL_ALLOC_NODE_NEXT(node)->size);
@@ -104,7 +104,7 @@ bool general_free(void * head, void * toFree) {
         index64 totalSizeNextNode = (GENERAL_ALLOC_NODE_SIZE + GENERAL_ALLOC_NODE_NEXT(node)->size);
         node->size += totalSizeNextNode;
     }
-    GENERAL_ALLOC_NODE * prev = general_get_prev_node(head, node);
+    GENERAL_ALLOC_NODE * prev = general_get_prev_node((GENERAL_ALLOC_LIST) head, node);
     if (prev->used) { // if the previous node is already used, just set the node to "free"
         node->used = false;
         return true;
