@@ -60,7 +60,7 @@ struct { \
 { \
     indexP i = 0; \
     for (; i < (len); i++) { \
-        SIMPLE_ARRAY_MEMCOPY(((arr).data + (((index) + i) * sizeof(*(Data)))), (Data) + i, sizeof(*(Data))); \
+        SIMPLE_ARRAY_MEMCOPY((void *)((arr).data + (((index) + i) * sizeof(*(Data)))), (void *)((Data) + i), sizeof(*(Data))); \
     } \
     indexP newSize = ((index) + (len)); \
     if (newSize > (arr).written) { (arr).written = newSize; } \

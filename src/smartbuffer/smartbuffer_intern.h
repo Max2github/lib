@@ -3,6 +3,8 @@
 
 #include "../../smartbuffer.h"
 
+CHEADER_START
+
 // sBuffer_single_data
 
 sBuffer_single_data sBuffer_single_data_create(SMARTBUFFER_LEN_T);
@@ -22,5 +24,7 @@ SMARTBUFFER_LEN_T sBuffer_single_usageCount_increase(sBuffer_single_ptr buf);
 sBuffer_single sBuffer_single_create_intern(SMARTBUFFER_LEN_T, SMARTBUFFER_BOOL_T, SMARTBUFFER_BOOL_T);
 void sBuffer_usageCount_increaseAll(sBuffer *);
 void sBuffer_usageCount_decreaseAll(sBuffer *);
+
+CHEADER_END
 
 #endif

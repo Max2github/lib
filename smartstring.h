@@ -6,9 +6,15 @@
 #ifndef NO_STD_LIB
     #include<stdlib.h>
 
+    #ifndef SMARTSTRING_H_MALLOC
     #define SMARTSTRING_H_MALLOC(size) malloc(size)
+    #endif
+    #ifndef SMARTSTRING_H_REALLOC
     #define SMARTSTRING_H_REALLOC(oldP, size) realloc(oldP, size)
+    #endif
+    #ifndef SMARTSTRING_H_FREE
     #define SMARTSTRING_H_FREE(p) free(p)
+    #endif
 #endif
 
 #ifndef SMARTBUFFER_CUSTOM
@@ -29,6 +35,8 @@
 
 // #include "/usr/local/Cellar/icu4c/72.1/include/unicode/utf8.h"
 #include "smartbuffer.h"
+
+CHEADER_START
 
 struct sString_flags_s {
     bool is_const : 1;
@@ -156,5 +164,7 @@ sString sString_subStr(const sString *, sString_len_t, sString_len_t);
 void sString_read(const sString *, sString_readHandler, sString_len_t, void * userData);
 
 char * sString_toCstr(sString *);
+
+CHEADER_END
 
 #endif // !SMARTSTRING_H

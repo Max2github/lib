@@ -6,3 +6,6 @@ buildserver/**
 superstring**
 build/**
 .vs/*
+
+.fake
+m

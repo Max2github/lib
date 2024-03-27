@@ -34,8 +34,12 @@
     #define SMARTBUFFER_FALSE false
 #endif
 
-// TODO: may not work everywhere
-ASSERT_COMPILE_TIME(sizeof(SMARTBUFFER_CHAR) == 1, "SMARTBUFFER_CHAR must be of size 1!");
+CHEADER_START
+
+// never call this - it does nothing
+DLL_HIDDEN inline void smartbuffer_h_check_macro() {
+    ASSERT_COMPILE_TIME(sizeof(SMARTBUFFER_CHAR) == 1, "SMARTBUFFER_CHAR must be of size 1!");
+}
 
 #define SMARTBUFFER_H_MEMCOPY(dest, src, size) SIMPLE_ARRAY_MEMCOPY(dest, src, size)
 
@@ -81,8 +85,6 @@ struct sBuffer_single {
 };
 typedef struct sBuffer_single sBuffer_single;
 typedef sBuffer_single * sBuffer_single_ptr;
-
-int x = sizeof(sBuffer_single);
 
 typedef SIMPLE_ARRAY(sBuffer_single_ptr) sBuffer;
 
@@ -347,5 +349,7 @@ void sBuffer_clear(sBuffer *);
  * calls sBuffer_single_freeData and sBuffer_single_freePtr on each element
  */
 void sBuffer_free(sBuffer *);
+
+CHEADER_END
 
 #endif
