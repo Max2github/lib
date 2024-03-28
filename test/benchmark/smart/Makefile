@@ -53,7 +53,7 @@ run: $(DEST)
 
 # autotest section
 
-TIMESTAMP := $(shell date -Ihours)
+TIMESTAMP := $(shell date -Iseconds)
 OS_UNAME := $(shell uname)
 
 AUTOTEST_RESULTS_DIR_BASE := results
@@ -63,7 +63,7 @@ ifeq ($(OPT), 1)
 	AUTOTEST_RESULTS_DIR_OPT = $(AUTOTEST_RESULTS_DIR_BASE)/opt
 endif
 
-AUTOTEST_RESULTS_DIR = $(AUTOTEST_RESULTS_DIR_OPT)/$(OS_UNAME)/$(TIMESTAMP)
+AUTOTEST_RESULTS_DIR = $(AUTOTEST_RESULTS_DIR_OPT)/$(OS_UNAME)/$(DEST)/$(TIMESTAMP)
 
 autotest_mkdir:
 	mkdir -p $(AUTOTEST_RESULTS_DIR)
@@ -72,7 +72,11 @@ autotest_console: PARAMETERS = --benchmark_out=$(AUTOTEST_RESULTS_DIR)/console.t
 autotest_json:    PARAMETERS = --benchmark_out=$(AUTOTEST_RESULTS_DIR)/result.json --benchmark_out_format=json
 autotest_csv:     PARAMETERS = --benchmark_out=$(AUTOTEST_RESULTS_DIR)/result.csv  --benchmark_out_format=json
 
+autotest_console: run
+autotest_json:    run
+autotest_csv:     run
+
 .PHONY: autotest_console autotest_json autotest_csv
 
-autotest: autotest_mkdir autotest_console run
+autotest: autotest_mkdir autotest_console
 

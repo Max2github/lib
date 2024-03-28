@@ -9,6 +9,9 @@ DESTDIR :=
 CC = gcc
 AR = ar
 
+CFLAGS = -c -fpic -x c
+CFLAGS += -Wall -Wextra -Wno-missing-braces
+CFLAGS += -O3
 AR_FLAGS = rcs #-c -r -v -s #crv rcs
 
 LIB = 
@@ -17,10 +20,12 @@ INCLUDE =
 LIB_DIR = 
 INCLUDE_DIR = 
 
-BUILD_DIR = build
-OBJ_DIR = $(BUILD_DIR)/obj
+BUILD_DIR := build
+OBJ_DIR := $(BUILD_DIR)/obj
 
-LIB_FILE = $(BUILD_DIR)/lib
+LIB_FILE := $(BUILD_DIR)/lib
+
+SRC_DIR := src
 
 ifdef lib
 	LIB = $(lib)
@@ -52,8 +57,6 @@ ifdef target
 	endif
 endif
 
-BUILD_DIR := build
-
 install: install-header install-lib
 
 ifneq ($(INCLUDE), )
@@ -71,22 +74,46 @@ install-lib:
 endif
 
 .PNONY: install install-header install-lib # installing (see above)
-.PNONY: words list # build libraries
+.PNONY: words word_pick list smartbuffer smartstring # build libraries
 .PHONY: clean # clean up
+
+# prepare commands
+
+FOLDER =
+
+smartbuffer: FOLDER = /smartbuffer
+smartstring: FOLDER = /smartstring
+
+SRC = $(wildcard $(SRC_DIR)$(FOLDER)/*.c)
+OBJ = $(SRC:$(SRC_DIR)$(FOLDER)/%.c=$(OBJ_DIR)$(FOLDER)/%.o)
 
 # build commands (extern)
 words: $(LIB_FILE)words.a
+word_pick: $(LIB_FILE)word_pick.a
 list: $(LIB_FILE)list.a
+smartbuffer: $(LIB_FILE)smartbuffer.a
+smartstring: $(LIB_FILE)smartstring.a
 
 # build any (intern)
-$(LIB_FILE)%.a: build/obj/%.o
+$(LIB_FILE)%.a: $(OBJ_DIR)/%.o
 	$(AR) $(AR_FLAGS) $@ $^
 	ranlib $@
 
+$(LIB_FILE)%.a: #$(OBJ)
+	$(MAKE) $(OBJ)
+	$(AR) $(AR_FLAGS) $@ $(OBJ)
+	ranlib $@
+
+$(OBJ_DIR)/smartbuffer/%.o: src/smartbuffer/%.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+$(OBJ_DIR)/smartstring/%.o: src/smartstring/%.c
+	$(CC) $(CFLAGS) -o $@ $<
+
 $(OBJ_DIR)/%.o: src/%.h %_h.h
-	$(CC) -c -fpic -x c -o $@ $<
+	$(CC) $(CFLAGS) -o $@ $<
 
 # clean up
 clean:
-	rm -f build/obj/*.o
+	rm -f $(OBJ_DIR)/*.o
 	rm -f build/*.a
