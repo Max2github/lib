@@ -107,7 +107,7 @@ struct { \
             SIMPLE_ARRAY_APPEND(arr, SIMPLE_ARRAY_GET(arr, endIndex - curAmount)); \
         } \
         /* move the previous element to the current index (from end to beginning) */ \
-        for (indexP curIndex = endIndex - 1; curIndex > (index) && curIndex >= realAmount; curIndex--) { \
+        for (indexP curIndex = endIndex - 1; curIndex >= (index + realAmount); curIndex--) { \
             SIMPLE_ARRAY_GET(arr, curIndex) = SIMPLE_ARRAY_GET(arr, curIndex - realAmount); \
         } \
     } \
@@ -124,8 +124,8 @@ struct { \
 #define SIMPLE_ARRAY_COPY(dest, arr, type) \
 { \
     SIMPLE_ARRAY_INIT(dest, type, (arr).count); \
-    for (indexP i = 0; i < (arr).written; i++) { \
-        SIMPLE_ARRAY_APPEND(dest, (SIMPLE_ARRAY_GET(arr, i))); \
+    for (indexP simpleArrayCopyI = 0; simpleArrayCopyI < (arr).written; simpleArrayCopyI++) { \
+        SIMPLE_ARRAY_APPEND(dest, (SIMPLE_ARRAY_GET(arr, simpleArrayCopyI))); \
     } \
 }
 

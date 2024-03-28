@@ -11,33 +11,27 @@ SMARTBUFFER_LEN_T sBuffer_append(sBuffer * buf, const SMARTBUFFER_CHAR * data, S
     const SMARTBUFFER_LEN_T countInnerBufs = sBuffer_count_single(buf);
     if (countInnerBufs == 0) {
         sBuffer_single_ptr new_single = sBuffer_single_create(len);
-        new_single = sBuffer_single_add(new_single, data, len);
+        const SMARTBUFFER_LEN_T written = sBuffer_single_add(new_single, data, len);
         sBuffer_add(buf, new_single);
-        return sBuffer_single_count(new_single);
+        return written;
     }
     sBuffer_single_ptr last = sBuffer_get(buf, countInnerBufs - 1);
     if (last->flags.is_readonly || sBuffer_single_count_remaining(last) == 0) {
         sBuffer_single_ptr new_single = sBuffer_single_create(len);
-        new_single = sBuffer_single_add(new_single, data, len);
+        const SMARTBUFFER_LEN_T written = sBuffer_single_add(new_single, data, len);
         sBuffer_add(buf, new_single);
-        return sBuffer_single_count(new_single);
+        return written;
     }
     const SMARTBUFFER_LEN_T remaining = sBuffer_single_count_remaining(last);
-    const SMARTBUFFER_LEN_T last_lenBefore = sBuffer_single_count(last);
     if (remaining >= len) {
-        last = sBuffer_single_add(last, data, len);
-        // TODO: assert that the address of last stays the same
-        return sBuffer_single_count(last) - last_lenBefore;
+        return sBuffer_single_add(last, data, len);
     } else {
-        last = sBuffer_single_add(last, data, remaining); // fill last buffer
-        // TODO: assert that the address of last stays the same
-        SMARTBUFFER_LEN_T written = sBuffer_single_count(last) - last_lenBefore;
+        SMARTBUFFER_LEN_T written = sBuffer_single_add(last, data, remaining); // fill last buffer
 
         const SMARTBUFFER_CHAR * restData = data + remaining;
         SMARTBUFFER_LEN_T restLen = len - remaining;
         sBuffer_single_ptr new_single = sBuffer_single_create(restLen);
-        new_single = sBuffer_single_add(new_single, restData, restLen);
-        written += sBuffer_single_count(new_single);
+        written += sBuffer_single_add(new_single, restData, restLen);
         sBuffer_add(buf, new_single);
         return written;
     }
@@ -160,11 +154,10 @@ sBuffer_index_descr sBuffer_find_index(const sBuffer * buf, SMARTBUFFER_LEN_T se
 
 SMARTBUFFER_LEN_T sBuffer_write_helper(sBuffer * buf, sBuffer_index_descr found, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T size) {
     // check if buffer is big enough, else write into the next
-    const SMARTBUFFER_LEN_T space = (*found.single.bufP)->own.allocated - found.single.index;
-    const SMARTBUFFER_LEN_T lenBefore = sBuffer_single_count(*found.single.bufP);
+    sBuffer_single_ptr curBuf = *found.single.bufP;
+    const SMARTBUFFER_LEN_T space = curBuf->own.allocated - found.single.index;
     if (size > space) {
-        *found.single.bufP = sBuffer_single_write(*found.single.bufP, found.single.index, data, space); // fill the current buffer
-        const SMARTBUFFER_LEN_T written = sBuffer_single_count(*found.single.bufP) - lenBefore;
+        const SMARTBUFFER_LEN_T written = sBuffer_single_write(curBuf, found.single.index, data, space); // fill the current buffer
 
         // write the rest into the next buffer (overwrite)
         const SMARTBUFFER_CHAR * restData = data + space;
@@ -179,8 +172,7 @@ SMARTBUFFER_LEN_T sBuffer_write_helper(sBuffer * buf, sBuffer_index_descr found,
             return written + sBuffer_append(buf, restData, restLen);
         }
     } else {
-        *found.single.bufP = sBuffer_single_write(*found.single.bufP, found.single.index, data, size);
-        return sBuffer_single_count(*found.single.bufP) - lenBefore;
+        return sBuffer_single_write(curBuf, found.single.index, data, size);
     }
 }
 
@@ -188,19 +180,20 @@ SMARTBUFFER_LEN_T sBuffer_insert_helper(sBuffer * buf, sBuffer_index_descr found
     // if we insert between two sBuffer_single, we just insert a new sBuffer_single
     if (found.single.index == 0 /* || found.single.index == sBuffer_single_count(found.single.buf)*/) {
         sBuffer_single_ptr newbuf = sBuffer_single_create(size);
-        newbuf = sBuffer_single_add(newbuf, data, size);
+        const SMARTBUFFER_LEN_T written = sBuffer_single_add(newbuf, data, size);
         sBuffer_insert_single(buf, found.index, newbuf);
-        return sBuffer_single_count(newbuf);
+        return written;
     }
     // else insert into the sBuffer_single
     // TODO: In the future the buffer may be split (splitting must be implemented) and a new sBuffer_single can be inserted
     //return sBuffer_single_insert(found.single.buf, found.single.index, data, size);
-    sBuffer_single_ptr part1 = sBuffer_single_create_child(*found.single.bufP, 0, found.single.index);
-    sBuffer_single_ptr part2 = sBuffer_single_create_child(*found.single.bufP, found.single.index, sBuffer_single_count(*found.single.bufP) - found.single.index);
-    sBuffer_remove_single(buf, *found.single.bufP);
+    sBuffer_single_ptr curBuf = *found.single.bufP;
+    sBuffer_single_ptr part1 = sBuffer_single_create_child(curBuf, 0, found.single.index);
+    sBuffer_single_ptr part2 = sBuffer_single_create_child(curBuf, found.single.index, sBuffer_single_count(curBuf) - found.single.index);
+    sBuffer_remove_single(buf, curBuf);
 
     sBuffer_single_ptr newbuf = sBuffer_single_create(size);
-    newbuf = sBuffer_single_add(newbuf, data, size);
+    const SMARTBUFFER_LEN_T written = sBuffer_single_add(newbuf, data, size);
 
     sBuffer_insert_single(buf, found.index, part1);
     sBuffer_insert_single(buf, found.index+1, newbuf);
@@ -208,7 +201,7 @@ SMARTBUFFER_LEN_T sBuffer_insert_helper(sBuffer * buf, sBuffer_index_descr found
 
     //sBuffer_single_free(part1);
     //sBuffer_single_free(part2);
-    return sBuffer_single_count(newbuf);
+    return written;
 }
 
 SMARTBUFFER_LEN_T sBuffer_write(sBuffer * buf, SMARTBUFFER_LEN_T startIndex, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T size) {
@@ -234,7 +227,7 @@ sBuffer_single_ptr sBuffer_join(const sBuffer * toJoin) {
 
     SMARTBUFFER_FOREACH_P(i, current, toJoin,
         SMARTBUFFER_LEN_T toWrite = sBuffer_single_count(current);
-        ret = sBuffer_single_add(ret, sBuffer_single_get(current), toWrite);
+        sBuffer_single_add(ret, sBuffer_single_get(current), toWrite);
     )
 
     return ret;

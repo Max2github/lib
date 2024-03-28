@@ -4,18 +4,11 @@
 
 // intern
 
-SMARTBUFFER_CHAR * sBuffer_single_alloc(SMARTBUFFER_LEN_T size) {
-    return (SMARTBUFFER_CHAR *) SMARTBUFFER_H_MALLOC(size + sizeof(sBuffer_single));
-}
-
 sBuffer_single_ptr sBuffer_single_alloc_own(SMARTBUFFER_LEN_T size, SMARTBUFFER_BOOL_T is_readonly, SMARTBUFFER_BOOL_T is_allocated) {
-    // allocate bytes
-    SMARTBUFFER_CHAR * bytes = sBuffer_single_alloc(size);
-
     // set info / metadata
-    sBuffer_single_ptr buf = (sBuffer_single_ptr) bytes;
+    sBuffer_single_ptr buf = (sBuffer_single_ptr) SMARTBUFFER_H_MALLOC(sizeof(sBuffer_single));
     if (is_allocated) {
-        buf->own.data = bytes + sizeof(sBuffer_single);
+        buf->own.data = (SMARTBUFFER_CHAR *) SMARTBUFFER_H_MALLOC(size);
         buf->own.len = 0;
         buf->own.allocated = size;
     }
@@ -35,33 +28,24 @@ SMARTBUFFER_LEN_T sBuffer_single_calc_extendSize(SMARTBUFFER_LEN_T lenToAdd, SMA
     return ((lenToAdd / stepSize) * stepSize + stepSize) * mult;
 }
 
-sBuffer_single_ptr sBuffer_single_realloc(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T lenToAdd) {
+SMARTBUFFER_BOOL_T sBuffer_single_realloc(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T lenToAdd) {
     // if only data is allocated
-    if (!buf->flags.is_this_allocated && buf->flags.is_data_allocated) {
+    if (buf->flags.is_data_allocated) {
         SMARTBUFFER_LEN_T newlen = buf->own.allocated + sBuffer_single_calc_extendSize(lenToAdd, 10, 1);
         buf->own.data = SMARTBUFFER_H_REALLOC(buf->own.data, newlen);
         buf->own.allocated = newlen;
-        return buf;
+        return true;
     }
-    if (buf->flags.is_this_allocated) {
-        const SMARTBUFFER_LEN_T newlen = buf->own.allocated + sBuffer_single_calc_extendSize(lenToAdd, 10, 1);
-        SMARTBUFFER_CHAR * bytes = SMARTBUFFER_H_REALLOC(buf, sizeof(sBuffer_single) + newlen);
-        if (bytes == NULL) { return NULL; }
-        buf = (sBuffer_single_ptr) bytes;
-        buf->own.data = bytes + sizeof(sBuffer_single);
-        buf->own.allocated = newlen;
-        return buf;
-    }
-    return NULL;
+    return false;
 }
 
-sBuffer_single_ptr sBuffer_single_check_realloc(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T lenToAdd) {
+SMARTBUFFER_BOOL_T sBuffer_single_check_realloc(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T lenToAdd) {
     if (buf->flags.is_readonly) { return false; }
     if (buf->flags.is_child) { return false; }
     if(buf->own.len + lenToAdd > buf->own.allocated) {
         return sBuffer_single_realloc(buf, lenToAdd);
     }
-    return buf;
+    return true;
 }
 
 // extern
@@ -98,7 +82,7 @@ sBuffer_single_ptr sBuffer_single_create_static(const SMARTBUFFER_CHAR * data, S
 }
 
 sBuffer_single_ptr sBuffer_single_create_child(sBuffer_single_ptr parent, SMARTBUFFER_LEN_T begin, SMARTBUFFER_LEN_T len) {
-    sBuffer_single_ptr buf = (sBuffer_single_ptr) sBuffer_single_alloc(0);
+    sBuffer_single_ptr buf = (sBuffer_single_ptr) SMARTBUFFER_H_MALLOC(sizeof(sBuffer_single));
     buf->child.parent = parent;
     buf->child.begin = begin;
     buf->child.len = len;
@@ -114,11 +98,11 @@ sBuffer_single_ptr sBuffer_single_create_child(sBuffer_single_ptr parent, SMARTB
     return buf;
 }
 
-sBuffer_single_ptr sBuffer_single_add_char(sBuffer_single_ptr buf, const SMARTBUFFER_CHAR c) {
+SMARTBUFFER_BOOL_T sBuffer_single_add_char(sBuffer_single_ptr buf, const SMARTBUFFER_CHAR c) {
     return sBuffer_single_add(buf, &c, 1);
 }
 
-sBuffer_single_ptr sBuffer_single_add(sBuffer_single_ptr buf, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
+SMARTBUFFER_LEN_T sBuffer_single_add(sBuffer_single_ptr buf, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
     if (buf->flags.is_readonly) { return 0; }
 
     // TODO: check child?
@@ -127,7 +111,7 @@ sBuffer_single_ptr sBuffer_single_add(sBuffer_single_ptr buf, const SMARTBUFFER_
     return sBuffer_single_write(buf, buf->own.len, data, len);
 }
 
-sBuffer_single_ptr sBuffer_single_insert(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T index, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
+SMARTBUFFER_LEN_T sBuffer_single_insert(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T index, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
     if (buf->flags.is_readonly) { return 0; }
     if (index < sBuffer_single_count(buf)) {
         sBuffer_single_shift_right(buf, index, len);
@@ -157,7 +141,7 @@ SMARTBUFFER_LEN_T sBuffer_single_count_remaining(const sBuffer_single_ptr buf) {
     return buf->own.allocated - buf->own.len;
 }
 
-sBuffer_single_ptr sBuffer_single_shift_right(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T index, SMARTBUFFER_LEN_T amount) {
+SMARTBUFFER_LEN_T sBuffer_single_shift_right(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T index, SMARTBUFFER_LEN_T amount) {
     if (buf->flags.is_readonly) { return 0; }
 
     // TODO: check child?
@@ -174,23 +158,26 @@ sBuffer_single_ptr sBuffer_single_shift_right(sBuffer_single_ptr buf, SMARTBUFFE
     }
 
     SMARTBUFFER_CHAR * writeP = buf->own.data;
+    SMARTBUFFER_LEN_T written = 0;
 
     #ifdef SMARTBUFFER_H_OPT_MEMMOVE
-        buf = sBuffer_single_check_realloc(buf, realAmount);
+        sBuffer_single_check_realloc(buf, realAmount);
         SMARTBUFFER_H_OPT_MEMMOVE(writeP, writeP + realAmount, toShift);
+        written = toShift;
     #else
         // append the last elements
-        sBuffer_single_add(buf, writeP + (len - realAmount), realAmount);
+        written += sBuffer_single_add(buf, writeP + (len - realAmount), realAmount);
         // move the previous element to the current index (from end to beginning)
-        for (SMARTBUFFER_LEN_T curIndex = len; curIndex > index && curIndex >= realAmount; curIndex--) {
+        for (SMARTBUFFER_LEN_T curIndex = len - 1; curIndex >= (index + realAmount); curIndex--) {
             writeP[curIndex] = writeP[curIndex - realAmount];
         }
+        written += len - (index + realAmount);
     #endif
 
-    return buf;
+    return written;
 }
 
-sBuffer_single_ptr sBuffer_single_write(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T index, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
+SMARTBUFFER_LEN_T sBuffer_single_write(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T index, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
     if (buf->flags.is_readonly) { return 0; }
 
     // TODO: check child
@@ -202,14 +189,14 @@ sBuffer_single_ptr sBuffer_single_write(sBuffer_single_ptr buf, SMARTBUFFER_LEN_
     const SMARTBUFFER_LEN_T lenToAdd = (index + len) - buf->own.len;
 
     // check if we need to reallocate
-    buf = sBuffer_single_check_realloc(buf, lenToAdd);
+    sBuffer_single_check_realloc(buf, lenToAdd);
 
     // copy
     SMARTBUFFER_H_MEMCOPY(&(buf->own.data[index]), data, len);
 
     buf->own.len += lenToAdd;
 
-    return buf;
+    return len;
 }
 
 sBuffer_single_ptr sBuffer_single_copy(const sBuffer_single_ptr buf, SMARTBUFFER_LEN_T from, SMARTBUFFER_LEN_T to) {

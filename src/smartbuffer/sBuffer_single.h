@@ -64,8 +64,8 @@ sBuffer_single_ptr sBuffer_single_create_static(const SMARTBUFFER_CHAR *, SMARTB
  */
 sBuffer_single_ptr sBuffer_single_create_child(sBuffer_single_ptr, SMARTBUFFER_LEN_T, SMARTBUFFER_LEN_T);
 
-sBuffer_single_ptr sBuffer_single_add_char(sBuffer_single_ptr, const SMARTBUFFER_CHAR);
-sBuffer_single_ptr sBuffer_single_add(sBuffer_single_ptr, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
+SMARTBUFFER_BOOL_T sBuffer_single_add_char(sBuffer_single_ptr, const SMARTBUFFER_CHAR);
+SMARTBUFFER_LEN_T sBuffer_single_add(sBuffer_single_ptr, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
 
 /**
  * @brief Insert data into an sBuffer_single
@@ -75,9 +75,9 @@ sBuffer_single_ptr sBuffer_single_add(sBuffer_single_ptr, const SMARTBUFFER_CHAR
  * @param data
  * @param size
  * 
- * @return sBuffer_single_ptr may have a different address (than the input), because of reallocation
+ * @return SMARTBUFFER_LEN_T amount inserted
  */
-sBuffer_single_ptr sBuffer_single_insert(sBuffer_single_ptr, SMARTBUFFER_LEN_T, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
+SMARTBUFFER_LEN_T sBuffer_single_insert(sBuffer_single_ptr, SMARTBUFFER_LEN_T, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
 
 const SMARTBUFFER_CHAR * sBuffer_single_get(const sBuffer_single_ptr);
 SMARTBUFFER_LEN_T sBuffer_single_count(const sBuffer_single_ptr);
@@ -100,16 +100,16 @@ SMARTBUFFER_LEN_T sBuffer_single_count_remaining(const sBuffer_single_ptr);
  * @param buf sBuffer_single_ptr
  * @param index SMARTBUFFER_LEN_T
  * @param amount SMARTBUFFER_LEN_T
- * @return sBuffer_single_ptr may have a different address (than the input), because of reallocation
+ * @return actual amount shifted
  */
-sBuffer_single_ptr sBuffer_single_shift_right(sBuffer_single_ptr, SMARTBUFFER_LEN_T, SMARTBUFFER_LEN_T);
+SMARTBUFFER_LEN_T sBuffer_single_shift_right(sBuffer_single_ptr, SMARTBUFFER_LEN_T, SMARTBUFFER_LEN_T);
 
 /**
  * @brief 
  * 
- * @return sBuffer_single_ptr may have a different address (than the input), because of reallocation
+ * @return SMARTBUFFER_LEN_T size of SMARTBUFFER_CHAR's written
  */
-sBuffer_single_ptr sBuffer_single_write(sBuffer_single_ptr, SMARTBUFFER_LEN_T, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
+SMARTBUFFER_LEN_T sBuffer_single_write(sBuffer_single_ptr, SMARTBUFFER_LEN_T, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
 
 sBuffer_single_ptr sBuffer_single_copy(const sBuffer_single_ptr, SMARTBUFFER_LEN_T from, SMARTBUFFER_LEN_T to);
 

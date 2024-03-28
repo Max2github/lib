@@ -57,10 +57,8 @@ void sString_add(sString * s, sString other) {
 sString_len_t sString_append(sString * s, const sString_char_t * str, sString_len_t len) {
     if (s->flags.obj.is_const) { return 0; }
     if (s->flags.obj.on_add_join) {
-        sBuffer_single_ptr * lastP = sBuffer_getP(&(s->buf), sBuffer_count_single(&(s->buf)) - 1);
-        const size_t lenBefore = sBuffer_single_count(*lastP);
-        *lastP = sBuffer_single_add(*lastP, str, len);
-        return sBuffer_single_count(*lastP) - lenBefore;
+        sBuffer_single_ptr last = sBuffer_get(&(s->buf), sBuffer_count_single(&(s->buf)) - 1);
+        return sBuffer_single_add(last, str, len);
     } else {
         return sBuffer_append(&(s->buf), str, len);
     }
