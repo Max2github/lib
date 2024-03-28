@@ -17,10 +17,7 @@
             "problemMatcher": [
                 "$gcc"
             ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "group": "build",
             "detail": "Vom Debugger generierte Aufgabe."
         },
         {
@@ -41,10 +38,7 @@
             "problemMatcher": [
                 "$gcc"
             ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "group": "build",
             "detail": "Vom Debugger generierte Aufgabe."
         },
         {
@@ -66,6 +60,23 @@
             ],
             "group": "build",
             "detail": "compiler: /usr/bin/gcc"
+        },
+        {
+            "type": "cppbuild",
+            "label": "testSmartstring debug",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "-Wall",
+                "-Wextra",
+                "-std=c++11",
+                "-o",
+                "${workspaceFolder}/Tests/testSmartstring",
+                "${workspaceFolder}/Tests/testSmartstring.cpp",
+                "-L/opt/homebrew/lib",
+                "-lbenchmark"
+            ]
         }
     ],
     "version": "2.0.0"

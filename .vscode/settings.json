@@ -102,7 +102,8 @@
         "csignal": "cpp",
         "map": "cpp",
         "set": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "any": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled",
     "CodeGPT.model": "gpt-3.5-turbo"
