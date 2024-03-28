@@ -38,7 +38,7 @@ ifdef test
 	DEST = $(test)
 endif
 
-.PHONY: opt build run autotest
+.PHONY: build opt debug run autotest
 
 # -L $(BUILDDIR) -lsmartbuffer -lsmartstring -lwords -lword_pick
 
@@ -47,6 +47,9 @@ build: $(LIBS)
 
 opt: CXXFLAGS += -O3
 opt: build
+
+debug: CXXFLAGS += -g
+debug: build
 
 run: $(DEST)
 	./$(DEST) $(PARAMETERS)
