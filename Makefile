@@ -12,6 +12,7 @@ AR = ar
 CFLAGS = -c -fpic -x c
 CFLAGS += -Wall -Wextra -Wno-missing-braces
 CFLAGS += -O3
+#CFLAGS += -g
 AR_FLAGS = rcs #-c -r -v -s #crv rcs
 
 LIB = 

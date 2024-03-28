@@ -13,6 +13,7 @@ TESTS := \
 
 MAINDIR := ../../..
 BUILDDIR := $(MAINDIR)/build
+BINDIR := bin
 
 SRC = $(wildcard $(TESTS).cpp)
 DEST = $(TESTS)
@@ -43,7 +44,7 @@ endif
 # -L $(BUILDDIR) -lsmartbuffer -lsmartstring -lwords -lword_pick
 
 build: $(LIBS)
-	$(CXX) $(CXXFLAGS) -o $(DEST) $(SRC) $(LIBS) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o $(BINDIR)/$(DEST) $(SRC) $(LIBS) $(LDFLAGS)
 
 opt: CXXFLAGS += -O3
 opt: build
@@ -52,7 +53,7 @@ debug: CXXFLAGS += -g
 debug: build
 
 run: $(DEST)
-	./$(DEST) $(PARAMETERS)
+	./$(BINDIR)/$(DEST) $(PARAMETERS)
 
 # autotest section
 

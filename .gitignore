@@ -9,3 +9,4 @@ build/**
 
 .fake
 m
+test/benchmark/smart/bin
