@@ -78,5 +78,5 @@ autotest_csv:     run
 
 .PHONY: autotest_console autotest_json autotest_csv
 
-autotest: autotest_mkdir autotest_console
+autotest: autotest_mkdir autotest_console autotest_json autotest_csv
 
