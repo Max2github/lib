@@ -9,7 +9,7 @@ CHEADER_START
 typedef SIMPLE_ARRAY(sBuffer_single_ptr) sBuffer;
 
 struct sBuffer_single_with_index {
-    sBuffer_single_ptr buf;
+    sBuffer_single_ptr * bufP;
     SMARTBUFFER_LEN_T index; // index in buf
 };
 typedef struct sBuffer_single_with_index sBuffer_single_with_index;
@@ -78,6 +78,7 @@ void sBuffer_insert_single_noShift(sBuffer *, SMARTBUFFER_LEN_T, sBuffer_single_
 void sBuffer_insert_single(sBuffer *, SMARTBUFFER_LEN_T, sBuffer_single_ptr);
 
 sBuffer_single_ptr sBuffer_get(const sBuffer *, SMARTBUFFER_LEN_T);
+sBuffer_single_ptr * sBuffer_getP(const sBuffer *, SMARTBUFFER_LEN_T);
 
 /**
  * @brief Search for a sBuffer_single_ptr in the buffer and remove it

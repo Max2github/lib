@@ -94,6 +94,7 @@ void BM_Minibuffer(benchmark::State& state) {
 }
 #endif
 
+#if 0
 void BM_CString(benchmark::State& state) {
     char * hi = (char *) malloc(strlen(str)+1);
     strcpy(hi, str);
@@ -105,6 +106,7 @@ void BM_CString(benchmark::State& state) {
     state.SetComplexityN(state.iterations());
     //state.SetComplexityN(state.range(0));
 }
+#endif
 
 void BM_StdStringOwnAlloc(benchmark::State& state) {
     using string = std::basic_string<char, std::char_traits<char>, OwnAllocator<char> >;
@@ -137,7 +139,7 @@ void SetBenchmarkParams(benchmark::internal::Benchmark * benchmark) {
 
 BENCHMARK(BM_SmartString)->Apply(SetBenchmarkParams);
 BENCHMARK(BM_SmartBuffer)->Apply(SetBenchmarkParams);
-BENCHMARK(BM_CString)->Apply(SetBenchmarkParams);
+//BENCHMARK(BM_CString)->Apply(SetBenchmarkParams);
 BENCHMARK(BM_Minibuffer)->Apply(SetBenchmarkParams);
 BENCHMARK(BM_StdString)->Apply(SetBenchmarkParams);
 BENCHMARK(BM_StdStringOwnAlloc)->Apply(SetBenchmarkParams);
