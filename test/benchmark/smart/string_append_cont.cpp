@@ -132,7 +132,7 @@ void BM_StdString(benchmark::State& state) {
 void SetBenchmarkParams(benchmark::internal::Benchmark * benchmark) {
     benchmark
         ->MinWarmUpTime(std::chrono::seconds(5).count())
-        ->Iterations(100)
+        ->Iterations(1)
         //->RangeMultiplier(2)->Range(1<<10, 1<<18)
         ->RangeMultiplier(2)->Range(1, 1<<10)
         ->Complexity(benchmark::BigO::oAuto)

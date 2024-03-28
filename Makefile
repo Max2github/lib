@@ -80,6 +80,9 @@ endif
 
 # prepare commands
 
+H_AS_SOURCE := words word_pick list
+H_AS_SOURCE_OBJ := $(H_AS_SOURCE:%=$(OBJ_DIR)/%.o)
+
 FOLDER =
 
 smartbuffer: FOLDER = /smartbuffer
@@ -89,13 +92,15 @@ SRC = $(wildcard $(SRC_DIR)$(FOLDER)/*.c)
 OBJ = $(SRC:$(SRC_DIR)$(FOLDER)/%.c=$(OBJ_DIR)$(FOLDER)/%.o)
 
 # build commands (extern)
-words: $(LIB_FILE)words.a
-word_pick: $(LIB_FILE)word_pick.a
-list: $(LIB_FILE)list.a
 smartbuffer: $(LIB_FILE)smartbuffer.a
 smartstring: $(LIB_FILE)smartstring.a
 
-# build any (intern)
+# build all which have one .h file as source file
+$(H_AS_SOURCE): $(H_AS_SOURCE_OBJ)
+	$(AR) $(AR_FLAGS) $(LIB_FILE)$@.a $^
+	ranlib $(LIB_FILE)$@.a
+
+# build all which have an own folder
 $(LIB_FILE)%.a: $(OBJ_DIR)/%.o
 	$(AR) $(AR_FLAGS) $@ $^
 	ranlib $@
