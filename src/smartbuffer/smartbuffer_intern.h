@@ -5,19 +5,8 @@
 
 CHEADER_START
 
-// sBuffer_single_data
-
-sBuffer_single_data sBuffer_single_data_create(SMARTBUFFER_LEN_T);
-void sBuffer_single_data_add_char(sBuffer_single_data *, const SMARTBUFFER_CHAR);
-void sBuffer_single_data_add(sBuffer_single_data *, const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
-void sBuffer_single_data_shift_right(sBuffer_single_data *, SMARTBUFFER_LEN_T, SMARTBUFFER_LEN_T);
-SMARTBUFFER_CHAR * sBuffer_single_data_get(const sBuffer_single_data *);
-SMARTBUFFER_LEN_T sBuffer_single_data_count(const sBuffer_single_data *);
-SMARTBUFFER_LEN_T sBuffer_single_data_count_remaining(const sBuffer_single_data *);
-void sBuffer_single_data_free(sBuffer_single_data *);
-
-SMARTBUFFER_LEN_T sBuffer_single_usageCount_decrease(sBuffer_single_ptr buf);
-SMARTBUFFER_LEN_T sBuffer_single_usageCount_increase(sBuffer_single_ptr buf);
+//SMARTBUFFER_LEN_T sBuffer_single_usageCount_decrease(sBuffer_single_ptr buf);
+//SMARTBUFFER_LEN_T sBuffer_single_usageCount_increase(sBuffer_single_ptr buf);
 
 // sBuffer_single
 
