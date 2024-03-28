@@ -68,6 +68,7 @@ void BM_SmartString(benchmark::State& state) {
     for (const auto _ : state) {
         hi.Append(str);
     }
+    state.SetComplexityN(state.iterations());
     //state.SetComplexityN(state.range(0));
 }
 
@@ -78,6 +79,7 @@ void BM_SmartBuffer(benchmark::State& state) {
     for (const auto _ : state) {
         hi.Add(m::smart::buffer::SinglePtr(str, strlen(str)));
     }
+    state.SetComplexityN(state.iterations());
     //state.SetComplexityN(state.range(0));
 }
 

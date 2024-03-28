@@ -52,7 +52,7 @@ opt: build
 debug: CXXFLAGS += -g
 debug: build
 
-run: $(DEST)
+run: $(BINDIR)/$(DEST)
 	./$(BINDIR)/$(DEST) $(PARAMETERS)
 
 # autotest section
