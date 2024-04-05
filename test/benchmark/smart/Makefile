@@ -8,15 +8,15 @@ LDFLAGS = -L/opt/homebrew/lib
 LDFLAGS += -isystem benchmark/include
 LDFLAGS += -lbenchmark
 
-TESTS := \
+TESTS := #\
 	string_append_cont
 
 MAINDIR := ../../..
 BUILDDIR := $(MAINDIR)/build
 BINDIR := bin
 
-SRC = $(wildcard $(TESTS).cpp)
-DEST = $(TESTS)
+#SRC = $(wildcard $(TESTS).cpp)
+#DEST = $(TESTS)
 
 LIBS_DEP := \
 	$(BUILDDIR)/libwords.a       \
@@ -36,17 +36,17 @@ endef
 $(BUILDDIR)/%.a:
 	cd $(MAINDIR) && make $(@:$(BUILDDIR)/lib%.a=%)
 
-ifdef test
-	SRC = $(test).cpp
-	DEST = $(test)
-	TESTNAME = test
+ifdef TEST
+SRC = $(TEST).cpp
+DEST = $(TEST)
+TESTNAME = $(TEST)
 endif
 
 ifeq ($(OPT), 1)
-	CXXFLAGS += -O3
+CXXFLAGS += -O3
 endif
 ifeq ($(DEBUG), 1)
-	CXXFLAGS += -g
+CXXFLAGS += -g
 endif
 
 .PHONY: build opt debug run autotest autotest_mem
@@ -70,6 +70,7 @@ debug: CXXFLAGS += -g
 debug: build
 
 run: $(BINDIR)/$(DEST)
+	echo $(TEST)
 	./$(BINDIR)/$(DEST) $(PARAMETERS)
 
 # autotest section
@@ -84,7 +85,7 @@ ifeq ($(OPT), 1)
 	AUTOTEST_RESULTS_DIR_OPT = $(AUTOTEST_RESULTS_DIR_BASE)/opt
 endif
 
-autotest_mem: TESTNAME = $(test)/mem
+autotest_mem: TESTNAME = $(TEST)/mem
 
 AUTOTEST_RESULTS_DIR = $(AUTOTEST_RESULTS_DIR_OPT)/$(OS_UNAME)/$(TESTNAME)/$(TIMESTAMP)
 
@@ -102,8 +103,9 @@ autotest_csv:     run
 .PHONY: autotest_console autotest_json autotest_csv
 
 autotest: autotest_mkdir
-	$(MAKE) autotest_console AUTOTEST_RESULTS_DIR=$(AUTOTEST_RESULTS_DIR)
-	$(MAKE) autotest_json    AUTOTEST_RESULTS_DIR=$(AUTOTEST_RESULTS_DIR)
-	$(MAKE) autotest_csv     AUTOTEST_RESULTS_DIR=$(AUTOTEST_RESULTS_DIR)
+	$(MAKE) autotest_console TEST=$(TEST) OPT=$(OPT) AUTOTEST_RESULTS_DIR=$(AUTOTEST_RESULTS_DIR)
+	$(MAKE) autotest_json    TEST=$(TEST) OPT=$(OPT) AUTOTEST_RESULTS_DIR=$(AUTOTEST_RESULTS_DIR)
+	$(MAKE) autotest_csv     TEST=$(TEST) OPT=$(OPT) AUTOTEST_RESULTS_DIR=$(AUTOTEST_RESULTS_DIR)
+
 autotest_mem: autotest_mkdir autotest_json
 
