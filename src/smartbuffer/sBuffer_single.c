@@ -32,7 +32,7 @@ SMARTBUFFER_BOOL_T sBuffer_single_realloc(sBuffer_single_ptr buf, SMARTBUFFER_LE
     // if only data is allocated
     if (buf->flags.is_data_allocated) {
         SMARTBUFFER_LEN_T newlen = buf->own.allocated + sBuffer_single_calc_extendSize(lenToAdd, 10, 1);
-        buf->own.data = SMARTBUFFER_H_REALLOC(buf->own.data, newlen);
+        buf->own.data = (SMARTBUFFER_CHAR *) SMARTBUFFER_H_REALLOC(buf->own.data, newlen);
         buf->own.allocated = newlen;
         return true;
     }

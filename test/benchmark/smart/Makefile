@@ -18,13 +18,15 @@ BINDIR := bin
 SRC = $(wildcard $(TESTS).cpp)
 DEST = $(TESTS)
 
-LIBS = \
-	$(BUILDDIR)/libsmartbuffer.a \
-	$(BUILDDIR)/libsmartstring.a \
+LIBS_DEP := \
 	$(BUILDDIR)/libwords.a       \
 	$(BUILDDIR)/libword_pick.a
 
-OPT=0
+LIBS = $(LIBS_DEP) \
+	$(BUILDDIR)/libsmartbuffer.a \
+	$(BUILDDIR)/libsmartstring.a \
+
+#OPT=0
 
 define build_lib = 
 	$(BUILDDIR)/$(1).a:
@@ -37,14 +39,29 @@ $(BUILDDIR)/%.a:
 ifdef test
 	SRC = $(test).cpp
 	DEST = $(test)
+	TESTNAME = test
 endif
 
-.PHONY: build opt debug run autotest
+ifeq ($(OPT), 1)
+	CXXFLAGS += -O3
+endif
+ifeq ($(DEBUG), 1)
+	CXXFLAGS += -g
+endif
+
+.PHONY: build opt debug run autotest autotest_mem
 
 # -L $(BUILDDIR) -lsmartbuffer -lsmartstring -lwords -lword_pick
 
 build: $(LIBS)
 	$(CXX) $(CXXFLAGS) -o $(BINDIR)/$(DEST) $(SRC) $(LIBS) $(LDFLAGS)
+
+nolib: LIBS = $(LIBS_DEP)
+nolib: CXXFLAGS += -DINCLUDE_C_SOURCES=1
+nolib: build
+
+memtest: CXXFLAGS += -DMEMORY_TEST=1
+memtest: nolib
 
 opt: CXXFLAGS += -O3
 opt: build
@@ -67,14 +84,16 @@ ifeq ($(OPT), 1)
 	AUTOTEST_RESULTS_DIR_OPT = $(AUTOTEST_RESULTS_DIR_BASE)/opt
 endif
 
-AUTOTEST_RESULTS_DIR = $(AUTOTEST_RESULTS_DIR_OPT)/$(OS_UNAME)/$(DEST)/$(TIMESTAMP)
+autotest_mem: TESTNAME = $(test)/mem
+
+AUTOTEST_RESULTS_DIR = $(AUTOTEST_RESULTS_DIR_OPT)/$(OS_UNAME)/$(TESTNAME)/$(TIMESTAMP)
 
 autotest_mkdir:
 	mkdir -p $(AUTOTEST_RESULTS_DIR)
 
 autotest_console: PARAMETERS = --benchmark_out=$(AUTOTEST_RESULTS_DIR)/console.txt --benchmark_out_format=console
 autotest_json:    PARAMETERS = --benchmark_out=$(AUTOTEST_RESULTS_DIR)/result.json --benchmark_out_format=json
-autotest_csv:     PARAMETERS = --benchmark_out=$(AUTOTEST_RESULTS_DIR)/result.csv  --benchmark_out_format=json
+autotest_csv:     PARAMETERS = --benchmark_out=$(AUTOTEST_RESULTS_DIR)/result.csv  --benchmark_out_format=csv
 
 autotest_console: run
 autotest_json:    run
@@ -82,5 +101,9 @@ autotest_csv:     run
 
 .PHONY: autotest_console autotest_json autotest_csv
 
-autotest: autotest_mkdir autotest_console autotest_json autotest_csv
+autotest: autotest_mkdir
+	$(MAKE) autotest_console AUTOTEST_RESULTS_DIR=$(AUTOTEST_RESULTS_DIR)
+	$(MAKE) autotest_json    AUTOTEST_RESULTS_DIR=$(AUTOTEST_RESULTS_DIR)
+	$(MAKE) autotest_csv     AUTOTEST_RESULTS_DIR=$(AUTOTEST_RESULTS_DIR)
+autotest_mem: autotest_mkdir autotest_json
 

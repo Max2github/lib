@@ -4,6 +4,7 @@
 #include <string>
 
 #include "own_allocator.hpp"
+#include "MemoryCounter.hpp"
 #include "string_include.hpp"
 
 #include <benchmark/benchmark.h>
@@ -59,8 +60,6 @@ struct OwnAllocator {
 
 const std::string strToAdd = gen_random(4000);
 const char * str = strToAdd.c_str();
-
-//const auto rng = std::vector<int>();
 
 void BM_SmartString(benchmark::State& state) {
     smart::string::String hi(str);
@@ -120,6 +119,7 @@ void BM_StdStringOwnAlloc(benchmark::State& state) {
     //state.SetComplexityN(state.range(0));
 }
 
+#ifndef MEMORY_TEST
 void BM_StdString(benchmark::State& state) {
     std::string hi(str);
     for (const benchmark::State::StateIterator::Value it : state) {
@@ -128,11 +128,12 @@ void BM_StdString(benchmark::State& state) {
     state.SetComplexityN(state.iterations());
     //state.SetComplexityN(state.range(0));
 }
+#endif
 
 void SetBenchmarkParams(benchmark::internal::Benchmark * benchmark) {
     benchmark
-        ->MinWarmUpTime(std::chrono::seconds(5).count())
-        ->Iterations(1)
+        //->MinWarmUpTime(std::chrono::seconds(5).count())
+        ->Iterations(10)
         //->RangeMultiplier(2)->Range(1<<10, 1<<18)
         ->RangeMultiplier(2)->Range(1, 1<<10)
         ->Complexity(benchmark::BigO::oAuto)
@@ -143,7 +144,23 @@ BENCHMARK(BM_SmartString)->Apply(SetBenchmarkParams);
 BENCHMARK(BM_SmartBuffer)->Apply(SetBenchmarkParams);
 //BENCHMARK(BM_CString)->Apply(SetBenchmarkParams);
 BENCHMARK(BM_Minibuffer)->Apply(SetBenchmarkParams);
+#ifndef MEMORY_TEST
 BENCHMARK(BM_StdString)->Apply(SetBenchmarkParams);
+#endif
 BENCHMARK(BM_StdStringOwnAlloc)->Apply(SetBenchmarkParams);
 
+#ifdef MEMORY_TEST
+int main(int argc, char** argv) {
+    char arg0_default[] = "benchmark";
+    char* args_default = arg0_default;
+    if (!argv) { argc = 1; argv = &args_default; }
+    ::benchmark::RegisterMemoryManager(&MemoryCounter::mm);
+    ::benchmark::Initialize(&argc, argv);
+    if (::benchmark::ReportUnrecognizedArguments(argc, argv)) return 1;
+    ::benchmark::RunSpecifiedBenchmarks();
+    ::benchmark::Shutdown();
+    return 0;
+}
+#else
 BENCHMARK_MAIN();
+#endif
