@@ -71,7 +71,6 @@ struct { \
 
 #define SIMPLE_ARRAY_WRITE_NO_CHECK(arr, index, Data, len) \
 { \
-    indexP i = 0; \
     SIMPLE_ARRAY_MEMCOPY((void *) ((arr).data + index), (void *) Data, len * sizeof(*(arr).data)); \
     indexP newSize = ((index) + (len)); \
     if (newSize > (arr).written) { (arr).written = newSize; } \
