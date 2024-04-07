@@ -1,0 +1,63 @@
+2024-04-07T08:55:19+02:00
+Running ./bin/string_append_cont
+Run on (8 X 24 MHz CPU s)
+CPU Caches:
+  L1 Data 64 KiB
+  L1 Instruction 128 KiB
+  L2 Unified 4096 KiB (x8)
+Load Average: 2.95, 3.36, 2.95
+------------------------------------------------------------------------------------
+Benchmark                                          Time             CPU   Iterations
+------------------------------------------------------------------------------------
+BM_SmartBuffer/1/iterations:1000                 865 ns          862 ns         1000
+BM_SmartBuffer/2/iterations:1000                1609 ns         1607 ns         1000
+BM_SmartBuffer/4/iterations:1000                3153 ns         3153 ns         1000
+BM_SmartBuffer/8/iterations:1000                6256 ns         6204 ns         1000
+BM_SmartBuffer/16/iterations:1000              12673 ns        12619 ns         1000
+BM_SmartBuffer/32/iterations:1000              25888 ns        25616 ns         1000
+BM_SmartBuffer/64/iterations:1000              51342 ns        51034 ns         1000
+BM_SmartBuffer/128/iterations:1000            111235 ns       109359 ns         1000
+BM_SmartBuffer/256/iterations:1000            215910 ns       207716 ns         1000
+BM_SmartBuffer/512/iterations:1000           1139325 ns       470350 ns         1000
+BM_SmartBuffer/1024/iterations:1000          1537464 ns      1100319 ns         1000
+BM_SmartBuffer/iterations:1000_BigO           164.25 NlgN     106.52 NlgN 
+BM_SmartBuffer/iterations:1000_RMS                46 %             5 %    
+BM_Minibuffer/1/iterations:1000                 2378 ns         1623 ns         1000
+BM_Minibuffer/2/iterations:1000                 3654 ns         2881 ns         1000
+BM_Minibuffer/4/iterations:1000                11570 ns         6950 ns         1000
+BM_Minibuffer/8/iterations:1000                19809 ns        12456 ns         1000
+BM_Minibuffer/16/iterations:1000               29553 ns        22969 ns         1000
+BM_Minibuffer/32/iterations:1000               75048 ns        49714 ns         1000
+BM_Minibuffer/64/iterations:1000              117221 ns        82220 ns         1000
+BM_Minibuffer/128/iterations:1000             262349 ns       163586 ns         1000
+BM_Minibuffer/256/iterations:1000             570218 ns       326041 ns         1000
+BM_Minibuffer/512/iterations:1000            1134348 ns       499399 ns         1000
+BM_Minibuffer/1024/iterations:1000           2351038 ns      1059220 ns         1000
+BM_Minibuffer/iterations:1000_BigO           2273.37 N       1038.62 N    
+BM_Minibuffer/iterations:1000_RMS                  4 %            12 %    
+BM_StdStringOwnAlloc/1/iterations:1000           483 ns          455 ns         1000
+BM_StdStringOwnAlloc/2/iterations:1000          1205 ns         1168 ns         1000
+BM_StdStringOwnAlloc/4/iterations:1000          2528 ns         2429 ns         1000
+BM_StdStringOwnAlloc/8/iterations:1000          5398 ns         4613 ns         1000
+BM_StdStringOwnAlloc/16/iterations:1000        11368 ns         9517 ns         1000
+BM_StdStringOwnAlloc/32/iterations:1000        20674 ns        19172 ns         1000
+BM_StdStringOwnAlloc/64/iterations:1000        52862 ns        43875 ns         1000
+BM_StdStringOwnAlloc/128/iterations:1000       84903 ns        77130 ns         1000
+BM_StdStringOwnAlloc/256/iterations:1000      155533 ns       145541 ns         1000
+BM_StdStringOwnAlloc/512/iterations:1000      279620 ns       268921 ns         1000
+BM_StdStringOwnAlloc/1024/iterations:1000     632378 ns       583709 ns         1000
+BM_StdStringOwnAlloc/iterations:1000_BigO     604.88 N        562.31 N    
+BM_StdStringOwnAlloc/iterations:1000_RMS          10 %             7 %    
+BM_StdString/1/iterations:1000                   610 ns          443 ns         1000
+BM_StdString/2/iterations:1000                  1886 ns         1271 ns         1000
+BM_StdString/4/iterations:1000                  3787 ns         2591 ns         1000
+BM_StdString/8/iterations:1000                  6227 ns         4798 ns         1000
+BM_StdString/16/iterations:1000                 9308 ns         8592 ns         1000
+BM_StdString/32/iterations:1000                22557 ns        19962 ns         1000
+BM_StdString/64/iterations:1000                48672 ns        40328 ns         1000
+BM_StdString/128/iterations:1000               81424 ns        74578 ns         1000
+BM_StdString/256/iterations:1000              187368 ns       156318 ns         1000
+BM_StdString/512/iterations:1000              435680 ns       330205 ns         1000
+BM_StdString/1024/iterations:1000             688337 ns       583610 ns         1000
+BM_StdString/iterations:1000_BigO             708.37 N        586.26 N    
+BM_StdString/iterations:1000_RMS                  18 %            10 %    
