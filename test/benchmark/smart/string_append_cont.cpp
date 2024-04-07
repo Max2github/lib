@@ -3,6 +3,7 @@
 const std::string strToAdd = gen_random(4000);
 const char * str = strToAdd.c_str();
 
+// ensure that we all use the same strlen function (like std::string)
 #define STRLEN(s) std::char_traits<char>::length(s)
 
 void SetBenchmarkParams(benchmark::internal::Benchmark * benchmark) {
@@ -40,7 +41,7 @@ void BM_SmartBuffer(benchmark::State& state) {
         //hi.Add(m::smart::buffer::SinglePtr(str, STRLEN(str)));
 
         for (int64_t i = 0; i < numIterations; i++) {
-            hi.Add(m::smart::buffer::SinglePtr(str, STRLEN(str)));
+            hi.Add(m::smart::buffer::SinglePtr::NewReadonly(str, STRLEN(str)));
         }
     }
 

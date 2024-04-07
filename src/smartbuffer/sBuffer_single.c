@@ -5,13 +5,25 @@
 // intern
 
 sBuffer_single_ptr sBuffer_single_alloc_own(SMARTBUFFER_LEN_T size, SMARTBUFFER_BOOL_T is_readonly, SMARTBUFFER_BOOL_T is_allocated) {
+    SMARTBUFFER_LEN_T allocSize = sizeof(sBuffer_single);
+    // if the data should not be allocated, but we should alloc size then alloc size along with metadata alloc
+    if (!is_allocated) {
+        allocSize += size;
+    }
+
+    sBuffer_single_ptr buf = (sBuffer_single_ptr) SMARTBUFFER_H_MALLOC(allocSize);
+
     // set info / metadata
-    sBuffer_single_ptr buf = (sBuffer_single_ptr) SMARTBUFFER_H_MALLOC(sizeof(sBuffer_single));
     if (is_allocated) {
         buf->own.data = (SMARTBUFFER_CHAR *) SMARTBUFFER_H_MALLOC(size);
-        buf->own.len = 0;
         buf->own.allocated = size;
+    } else if(size > 0) {
+        buf->own.data = ((index8 *) buf) + sizeof(sBuffer_single);
+        buf->own.allocated = 0;
+    } else {
+        buf->own.allocated = 0;
     }
+    buf->own.len = 0;
     buf->own.usage_count = 0;
 
     // set flags
@@ -72,6 +84,27 @@ SMARTBUFFER_LEN_T sBuffer_single_usageCount_decrease(sBuffer_single_ptr buf) {
 
 sBuffer_single_ptr sBuffer_single_create(SMARTBUFFER_LEN_T size) {
     return sBuffer_single_alloc_own(size, SMARTBUFFER_FALSE, SMARTBUFFER_TRUE);
+}
+
+sBuffer_single_ptr sBuffer_single_create_once(SMARTBUFFER_LEN_T size) {
+    return sBuffer_single_alloc_own(size, SMARTBUFFER_FALSE, SMARTBUFFER_FALSE);
+}
+
+sBuffer_single_ptr sBuffer_single_create_readonly(const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
+    // readonly needs to be disabled for write
+    sBuffer_single_ptr buf = sBuffer_single_create_once(len);
+    sBuffer_single_write(buf, 0, data, len);
+    // enable readonly
+    buf->flags.is_readonly = true;
+    return buf;
+}
+
+sBuffer_single_ptr sBuffer_single_create_unmananged(const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len, SMARTBUFFER_LEN_T size) {
+    sBuffer_single_ptr buf = sBuffer_single_create_once(0);
+    buf->own.data = (SMARTBUFFER_CHAR *) data;
+    buf->own.len = len;
+    buf->own.allocated = size;
+    return buf;
 }
 
 sBuffer_single_ptr sBuffer_single_create_static(const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {

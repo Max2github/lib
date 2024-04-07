@@ -117,39 +117,20 @@ namespace m {
 
             // public
 
-            SinglePtr::SinglePtr() : m_buffer(NULL) {}
             SinglePtr::SinglePtr(size_t size) : m_buffer(sBuffer_single_create(size)) { this->m_buffer->own.usage_count = 1; }
-            SinglePtr::SinglePtr(const char_t * data, size_t size, bool isStatic) {
-                if (isStatic) {
-                    m_buffer = sBuffer_single_create_static(data, size);
-                } else {
-                    m_buffer = sBuffer_single_create(size);
-                    this->Write(0, data, size);
-                }
-                this->m_buffer->own.usage_count = 1;
-            }
 
             // from internal
-            SinglePtr::SinglePtr(sBuffer_single_ptr& internal) : m_buffer(internal) {
-                this->UsageCountIncrease();
-            }
             SinglePtr::SinglePtr(const sBuffer_single_ptr& internal) : m_buffer(internal) {
                 this->UsageCountIncrease();
             }
 
     #if LANG_CPP_STD >= 2011
             SinglePtr::SinglePtr(sBuffer_single_ptr&& internal) : m_buffer(internal) {
-                if(!this->IsChild()) { this->UsageCountIncrease(); }
-            }
-            SinglePtr::SinglePtr(const sBuffer_single_ptr&& internal) : m_buffer(internal) {
-                if(!this->IsChild()) { this->UsageCountIncrease(); }
+                this->UsageCountIncrease();
             }
     #endif
 
             // from other
-            SinglePtr::SinglePtr(SinglePtr& other) : m_buffer(other.m_buffer) {
-                this->UsageCountIncrease();
-            }
             SinglePtr::SinglePtr(const SinglePtr& other) : m_buffer(other.m_buffer) {
                 this->UsageCountIncrease();
             }
@@ -158,12 +139,25 @@ namespace m {
             SinglePtr::SinglePtr(SinglePtr&& other) : m_buffer(other.m_buffer) {
                 this->UsageCountIncrease();
             }
-            SinglePtr::SinglePtr(const SinglePtr&& other) : m_buffer(other.m_buffer) {
-                this->UsageCountIncrease();
-            }
     #endif
 
             SinglePtr::~SinglePtr() { this->Delete(); }
+
+            SinglePtr SinglePtr::New(size_t size) {
+                return SinglePtr(sBuffer_single_create(size));
+            }
+            SinglePtr SinglePtr::NewOnce(size_t size) {
+                return SinglePtr(sBuffer_single_create_once(size));
+            }
+            SinglePtr SinglePtr::NewReadonly(const char_t * data, size_t len) {
+                return SinglePtr(sBuffer_single_create_readonly(data, len));
+            }
+            SinglePtr SinglePtr::NewUnmanaged(const char_t * data, size_t len, size_t size) {
+                return SinglePtr(sBuffer_single_create_unmananged(data, len, size));
+            }
+            SinglePtr SinglePtr::NewStatic(const char_t * data, size_t len) {
+                return SinglePtr(sBuffer_single_create_static(data, len));
+            }
 
             bool SinglePtr::IsNull() const { return (m_buffer == NULL); }
             bool SinglePtr::IsReadOnly() const { return m_buffer->flags.is_readonly; }

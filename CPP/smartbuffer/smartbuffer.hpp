@@ -57,29 +57,30 @@ namespace m {
 
             class SinglePtr {
             public:
-                SinglePtr();
-                SinglePtr(size_t size);
-                SinglePtr(const char_t * data, size_t size, bool isStatic = false);
+                SinglePtr(size_t size = 0);
 
                 // from internal
-                SinglePtr(sBuffer_single_ptr&); // copy
-                SinglePtr(const sBuffer_single_ptr&); // const copy
+                SinglePtr(const sBuffer_single_ptr&); // copy
 
                 #if LANG_CPP_STD >= 2011
                 SinglePtr(sBuffer_single_ptr&&); // move
-                SinglePtr(const sBuffer_single_ptr&&); // const move
                 #endif
 
                 // from other
-                SinglePtr(SinglePtr&); // copy
-                SinglePtr(const SinglePtr&); // const copy
+                SinglePtr(const SinglePtr&); // copy
 
                 #if LANG_CPP_STD >= 2011
                 SinglePtr(SinglePtr&&); // move
-                SinglePtr(const SinglePtr&&); // const move
                 #endif
 
                 ~SinglePtr();
+
+                // static create methods
+                static SinglePtr New(size_t size);
+                static SinglePtr NewOnce(size_t size);
+                static SinglePtr NewReadonly(const char_t * data, size_t len);
+                static SinglePtr NewUnmanaged(const char_t * data, size_t len, size_t size);
+                static SinglePtr NewStatic(const char_t * data, size_t len);
 
                 bool IsNull() const;
                 bool IsReadOnly() const;

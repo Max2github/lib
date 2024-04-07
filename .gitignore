@@ -1,12 +1,17 @@
 development/**
-CPP/**
 Tests/**
 buildserver/**
 **/.DS_Store
 superstring**
 build/**
 .vs/*
+CPP/objects
+
+# do not publish now
+CPP/cplussharp
+CPP/list
 
 .fake
 m
 test/benchmark/smart/bin
+test/benchmark/smart/tools

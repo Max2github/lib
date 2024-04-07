@@ -42,13 +42,40 @@ SMARTBUFFER_LEN_T sBuffer_single_usageCount_decrease(sBuffer_single_ptr);
 /**
  * @brief Allocate a sBuffer_single and return a pointer to it
  * @param 0 (SMARTBUFFER_LEN_T) the lenth / size (count - not bytes!) of the new buffer
- * @param 1 (SMARTBUFFER_BOOL_T) if the buffer should be const / readonly (you will not be able to write to it)
  * @return sBuffer_single_ptr
  */
 sBuffer_single_ptr sBuffer_single_create(SMARTBUFFER_LEN_T);
 
 /**
+ * @brief Allocate a sBuffer_single and return a pointer to it
+ * This special buffer cannot reallocate, but it does just one allocation at initialization, making it more efficient.
+ * @param 0 (SMARTBUFFER_LEN_T) the lenth / size (count - not bytes!) of the new buffer
+ * @return sBuffer_single_ptr
+ */
+sBuffer_single_ptr sBuffer_single_create_once(SMARTBUFFER_LEN_T);
+
+/**
+ * @brief Allocate a sBuffer_single and return a pointer to it
+ * The data will be copied, but the buffer will be readonly.
+ * This is more efficient than sBuffer_single_create, as there is only one allocation!
+ * @param 0 (const SMARTBUFFER_CHAR *) a pointer to the data
+ * @param 1 (SMARTBUFFER_LEN_T) the lenth / size (count - not bytes!) of the data
+ * @return sBuffer_single_ptr
+ */
+sBuffer_single_ptr sBuffer_single_create_readonly(const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T);
+
+/**
  * @brief The new buffer just points to the data.
+ * @param 0 (const SMARTBUFFER_CHAR *) a pointer to the data
+ * @param 1 (SMARTBUFFER_LEN_T) the lenth / size (count - not bytes!) of the data
+ * @param 2 (SMARTBUFFER_LEN_T) the total size on which can be written (must be at least as big as length, can be greater)
+ * @return sBuffer_single_ptr
+ */
+sBuffer_single_ptr sBuffer_single_create_unmananged(const SMARTBUFFER_CHAR *, SMARTBUFFER_LEN_T, SMARTBUFFER_LEN_T);
+
+/**
+ * @brief The new buffer just points to the data.
+ * This is the same as unmanaged, except that it is readonly.
  * @param 0 (const SMARTBUFFER_CHAR *) a pointer to the data
  * @param 1 (SMARTBUFFER_LEN_T) the lenth / size (count - not bytes!) of the data
  * @return sBuffer_single_ptr
