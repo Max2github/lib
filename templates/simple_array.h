@@ -19,12 +19,18 @@
 #define SIMPLE_ARRAY_DEFAULT_SIZE 10
 #define SIMPLE_ARRAY_EXTEND_SIZE 10
 
+#if LANG_CPP && LANG_CPP_STD >= 2011
+    #define SIMPLE_ARRAY_DECLTYPE(var) decltype(var)
+#else
+    #define SIMPLE_ARRAY_DECLTYPE(var)
+#endif
+
+#define SIMPLE_ARRAY_TYPE_FROM_ARR(arr) SIMPLE_ARRAY_DECLTYPE((arr).data)
+#define SIMPLE_ARRAY_CAST_TO_POINTER(arr, p) (SIMPLE_ARRAY_TYPE_FROM_ARR(arr) (p))
+
 #define SIMPLE_ARRAY(type) \
 struct { \
-    union { \
-        indexP data; \
-        type * pointer; \
-    }; \
+    type * data; \
     indexP count; \
     indexP written; \
 }
@@ -42,14 +48,21 @@ struct { \
 
 #define SIMPLE_ARRAY_INIT(arr, type, size) \
 { \
-    (arr).data = (indexP) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * size); \
+    (arr).data = (type*) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * size); \
     (arr).count = size; \
     (arr).written = 0; \
 }
 
 #define SIMPLE_ARRAY_CREATE_SIZE(type, size) \
 { \
-    ((indexP) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * (size))), \
+    ((type *) SIMPLE_ARRAY_H_MALLOC(sizeof(type) * (size))), \
+    (size), \
+    0 \
+}
+
+#define SIMPLE_ARRAY_CREATE_SIZE_VAR(var, size) \
+{ \
+    ((SIMPLE_ARRAY_DECLTYPE(var) *) SIMPLE_ARRAY_H_MALLOC(sizeof(var) * (size))), \
     (size), \
     0 \
 }
@@ -59,9 +72,7 @@ struct { \
 #define SIMPLE_ARRAY_WRITE_NO_CHECK(arr, index, Data, len) \
 { \
     indexP i = 0; \
-    for (; i < (len); i++) { \
-        SIMPLE_ARRAY_MEMCOPY((void *)((arr).data + (((index) + i) * sizeof(*(Data)))), (void *)((Data) + i), sizeof(*(Data))); \
-    } \
+    SIMPLE_ARRAY_MEMCOPY((void *) ((arr).data + index), (void *) Data, len * sizeof(*(arr).data)) \
     indexP newSize = ((index) + (len)); \
     if (newSize > (arr).written) { (arr).written = newSize; } \
 }
@@ -70,7 +81,7 @@ struct { \
 { \
     if ((arr).written + (len) > (arr).count) { \
         SIMPLE_ARRAY_H_FREE((void *) (arr).data); \
-        arr = SIMPLE_ARRAY_CREATE_SIZE(*Data, (arr).count + SIMPLE_ARRAY_EXTEND(len)); \
+        arr = SIMPLE_ARRAY_CREATE_SIZE_VAR(*Data, (arr).count + SIMPLE_ARRAY_EXTEND(len)); \
         (arr).count = SIMPLE_ARRAY_EXTEND(len); \
     } \
     SIMPLE_ARRAY_WRITE_NO_CHECK(arr, 0, Data, len); \
@@ -80,7 +91,8 @@ struct { \
 { \
     if ((arr).written + (len) > (index)) { \
         if ((index) + (len) > (arr).count) { \
-            (arr).data = (indexP) SIMPLE_ARRAY_H_REALLOC((void *) (arr).data, (arr).count * sizeof(*Data) + SIMPLE_ARRAY_EXTEND(len) * sizeof(*Data)); \
+            void * newData = SIMPLE_ARRAY_H_REALLOC((void *) (arr).data, (arr).count * sizeof(*Data) + SIMPLE_ARRAY_EXTEND(len) * sizeof(*Data)); \
+            (arr).data = SIMPLE_ARRAY_CAST_TO_POINTER(arr, newData); \
             (arr).count += SIMPLE_ARRAY_EXTEND(len); \
         }\
         SIMPLE_ARRAY_WRITE_NO_CHECK(arr, index, Data, len); \
@@ -91,7 +103,7 @@ struct { \
 
 #define SIMPLE_ARRAY_APPEND(arr, Data) SIMPLE_ARRAY_APPEND_DATA(arr, (&Data), 1)
 
-#define SIMPLE_ARRAY_GET(arr, index) ((arr).pointer)[index]
+#define SIMPLE_ARRAY_GET(arr, index) ((arr).data)[index]
 
 #define SIMPLE_ARRAY_SHIFT_RIGHT(arr, index, amount) \
 { \
