@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        ".fantomasignore": "ignore",
         "*.phpSeg": "php",
         "*.make": "makefile",
         "*.c": "c",
@@ -103,7 +104,8 @@
         "map": "cpp",
         "set": "cpp",
         "ranges": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "execution": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled",
     "CodeGPT.model": "gpt-3.5-turbo"

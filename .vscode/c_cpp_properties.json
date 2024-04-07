@@ -6,6 +6,9 @@
                 "${workspaceFolder}/**",
                 "/opt/homebrew/include"
             ],
+            "compilerArgs": [
+                "-Wno-c++11-extensions"
+            ],
             "defines": [],
             "macFrameworkPath": [
                 "/Library/Developer/CommandLineTools/SDKs/MacOSX12.sdk/System/Library/Frameworks"

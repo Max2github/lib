@@ -97,7 +97,7 @@ smartstring: $(LIB_FILE)smartstring.a
 
 # build all which have one .h file as source file
 $(H_AS_SOURCE): $(H_AS_SOURCE_OBJ)
-	$(AR) $(AR_FLAGS) $(LIB_FILE)$@.a $^
+	$(AR) $(AR_FLAGS) $(LIB_FILE)$@.a $(OBJ_DIR)/$@.o
 	ranlib $(LIB_FILE)$@.a
 
 # build all which have an own folder

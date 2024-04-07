@@ -1,9 +1,13 @@
+MAINDIR := ../../..
+BUILDDIR := $(MAINDIR)/build
+BINDIR := bin
 
 CXX := g++
 CXXFLAGS = -std=c++11 -Wall -Wextra
 
 # for macos
 LDFLAGS = -L/opt/homebrew/lib
+LDFLAGS += -L$(BUILDDIR)
 
 LDFLAGS += -isystem benchmark/include
 LDFLAGS += -lbenchmark
@@ -11,20 +15,16 @@ LDFLAGS += -lbenchmark
 TESTS := #\
 	string_append_cont
 
-MAINDIR := ../../..
-BUILDDIR := $(MAINDIR)/build
-BINDIR := bin
-
 #SRC = $(wildcard $(TESTS).cpp)
 #DEST = $(TESTS)
 
 LIBS_DEP := \
-	$(BUILDDIR)/libwords.a       \
+	$(BUILDDIR)/libwords.a     \
 	$(BUILDDIR)/libword_pick.a
 
 LIBS = $(LIBS_DEP) \
 	$(BUILDDIR)/libsmartbuffer.a \
-	$(BUILDDIR)/libsmartstring.a \
+	$(BUILDDIR)/libsmartstring.a
 
 #OPT=0
 
@@ -54,8 +54,7 @@ endif
 # -L $(BUILDDIR) -lsmartbuffer -lsmartstring -lwords -lword_pick
 
 build: $(LIBS)
-	$(CXX) $(CXXFLAGS) -o $(BINDIR)/$(DEST) $(SRC) $(LIBS) $(LDFLAGS)
-
+	$(CXX) $(CXXFLAGS) -o $(BINDIR)/$(DEST) $(SRC) $(LDFLAGS) -lsmartstring -lsmartbuffer -lword_pick -lwords
 nolib: LIBS = $(LIBS_DEP)
 nolib: CXXFLAGS += -DINCLUDE_C_SOURCES=1
 nolib: build
@@ -70,7 +69,6 @@ debug: CXXFLAGS += -g
 debug: build
 
 run: $(BINDIR)/$(DEST)
-	echo $(TEST)
 	./$(BINDIR)/$(DEST) $(PARAMETERS)
 
 # autotest section
