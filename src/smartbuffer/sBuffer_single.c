@@ -62,6 +62,14 @@ SMARTBUFFER_BOOL_T sBuffer_single_check_realloc(sBuffer_single_ptr buf, SMARTBUF
 
 // extern
 
+SMARTBUFFER_LEN_T sBuffer_single_usageCount_get(sBuffer_single_ptr buf) {
+    if (buf == NULL) { return 0; }
+    if (buf->flags.is_child) {
+        return sBuffer_single_usageCount_get(buf->child.parent);
+    }
+    return buf->own.usage_count;
+}
+
 SMARTBUFFER_LEN_T sBuffer_single_usageCount_increase(sBuffer_single_ptr buf) {
     if (buf == NULL) { return 0; }
     if (buf->flags.is_child) {
@@ -256,15 +264,20 @@ SMARTBUFFER_LEN_T sBuffer_single_clear(sBuffer_single_ptr buf) {
 
 void sBuffer_single_free(sBuffer_single_ptr buf) {
     if (buf) {
-        sBuffer_single_usageCount_decrease(buf);
+        SMARTBUFFER_BOOL_T shouldFree = SMARTBUFFER_FALSE;
         if (buf->flags.is_child) {
-            return sBuffer_single_free(buf->child.parent);
+            shouldFree = sBuffer_single_usageCount_get(buf->child.parent) == 1;
+            sBuffer_single_free(buf->child.parent);
+        } else {
+            sBuffer_single_usageCount_decrease(buf);
+            shouldFree = buf->own.usage_count == 0;
         }
-        if (buf->own.usage_count == 0) {
-            // only data is allocated (usually never)
-            if (!buf->flags.is_this_allocated && buf->flags.is_data_allocated) {
+
+        if (shouldFree) {
+            if (buf->flags.is_data_allocated) {
                 SMARTBUFFER_H_FREE(buf->own.data);
-            } else if (buf->flags.is_this_allocated) {
+            }
+            if (buf->flags.is_this_allocated) {
                 SMARTBUFFER_H_FREE(buf);
             }
         }

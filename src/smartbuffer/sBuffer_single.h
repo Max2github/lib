@@ -36,6 +36,7 @@ struct sBuffer_single {
 typedef struct sBuffer_single sBuffer_single;
 typedef sBuffer_single * sBuffer_single_ptr;
 
+SMARTBUFFER_LEN_T sBuffer_single_usageCount_get(sBuffer_single_ptr);
 SMARTBUFFER_LEN_T sBuffer_single_usageCount_increase(sBuffer_single_ptr);
 SMARTBUFFER_LEN_T sBuffer_single_usageCount_decrease(sBuffer_single_ptr);
 

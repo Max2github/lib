@@ -30,7 +30,7 @@ smart::string::String::~String() {
 }
 
 // Array functions
-smart::string::String smart::string::String::Get(smart::string::String::index_t i) { return sString_get(&m_str, i); }
+smart::string::String smart::string::String::Get(smart::string::String::index_t i) { return smart::string::String(sString_get(&m_str, i)); }
 smart::string::String::len_t smart::string::String::Count() const { return sString_count(&m_str); }
 
 smart::string::String& smart::string::String::Add(const smart::string::String& s) {
