@@ -1,0 +1,62 @@
+2024-04-10T19:04:24+02:00
+Running Y:\C\privat\lib\test\benchmark\smart\bin\string_append_cont.exe
+Run on (4 X 3200 MHz CPU s)
+CPU Caches:
+  L1 Instruction 192 KiB (x4)
+  L1 Data 128 KiB (x4)
+  L2 Unified 12288 KiB (x4)
+--------------------------------------------------------------------
+Benchmark                          Time             CPU   Iterations
+--------------------------------------------------------------------
+BM_SmartBuffer/1                 596 ns          594 ns      1000000
+BM_SmartBuffer/2                1119 ns         1074 ns       640000
+BM_SmartBuffer/4                2097 ns         2100 ns       320000
+BM_SmartBuffer/8                4011 ns         4018 ns       186667
+BM_SmartBuffer/16               8054 ns         7847 ns        89600
+BM_SmartBuffer/32              17153 ns        16392 ns        44800
+BM_SmartBuffer/64              36788 ns        34683 ns        14867
+BM_SmartBuffer/128             75849 ns        75335 ns        11200
+BM_SmartBuffer/256            166422 ns       161122 ns         4073
+BM_SmartBuffer/512            345923 ns       344905 ns         1948
+BM_SmartBuffer/1024           752519 ns       732095 ns          747
+BM_SmartBuffer_BigO            74.09 NlgN      72.37 NlgN 
+BM_SmartBuffer_RMS                 5 %             6 %    
+BM_Minibuffer/1                  574 ns          562 ns      1000000
+BM_Minibuffer/2                 1110 ns         1109 ns       746667
+BM_Minibuffer/4                 2289 ns         2197 ns       320000
+BM_Minibuffer/8                 4551 ns         4426 ns       165926
+BM_Minibuffer/16                8208 ns         8022 ns        89600
+BM_Minibuffer/32               15896 ns        16322 ns        49778
+BM_Minibuffer/64               34430 ns        33692 ns        21333
+BM_Minibuffer/128              71517 ns        71498 ns         8960
+BM_Minibuffer/256            1927753 ns      1856884 ns          345
+BM_Minibuffer/512          151973781 ns    140625000 ns            4
+BM_Minibuffer/1024         742138167 ns    703125000 ns            1
+BM_Minibuffer_BigO              0.70 N^3        0.66 N^3  
+BM_Minibuffer_RMS                 22 %            21 %    
+BM_StdStringOwnAlloc/1           458 ns          449 ns      1600000
+BM_StdStringOwnAlloc/2           956 ns          942 ns       746667
+BM_StdStringOwnAlloc/4          2192 ns         2222 ns       344615
+BM_StdStringOwnAlloc/8          4786 ns         4813 ns       149333
+BM_StdStringOwnAlloc/16        11129 ns        10812 ns        89600
+BM_StdStringOwnAlloc/32        20696 ns        20508 ns        37333
+BM_StdStringOwnAlloc/64        47351 ns        45516 ns        15448
+BM_StdStringOwnAlloc/128      104513 ns       102539 ns         6400
+BM_StdStringOwnAlloc/256      199022 ns       188354 ns         3733
+BM_StdStringOwnAlloc/512     1682058 ns      1591823 ns          373
+BM_StdStringOwnAlloc/1024    4800478 ns      4741379 ns          145
+BM_StdStringOwnAlloc_BigO       4.68 N^2        4.61 N^2  
+BM_StdStringOwnAlloc_RMS          23 %            20 %    
+BM_StdString/1                   449 ns          452 ns      1659259
+BM_StdString/2                   952 ns          942 ns       746667
+BM_StdString/4                  2285 ns         2250 ns       298667
+BM_StdString/8                  4797 ns         4604 ns       112000
+BM_StdString/16                11862 ns        10986 ns        64000
+BM_StdString/32                20549 ns        20403 ns        34462
+BM_StdString/64                47783 ns        45516 ns        15448
+BM_StdString/128              103220 ns       102539 ns         6400
+BM_StdString/256              200308 ns       205096 ns         3733
+BM_StdString/512             1682950 ns      1591823 ns          373
+BM_StdString/1024            4830439 ns      4633621 ns          145
+BM_StdString_BigO               4.71 N^2        4.51 N^2  
+BM_StdString_RMS                  23 %            22 %    
