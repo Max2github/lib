@@ -6,8 +6,9 @@ ifeq ($(PREFIX),)
 endif
 DESTDIR := 
 
-CC = gcc
-AR = ar
+CC = gcc #clang #gcc #x86_64-w64-mingw32-gcc
+AR = ar #x86_64-w64-mingw32-ar
+RANLIB = ranlib #x86_64-w64-mingw32-ranlib # ranlib
 
 CFLAGS = -c -fpic -x c
 CFLAGS += -Wall -Wextra -Wno-missing-braces
@@ -98,17 +99,21 @@ smartstring: $(LIB_FILE)smartstring.a
 # build all which have one .h file as source file
 $(H_AS_SOURCE): $(H_AS_SOURCE_OBJ)
 	$(AR) $(AR_FLAGS) $(LIB_FILE)$@.a $(OBJ_DIR)/$@.o
-	ranlib $(LIB_FILE)$@.a
+	$(RANLIB) $(LIB_FILE)$@.a
 
 # build all which have an own folder
 $(LIB_FILE)%.a: $(OBJ_DIR)/%.o
 	$(AR) $(AR_FLAGS) $@ $^
-	ranlib $@
+	$(RANLIB) $@
 
 $(LIB_FILE)%.a: #$(OBJ)
 	$(MAKE) $(OBJ)
 	$(AR) $(AR_FLAGS) $@ $(OBJ)
-	ranlib $@
+	$(RANLIB) $@
+
+$(BUILD_DIR)/%.lib: 
+	$(MAKE) $(OBJ)
+	llvm-lib $(OBJ)
 
 $(OBJ_DIR)/smartbuffer/%.o: src/smartbuffer/%.c
 	$(CC) $(CFLAGS) -o $@ $<

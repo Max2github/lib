@@ -15,3 +15,4 @@ CPP/list
 m
 test/benchmark/smart/bin
 test/benchmark/smart/tools
+test/benchmark/smart/cmake_benchmark
