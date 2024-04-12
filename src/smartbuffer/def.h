@@ -9,7 +9,7 @@
     #define SMARTBUFFER_H_MALLOC(size) malloc(size)
     #endif
     #ifndef SMARTBUFFER_H_REALLOC
-    #define SMARTBUFFER_H_REALLOC(oldP, size) realloc(oldP, size)
+    #define SMARTBUFFER_H_REALLOC(oldP, newSize, oldSize) realloc(oldP, newSize)
     #endif
     #ifndef SMARTBUFFER_H_FREE
     #define SMARTBUFFER_H_FREE(p) free(p)

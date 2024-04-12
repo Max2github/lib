@@ -9,7 +9,7 @@
     #define SIMPLE_ARRAY_H_MALLOC(size) malloc(size)
     #endif
     #ifndef SIMPLE_ARRAY_H_REALLOC
-    #define SIMPLE_ARRAY_H_REALLOC(ptr, size) realloc(ptr, size)
+    #define SIMPLE_ARRAY_H_REALLOC(ptr, size, oldsize) realloc(ptr, size)
     #endif
     #ifndef SIMPLE_ARRAY_H_FREE
     #define SIMPLE_ARRAY_H_FREE(p) free(p)
@@ -90,7 +90,8 @@ struct { \
 { \
     if ((arr).written + (len) > (index)) { \
         if ((index) + (len) > (arr).count) { \
-            void * newData = SIMPLE_ARRAY_H_REALLOC((void *) (arr).data, (arr).count * sizeof(*Data) + SIMPLE_ARRAY_EXTEND(len) * sizeof(*Data)); \
+            const indexP currentSize = (arr).count * sizeof(*Data); \
+            void * newData = SIMPLE_ARRAY_H_REALLOC((void *) (arr).data, currentSize + SIMPLE_ARRAY_EXTEND(len) * sizeof(*Data), currentSize); \
             (arr).data = SIMPLE_ARRAY_CAST_TO_POINTER(arr, newData); \
             (arr).count += SIMPLE_ARRAY_EXTEND(len); \
         }\

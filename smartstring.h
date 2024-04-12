@@ -10,7 +10,7 @@
     #define SMARTSTRING_H_MALLOC(size) malloc(size)
     #endif
     #ifndef SMARTSTRING_H_REALLOC
-    #define SMARTSTRING_H_REALLOC(oldP, size) realloc(oldP, size)
+    #define SMARTSTRING_H_REALLOC(oldP, size, oldsize) realloc(oldP, size)
     #endif
     #ifndef SMARTSTRING_H_FREE
     #define SMARTSTRING_H_FREE(p) free(p)
