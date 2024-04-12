@@ -49,12 +49,14 @@ ifeq ($(DEBUG), 1)
 CXXFLAGS += -g
 endif
 
-.PHONY: build opt debug run autotest autotest_mem
+.PHONY: build nolib memtest norealloc run
+.PHONY: autotest autotest_mem
 
 # -L $(BUILDDIR) -lsmartbuffer -lsmartstring -lwords -lword_pick
 
 build: $(LIBS)
 	$(CXX) $(CXXFLAGS) -o $(BINDIR)/$(DEST) $(SRC) $(LDFLAGS) -lsmartstring -lsmartbuffer -lword_pick -lwords
+
 nolib: LIBS = $(LIBS_DEP)
 nolib: CXXFLAGS += -DINCLUDE_C_SOURCES=1
 nolib: build
@@ -62,11 +64,8 @@ nolib: build
 memtest: CXXFLAGS += -DMEMORY_TEST=1
 memtest: nolib
 
-opt: CXXFLAGS += -O3
-opt: build
-
-debug: CXXFLAGS += -g
-debug: build
+norealloc: CXXFLAGS += -DNO_REALLOC
+norealloc: nolib
 
 run: $(BINDIR)/$(DEST)
 	./$(BINDIR)/$(DEST) $(PARAMETERS)
