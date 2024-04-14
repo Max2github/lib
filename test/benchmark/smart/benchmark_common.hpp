@@ -5,8 +5,8 @@
 #include <chrono>
 #include <functional>
 
-#include "MemoryCounter.hpp"
-#include "string_include.hpp"
+#include "include/MemoryCounter.hpp"
+#include "include/string_include.hpp"
 
 #include <string>
 

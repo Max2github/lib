@@ -1,4 +1,4 @@
-#include "../../../templates/def.h"
+#include "../../../../templates/def.h"
 #include <benchmark/benchmark.h>
 
 class MemoryCounter: public benchmark::MemoryManager {
