@@ -14,14 +14,14 @@ sBuffer_single_ptr sBuffer_single_alloc_own(SMARTBUFFER_LEN_T size, SMARTBUFFER_
     sBuffer_single_ptr buf = (sBuffer_single_ptr) SMARTBUFFER_H_MALLOC(allocSize);
 
     // set info / metadata
-    if (is_allocated) {
-        buf->own.data = (SMARTBUFFER_CHAR *) SMARTBUFFER_H_MALLOC(size);
-        buf->own.allocated = size;
-    } else if(size > 0) {
-        buf->own.data = ((SMARTBUFFER_CHAR *) buf) + sizeof(sBuffer_single);
-        buf->own.allocated = 0;
-    } else {
-        buf->own.allocated = 0;
+    if (size > 0) {
+        if (is_allocated) {
+            buf->own.data = (SMARTBUFFER_CHAR *) SMARTBUFFER_H_MALLOC(size);
+            buf->own.allocated = size;
+        } else {
+            buf->own.data = ((SMARTBUFFER_CHAR *) buf) + sizeof(sBuffer_single);
+            buf->own.allocated = 0;
+        }
     }
     buf->own.len = 0;
     buf->own.usage_count = 0;
