@@ -12,7 +12,7 @@
     #endif
 
     #ifndef SMARTSTRING_HPP_REALLOC
-    #define SMARTSTRING_HPP_REALLOC(oldP, size) realloc(oldP, size)
+    #define SMARTSTRING_HPP_REALLOC(oldP, size, oldSize) realloc(oldP, size, oldSize)
     #endif
 
     #ifndef SMARTSTRING_HPP_FREE
@@ -23,9 +23,9 @@
 #undef SMARTSTRING_H_MALLOC
 #undef SMARTSTRING_H_REALLOC
 #undef SMARTSTRING_H_FREE
-#define SMARTSTRING_H_MALLOC(size)  SMARTSTRING_HPP_MALLOC(size)
-#define SMARTSTRING_H_REALLOC(oldP, size) SMARTSTRING_HPP_REALLOC(oldP, size)
-#define SMARTSTRING_H_FREE(p) SMARTSTRING_HPP_FREE(p)
+#define SMARTSTRING_H_MALLOC  SMARTSTRING_HPP_MALLOC
+#define SMARTSTRING_H_REALLOC SMARTSTRING_HPP_REALLOC
+#define SMARTSTRING_H_FREE SMARTSTRING_HPP_FREE
 
 //typedef struct sString sString;
 

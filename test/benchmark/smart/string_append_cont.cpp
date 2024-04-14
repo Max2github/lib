@@ -3,9 +3,6 @@
 const std::string strToAdd = gen_random(4000);
 const char * str = strToAdd.c_str();
 
-// ensure that we all use the same strlen function (like std::string)
-#define STRLEN(s) std::char_traits<char>::length(s)
-
 void SetBenchmarkParams(benchmark::internal::Benchmark * benchmark) {
     benchmark
         ->MinWarmUpTime(std::chrono::seconds(5).count())

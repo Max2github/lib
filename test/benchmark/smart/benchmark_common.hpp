@@ -33,6 +33,11 @@ std::string gen_random(const int len) NOEXCEPT {
     return tmp_s;
 }
 
+// define memory allocation macros so that everyone uses the same
+#define BM_MALLOC SMARTSTRING_HPP_MALLOC
+#define BM_REALLOC SMARTSTRING_HPP_REALLOC
+#define BM_FREE SMARTSTRING_HPP_FREE
+
 // So that std::string uses the same allocator as m::smart::String
 template <class T>
 struct OwnAllocator {
@@ -52,14 +57,17 @@ struct OwnAllocator {
         if (n > static_cast<size_t>(-1) / sizeof(T)) {
             throw std::bad_array_new_length();
         }
-        void * const pv = SMARTSTRING_HPP_MALLOC(n * sizeof(T));
+        void * const pv = BM_MALLOC(n * sizeof(T));
         if (!pv) { throw std::bad_alloc(); }
         return static_cast<T*>(pv);
     }
     void deallocate(T* const p, size_t) const NOEXCEPT {
-        SMARTSTRING_HPP_FREE(p);
+        BM_FREE(p);
     }
 };
+
+// ensure that we all use the same strlen function (like std::string)
+#define STRLEN(s) std::char_traits<char>::length(s)
 
 class CustomTimer {
 public:

@@ -23,8 +23,8 @@ void * no_realloc(void* oldPtr, const size_t newsize, const size_t oldSize) {
     return res;
 }
 
-#undef SMARTSTRING_H_REALLOC
-#define SMARTSTRING_H_REALLOC(oldPtr, newsize, oldSize) no_realloc(oldPtr, newsize, oldSize)
+#undef SMARTSTRING_HPP_REALLOC
+#define SMARTSTRING_HPP_REALLOC(oldPtr, newsize, oldSize) no_realloc(oldPtr, newsize, oldSize)
 
 #endif
 
