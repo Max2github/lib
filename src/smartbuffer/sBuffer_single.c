@@ -20,7 +20,7 @@ sBuffer_single_ptr sBuffer_single_alloc_own(SMARTBUFFER_LEN_T size, SMARTBUFFER_
             buf->own.allocated = size;
         } else {
             buf->own.data = ((SMARTBUFFER_CHAR *) buf) + sizeof(sBuffer_single);
-            buf->own.allocated = 0;
+            buf->own.allocated = size;
         }
     } else {
         buf->own.allocated = 0;
@@ -132,7 +132,7 @@ sBuffer_single_ptr sBuffer_single_create_child(sBuffer_single_ptr parent, SMARTB
 }
 
 SMARTBUFFER_BOOL_T sBuffer_single_add_char(sBuffer_single_ptr buf, const SMARTBUFFER_CHAR c) {
-    return sBuffer_single_add(buf, &c, 1);
+    return sBuffer_single_add(buf, &c, 1) == 1;
 }
 
 SMARTBUFFER_LEN_T sBuffer_single_add(sBuffer_single_ptr buf, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
@@ -224,17 +224,22 @@ SMARTBUFFER_LEN_T sBuffer_single_write(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T
 
     const SMARTBUFFER_LEN_T lenToAdd = (index + len) - buf->len;
 
-    // check if we need to reallocate
-    sBuffer_single_check_realloc(buf, lenToAdd);
+    // check if we need to reallocate (and if we can)
+    if (sBuffer_single_check_realloc(buf, lenToAdd)) {
+        // copy
+        SMARTBUFFER_H_MEMCOPY(&(buf->own.data[index]), data, len);
+        buf->len += lenToAdd;
+        return len;
+    } else {
+        const SMARTBUFFER_LEN_T spaceLeft = sBuffer_single_count_remaining(buf);
+        if (spaceLeft > 0) {
+            SMARTBUFFER_H_MEMCOPY(&(buf->own.data[index]), data, spaceLeft);
+            buf->len += spaceLeft;
+            return spaceLeft;
+        }
+    }
 
-    // TODO: check if we can write and how much we can write!!!
-
-    // copy
-    SMARTBUFFER_H_MEMCOPY(&(buf->own.data[index]), data, len);
-
-    buf->len += lenToAdd;
-
-    return len;
+    return 0;
 }
 
 sBuffer_single_ptr sBuffer_single_copy(const sBuffer_single_ptr buf, SMARTBUFFER_LEN_T from, SMARTBUFFER_LEN_T to) {

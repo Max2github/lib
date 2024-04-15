@@ -1,8 +1,6 @@
 #include "../../../../CPP/smartstring/smartstring.hpp"
 #include "../../../../CPP/smartbuffer/smartbuffer.hpp"
 
-#define NO_REALLOC 1
-
 #ifdef USE_CHAR_TRAITS
 
 #include <string>

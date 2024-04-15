@@ -20,7 +20,7 @@
             },
             "windows": {
                 "MIMode": "gdb",
-                "miDebuggerPath": "C:\\MinGw\\bin\\gdb.exe"
+                "miDebuggerPath": "C:\\Program Files\\CodeBlocks\\MinGW\\bin\\gdb.exe"//"C:\\MinGw\\bin\\gdb.exe"
             },
         },
         {
