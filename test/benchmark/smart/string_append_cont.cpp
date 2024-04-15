@@ -51,7 +51,7 @@ void BM_Minibuffer(benchmark::State& state) {
     const int64_t numIterations = state.range(0);
 
     for (const auto _ : state) {
-        m::smart::Buffer::SinglePtr hi((m::smart::Buffer::size_t) 0);
+        m::smart::Buffer::SinglePtr hi(nullptr);
         //m::smart::Buffer::SinglePtr hi(str, STRLEN(str));
 
         for (int64_t i = 0; i < numIterations; i++) {

@@ -22,6 +22,8 @@ sBuffer_single_ptr sBuffer_single_alloc_own(SMARTBUFFER_LEN_T size, SMARTBUFFER_
             buf->own.data = ((SMARTBUFFER_CHAR *) buf) + sizeof(sBuffer_single);
             buf->own.allocated = 0;
         }
+    } else {
+        buf->own.allocated = 0;
     }
     buf->len = 0;
     buf->usage_count = 0;

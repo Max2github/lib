@@ -56,7 +56,7 @@ void BM_Minibuffer(benchmark::State& state) {
     BM_SETUP;
 
     for (const auto _ : state) {
-        BM_INIT(m::smart::buffer::SinglePtr hi);
+        BM_INIT(m::smart::buffer::SinglePtr hi(nullptr));
 
         hi.Append((m::smart::buffer::char_t *) str, STRLEN(str));
     }

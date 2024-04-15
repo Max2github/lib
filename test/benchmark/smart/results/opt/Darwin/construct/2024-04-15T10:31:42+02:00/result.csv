@@ -1,0 +1,13 @@
+2024-04-15T10:31:53+02:00
+Running ./bin/construct
+Run on (8 X 24 MHz CPU s)
+CPU Caches:
+  L1 Data 64 KiB
+  L1 Instruction 128 KiB
+  L2 Unified 4096 KiB (x8)
+Load Average: 8.31, 9.94, 10.73
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_SmartBuffer/min_warmup_time:5.000",16327216,50.1645,44.3762,ns,,,,,
+"BM_Minibuffer/min_warmup_time:5.000",652668482,1.18845,1.07926,ns,,,,,
+"BM_StdStringOwnAlloc/min_warmup_time:5.000",626157273,1.22926,1.118,ns,,,,,
+"BM_StdString/min_warmup_time:5.000",636496722,1.23407,1.11227,ns,,,,,

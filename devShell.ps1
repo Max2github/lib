@@ -1,3 +1,7 @@
 param([Parameter(Mandatory)][string]$ARCH)
 
-Enter-VsDevShell -VsInstallPath "$env:VSINSTALLDIR" -SkipAutomaticLocation -DevCmdArguments "-arch=$ARCH"
+$PWD = Get-Location
+# -SkipAutomaticLocation
+Enter-VsDevShell -VsInstallPath "$env:VSINSTALLDIR" -DevCmdArguments "-arch=$ARCH"
+
+cd $PWD

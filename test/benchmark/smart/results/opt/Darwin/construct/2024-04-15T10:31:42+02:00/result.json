@@ -1,0 +1,90 @@
+{
+  "context": {
+    "date": "2024-04-15T10:31:48+02:00",
+    "host_name": "Maxs-MacBook-Air.local",
+    "executable": "./bin/construct",
+    "num_cpus": 8,
+    "mhz_per_cpu": 24,
+    "cpu_scaling_enabled": false,
+    "caches": [
+      {
+        "type": "Data",
+        "level": 1,
+        "size": 65536,
+        "num_sharing": 0
+      },
+      {
+        "type": "Instruction",
+        "level": 1,
+        "size": 131072,
+        "num_sharing": 0
+      },
+      {
+        "type": "Unified",
+        "level": 2,
+        "size": 4194304,
+        "num_sharing": 1
+      }
+    ],
+    "load_avg": [8.42139,9.99121,10.7529],
+    "library_build_type": "release"
+  },
+  "benchmarks": [
+    {
+      "name": "BM_SmartBuffer/min_warmup_time:5.000",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_SmartBuffer/min_warmup_time:5.000",
+      "run_type": "iteration",
+      "repetitions": 1,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 16183100,
+      "real_time": 4.5046344641653285e+01,
+      "cpu_time": 4.0307172297025900e+01,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_Minibuffer/min_warmup_time:5.000",
+      "family_index": 1,
+      "per_family_instance_index": 0,
+      "run_name": "BM_Minibuffer/min_warmup_time:5.000",
+      "run_type": "iteration",
+      "repetitions": 1,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 658879340,
+      "real_time": 1.1337952879783568e+00,
+      "cpu_time": 1.0780881367444308e+00,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_StdStringOwnAlloc/min_warmup_time:5.000",
+      "family_index": 2,
+      "per_family_instance_index": 0,
+      "run_name": "BM_StdStringOwnAlloc/min_warmup_time:5.000",
+      "run_type": "iteration",
+      "repetitions": 1,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 640263423,
+      "real_time": 1.1749068398516063e+00,
+      "cpu_time": 1.1045469327083524e+00,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_StdString/min_warmup_time:5.000",
+      "family_index": 3,
+      "per_family_instance_index": 0,
+      "run_name": "BM_StdString/min_warmup_time:5.000",
+      "run_type": "iteration",
+      "repetitions": 1,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 644780959,
+      "real_time": 1.2718447723789599e+00,
+      "cpu_time": 1.0947903937715378e+00,
+      "time_unit": "ns"
+    }
+  ]
+}

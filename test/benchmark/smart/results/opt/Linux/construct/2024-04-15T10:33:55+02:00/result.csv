@@ -1,0 +1,9 @@
+2024-04-15T10:34:04+02:00
+Running ./bin/construct
+Run on (2 X 48 MHz CPU s)
+Load Average: 2.74, 1.62, 0.88
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_SmartBuffer/min_warmup_time:5.000",33329645,22.9718,21.1726,ns,,,,,
+"BM_Minibuffer/min_warmup_time:5.000",582775860,1.30929,1.15983,ns,,,,,
+"BM_StdStringOwnAlloc/min_warmup_time:5.000",444850705,1.55204,1.48489,ns,,,,,
+"BM_StdString/min_warmup_time:5.000",475780363,1.46972,1.45525,ns,,,,,
