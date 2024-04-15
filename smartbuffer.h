@@ -115,6 +115,15 @@ sBuffer sBuffer_copy_deep(const sBuffer *);
 SMARTBUFFER_LEN_T sBuffer_read(const sBuffer *, sBuffer_readHandler, SMARTBUFFER_LEN_T, void *);
 
 /**
+ * @brief Read from the buffer to an array of SMARTBUFFER_CHAR
+ * @param 1 (SMARTBUFFER_CHAR *) a pointer where to write the data to
+ * @param 1 (const sBuffer *) a pointer to the buffer
+ * @param 2 (SMARTBUFFER_LEN_T) the maximum lenth to read - please only up to sBuffer_count()
+ * @return sBuffer_single_ptr
+ */
+SMARTBUFFER_LEN_T sBuffer_read_to(SMARTBUFFER_CHAR *, const sBuffer *, SMARTBUFFER_LEN_T);
+
+/**
  * @brief Search in which sBuffer_single a index is
  * 
  * 

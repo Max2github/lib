@@ -20,18 +20,18 @@ struct sBuffer_single {
         // "real" data
         struct {
             SMARTBUFFER_CHAR * data;
-            SMARTBUFFER_LEN_T len;
             SMARTBUFFER_LEN_T allocated;
-            SMARTBUFFER_LEN_T usage_count;   // how often is this used?
         } own;
 
         // this buffer is just a child of another buffer
         struct {
             struct sBuffer_single * parent;
             SMARTBUFFER_LEN_T begin;
-            SMARTBUFFER_LEN_T len;
         } child;
     };
+
+    SMARTBUFFER_LEN_T len;
+    SMARTBUFFER_LEN_T usage_count;   // how often is this used?
 };
 typedef struct sBuffer_single sBuffer_single;
 typedef sBuffer_single * sBuffer_single_ptr;
@@ -109,6 +109,7 @@ SMARTBUFFER_LEN_T sBuffer_single_insert(sBuffer_single_ptr, SMARTBUFFER_LEN_T, c
 
 const SMARTBUFFER_CHAR * sBuffer_single_get(const sBuffer_single_ptr);
 SMARTBUFFER_LEN_T sBuffer_single_count(const sBuffer_single_ptr);
+SMARTBUFFER_LEN_T sBuffer_single_size(const sBuffer_single_ptr);
 SMARTBUFFER_BOOL_T sBuffer_single_is_empty(const sBuffer_single_ptr);
 SMARTBUFFER_LEN_T sBuffer_single_count_remaining(const sBuffer_single_ptr);
 

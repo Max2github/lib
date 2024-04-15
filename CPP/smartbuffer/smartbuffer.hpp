@@ -11,7 +11,7 @@
     #endif
 
     #ifndef SMARTBUFFER_HPP_REALLOC
-    #define SMARTBUFFER_HPP_REALLOC(oldP, size) realloc(oldP, size)
+    #define SMARTBUFFER_HPP_REALLOC(oldP, size, oldSize) realloc(oldP, size)
     #endif
 
     #ifndef SMARTBUFFER_HPP_FREE
@@ -57,7 +57,8 @@ namespace m {
 
             class SinglePtr {
             public:
-                SinglePtr(size_t size = 0);
+                // null
+                SinglePtr(nullptr_t);
 
                 // from internal
                 SinglePtr(const sBuffer_single_ptr&); // copy
@@ -88,6 +89,7 @@ namespace m {
                 bool IsChild() const;
 
                 size_t Length() const;
+                size_t Capacity() const;
                 const char_t * Get() const;
 
                 /**
@@ -125,6 +127,53 @@ namespace m {
                 friend class m::smart::Buffer;
             };
 
+            class Iterator {
+                public:
+                    static Iterator Start(const Buffer& buffer);
+                    static Iterator End(const Buffer& buffer);
+
+                    Iterator& Next();
+                    Iterator& Advance(size_t len);
+
+                    Iterator& GoToStart();
+                    Iterator& GoToEnd();
+                    Iterator& SetEnd();
+
+                    char_t Get() const;
+
+                    bool AtEnd() const;
+
+                    inline Iterator& operator++() { return this->Next(); }
+                    inline Iterator& operator++(int) { return this->Next(); }
+                    inline char_t operator*() const { return this->Get(); }
+
+                    inline friend bool operator==(const Iterator& it1, const Iterator& it2) {
+                        // if one of them is end, then both must be end
+                        if (it1.m_isEnd || it2.m_isEnd) {
+                            return it1.m_isEnd == it2.m_isEnd && &it1.m_buffer == &it2.m_buffer;
+                        }
+                        return
+                            &it1.m_buffer == &it2.m_buffer &&
+                            it1.m_current.index == it2.m_current.index &&
+                            it1.m_current.single.index == it2.m_current.single.index
+                        ;
+                    }
+                    inline friend bool operator!=(const Iterator& it1, const Iterator& it2) {
+                        return !(it1 == it2);
+                    }
+
+                private:
+                    Iterator(const Buffer& buffer);
+                    Iterator& NextSingle();
+                    size_t AdvanceSingle(size_t len);
+                    bool AtEndOfSingle() const;
+
+                private:
+                    const sBuffer& m_buffer;
+                    sBuffer_index_descr m_current;
+                    bool m_isEnd;
+            };
+
         } // namespace buffer
 
         class Buffer {
@@ -134,6 +183,7 @@ namespace m {
                 typedef buffer::size_t size_t;
                 typedef buffer::reader_t reader_t;
                 typedef buffer::SinglePtr SinglePtr;
+                typedef buffer::Iterator Iterator;
             public:
                 Buffer(size_t size);
 
@@ -152,17 +202,22 @@ namespace m {
                 index_t Count() const; // number of SmartBufferSinglePtr
                 size_t Length() const; // number of chars (in total)
                 SinglePtr Get(index_t index) const;
+
                 void Add(const SinglePtr&);
+                void InsertSingle(index_t index, const SinglePtr&);
 
                 #if LANG_CPP_STD >= 2011
-                void Add(const SinglePtr&&);
+                void Add(SinglePtr&&);
+                void InsertSingle(index_t index, SinglePtr&&);
                 #endif
 
-                //size_t Append(const char_t * data, );
+                size_t Insert(index_t index, const char_t * data, size_t len);
+                size_t Append(const char_t * data, size_t len);
 
                 void Clear();
 
                 size_t Read(reader_t readerFunction, size_t length, void * userData = nullptr) const;
+                size_t ReadTo(char_t * dest, size_t len) const;
     #if 0
                 template<typename... args_t>
                 void ForEach(void (*func)(args_t...), args_t... args) {
@@ -189,6 +244,10 @@ namespace m {
                     }
                 }
     #endif
+
+                Iterator begin() const;
+                Iterator end() const;
+
     //#if 0
                 Buffer& operator=(const Buffer&);
 
@@ -229,7 +288,9 @@ namespace m {
                 void UsageDecreaseAll();
             private:
                 sBuffer m_buffer;
-            };
+
+                friend class m::smart::buffer::Iterator;
+        };
 
     } // namespace smart
 } // namespace m

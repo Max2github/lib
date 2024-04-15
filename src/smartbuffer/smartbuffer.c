@@ -47,6 +47,7 @@ void sBuffer_shift_right(sBuffer * buf, SMARTBUFFER_LEN_T index, SMARTBUFFER_LEN
 
 void sBuffer_insert_single_noShift(sBuffer * buf, SMARTBUFFER_LEN_T index, sBuffer_single_ptr innerbuf) {
     SIMPLE_ARRAY_GET(*buf, index) = innerbuf;
+    sBuffer_single_usageCount_increase(innerbuf);
 }
 
 void sBuffer_insert_single(sBuffer * buf, SMARTBUFFER_LEN_T index, sBuffer_single_ptr innerbuf) {
@@ -122,7 +123,8 @@ SMARTBUFFER_LEN_T sBuffer_read(const sBuffer * buf, sBuffer_readHandler reader, 
     SMARTBUFFER_LEN_T curLen = 0;
     SMARTBUFFER_LEN_T i = 0;
     sBuffer_single_ptr curEl = NULL;
-    while (curLen < maxlen) {
+    const SMARTBUFFER_LEN_T maxbufs = sBuffer_count_single(buf);
+    while (curLen < maxlen && i < maxbufs) {
         curEl = sBuffer_get(buf, i);
         SMARTBUFFER_LEN_T wayToGo = maxlen - curLen;
         SMARTBUFFER_LEN_T curSize = sBuffer_single_count(curEl);
@@ -132,6 +134,21 @@ SMARTBUFFER_LEN_T sBuffer_read(const sBuffer * buf, sBuffer_readHandler reader, 
         i++;
     }
     return curLen;
+}
+
+SMARTBUFFER_LEN_T sBuffer_read_to(SMARTBUFFER_CHAR * dest, const sBuffer * buf, SMARTBUFFER_LEN_T maxlen) {
+    SMARTBUFFER_LEN_T written = 0;
+    SMARTBUFFER_LEN_T i = 0;
+    const SMARTBUFFER_LEN_T maxbufs = sBuffer_count_single(buf);
+    while (written < maxlen && i < maxbufs) {
+        const sBuffer_single_ptr curEl = sBuffer_get(buf, i);
+        SMARTBUFFER_LEN_T curLen = sBuffer_single_count(curEl);
+        curLen = curLen < maxlen ? curLen : maxlen;
+        SMARTBUFFER_H_MEMCOPY(dest, sBuffer_single_get(curEl), curLen);
+        written += curLen;
+        i++;
+    }
+    return written;
 }
 
 sBuffer_index_descr sBuffer_find_index(const sBuffer * buf, SMARTBUFFER_LEN_T searchIndex) {
@@ -198,6 +215,8 @@ SMARTBUFFER_LEN_T sBuffer_insert_helper(sBuffer * buf, sBuffer_index_descr found
     sBuffer_insert_single(buf, found.index, part1);
     sBuffer_insert_single(buf, found.index+1, newbuf);
     sBuffer_insert_single(buf, found.index+2, part2);
+    sBuffer_single_usageCount_decrease(part1);
+    sBuffer_single_usageCount_decrease(part2);
 
     //sBuffer_single_free(part1);
     //sBuffer_single_free(part2);
@@ -235,7 +254,7 @@ sBuffer_single_ptr sBuffer_join(const sBuffer * toJoin) {
 
 void sBuffer_clear(sBuffer * buf) {
     SMARTBUFFER_FOREACH_P(i, ptr, buf,
-        if (ptr->flags.is_readonly || ptr->own.usage_count > 1) {
+        if (ptr->flags.is_readonly || ptr->usage_count > 1) {
             SMARTBUFFER_LEN_T removed = sBuffer_remove_single(buf, ptr);
             i -= removed;
         } else {
