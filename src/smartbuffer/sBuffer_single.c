@@ -174,8 +174,7 @@ SMARTBUFFER_BOOL_T sBuffer_single_is_empty(const sBuffer_single_ptr buf) { retur
 
 SMARTBUFFER_LEN_T sBuffer_single_count_remaining(const sBuffer_single_ptr buf) {
     if (buf->flags.is_child) { return 0; }
-    if (buf->len <= buf->own.allocated) { return 0; }
-    return buf->own.allocated - buf->len;
+    return sBuffer_single_size(buf) - buf->len;
 }
 
 SMARTBUFFER_LEN_T sBuffer_single_shift_right(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T index, SMARTBUFFER_LEN_T amount) {

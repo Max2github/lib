@@ -5,34 +5,90 @@
 
 // sBuffer
 
+// intern
+
+sBuffer_single_ptr sBuffer_intern_create_single(const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len, SMARTBUFFER_LEN_T * outWritten) {
+    sBuffer_single_ptr newBuf = sBuffer_single_create_once(len);
+    const SMARTBUFFER_LEN_T written = sBuffer_single_add(newBuf, data, len);
+    if (outWritten) { *outWritten = written; }
+    return newBuf;
+}
+
+SMARTBUFFER_LEN_T sBuffer_intern_add_new_single(sBuffer * buf, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
+    SMARTBUFFER_LEN_T written = 0;
+    sBuffer_add(buf, sBuffer_intern_create_single(data, len, &written));
+    return written;
+}
+
+SMARTBUFFER_LEN_T sBuffer_intern_insert_new_single(sBuffer * buf, SMARTBUFFER_LEN_T index, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
+    SMARTBUFFER_LEN_T written = 0;
+    sBuffer_insert_single(buf, index, sBuffer_intern_create_single(data, len, &written));
+    return written;
+}
+
+void sBuffer_intern_replace_single(sBuffer_single_ptr * dest, sBuffer_single_ptr src) {
+    sBuffer_single_free(*dest);
+    sBuffer_single_usageCount_increase(src);
+    *dest = src;
+}
+
+SMARTBUFFER_LEN_T sBuffer_intern_replace_new_single(sBuffer_single_ptr * dest, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
+    SMARTBUFFER_LEN_T written = 0;
+    sBuffer_single_ptr newBuf = sBuffer_intern_create_single(data, len, &written);
+    sBuffer_intern_replace_single(dest, newBuf);
+    return written;
+}
+
+// replace a sBuffer_single, described by current by another buffer and two other sBuffer_single (one before, the other after)
+void sBuffer_intern_split_replace(sBuffer * buf, sBuffer_index_descr current, sBuffer_single_ptr toInsert, sBuffer_single_ptr before, sBuffer_single_ptr after) {
+    SMARTBUFFER_LEN_T toShift = 0;
+    if (before) {
+        toShift++;
+    }
+    if(after) {
+        toShift++;
+    }
+
+    if (toShift == 0) {
+        return sBuffer_intern_replace_single(current.single.bufP, toInsert);
+    }
+
+    sBuffer_single_free(*current.single.bufP); // not needed anymore
+
+    // shift the buffer & insert the buf children + the new one in the correct order
+    sBuffer_shift_right(buf, current.index, toShift);
+    if (before) { sBuffer_insert_single_noShift(buf, current.index, before); }
+    sBuffer_insert_single_noShift(buf, current.index+1, toInsert);
+    if (after) { sBuffer_insert_single_noShift(buf, current.index+2, after); }
+}
+
+// extern
+
 sBuffer sBuffer_create(SMARTBUFFER_LEN_T size) { return (sBuffer) SIMPLE_ARRAY_CREATE_SIZE(sBuffer_single_ptr, size); }
 
 SMARTBUFFER_LEN_T sBuffer_append(sBuffer * buf, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
     const SMARTBUFFER_LEN_T countInnerBufs = sBuffer_count_single(buf);
     if (countInnerBufs == 0) {
-        sBuffer_single_ptr new_single = sBuffer_single_create(len);
-        const SMARTBUFFER_LEN_T written = sBuffer_single_add(new_single, data, len);
-        sBuffer_add(buf, new_single);
-        return written;
+        return sBuffer_intern_add_new_single(buf, data, len);
     }
     sBuffer_single_ptr last = sBuffer_get(buf, countInnerBufs - 1);
-    if (last->flags.is_readonly || sBuffer_single_count_remaining(last) == 0) {
-        sBuffer_single_ptr new_single = sBuffer_single_create(len);
-        const SMARTBUFFER_LEN_T written = sBuffer_single_add(new_single, data, len);
-        sBuffer_add(buf, new_single);
-        return written;
+    // if last is readonly, or if it does not only belong this, or if it has no space left
+    if (last->flags.is_readonly || sBuffer_single_usageCount_get(last) > 1 || sBuffer_single_count_remaining(last) == 0) {
+        return sBuffer_intern_add_new_single(buf, data, len);
     }
+    // else write as much as possible into last
     const SMARTBUFFER_LEN_T remaining = sBuffer_single_count_remaining(last);
     if (remaining >= len) {
+        // write everything into last
         return sBuffer_single_add(last, data, len);
     } else {
+        // write as much as possible into last and the rest in an own buffer
         SMARTBUFFER_LEN_T written = sBuffer_single_add(last, data, remaining); // fill last buffer
 
         const SMARTBUFFER_CHAR * restData = data + remaining;
         SMARTBUFFER_LEN_T restLen = len - remaining;
-        sBuffer_single_ptr new_single = sBuffer_single_create(restLen);
-        written += sBuffer_single_add(new_single, restData, restLen);
-        sBuffer_add(buf, new_single);
+        written += sBuffer_intern_add_new_single(buf, restData, restLen);
+
         return written;
     }
 }
@@ -169,57 +225,65 @@ sBuffer_index_descr sBuffer_find_index(const sBuffer * buf, SMARTBUFFER_LEN_T se
     return (sBuffer_index_descr) { found, index };
 }
 
-SMARTBUFFER_LEN_T sBuffer_write_helper(sBuffer * buf, sBuffer_index_descr found, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T size) {
-    // check if buffer is big enough, else write into the next
+SMARTBUFFER_LEN_T sBuffer_write_helper(sBuffer * buf, sBuffer_index_descr found, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
     sBuffer_single_ptr curBuf = *found.single.bufP;
-    const SMARTBUFFER_LEN_T space = curBuf->own.allocated - found.single.index;
-    if (size > space) {
-        const SMARTBUFFER_LEN_T written = sBuffer_single_write(curBuf, found.single.index, data, space); // fill the current buffer
 
-        // write the rest into the next buffer (overwrite)
-        const SMARTBUFFER_CHAR * restData = data + space;
-        const SMARTBUFFER_LEN_T restLen = size - space;
-
-        const SMARTBUFFER_LEN_T newIndex = found.index + 1;
-        if (newIndex < sBuffer_count_single(buf)) {
-            const sBuffer_single_with_index next = (sBuffer_single_with_index) { sBuffer_getP(buf, newIndex), 0 };
-            const sBuffer_index_descr descr = { next, newIndex };
-            return written + sBuffer_write_helper(buf, descr, restData, restLen);
-        } else {
-            return written + sBuffer_append(buf, restData, restLen);
+    // if curBuf is readonly or if it does not only belong this -> we do not have write permission
+    if (curBuf->flags.is_readonly || sBuffer_single_usageCount_get(curBuf) > 1) {
+        sBuffer_single_ptr partBefore = NULL;
+        sBuffer_single_ptr partAfter = NULL;
+        if (found.single.index > 0) {
+            partBefore = sBuffer_single_create_child(curBuf, 0, found.single.index);
         }
+        const SMARTBUFFER_LEN_T endIndex = found.single.index + len;
+        if(endIndex < sBuffer_single_size(curBuf)) {
+            partAfter = sBuffer_single_create_child(curBuf, endIndex, sBuffer_single_count(curBuf));
+        }
+        SMARTBUFFER_LEN_T written = 0;
+        sBuffer_single_ptr newBuf = sBuffer_intern_create_single(data, len, &written);
+        sBuffer_intern_split_replace(buf, found, newBuf, partBefore, partAfter);
+        return written;
+
+    // else we have write permission
     } else {
-        return sBuffer_single_write(curBuf, found.single.index, data, size);
+        // check if buffer is big enough, else write into the next
+        const SMARTBUFFER_LEN_T space = sBuffer_single_size(curBuf) - found.single.index;
+        if (len > space) {
+            // write as much as possible into curBuf
+            const SMARTBUFFER_LEN_T written = sBuffer_single_write(curBuf, found.single.index, data, space); // fill the current buffer
+
+            // write the rest into the next buffer (overwrite)
+            const SMARTBUFFER_CHAR * restData = data + space;
+            const SMARTBUFFER_LEN_T restLen = len - space;
+
+            const SMARTBUFFER_LEN_T newIndex = found.index + 1;
+            if (newIndex < sBuffer_count_single(buf)) {
+                const sBuffer_single_with_index next = (sBuffer_single_with_index) { sBuffer_getP(buf, newIndex), 0 };
+                const sBuffer_index_descr descr = { next, newIndex };
+                return written + sBuffer_write_helper(buf, descr, restData, restLen);
+            } else {
+                return written + sBuffer_append(buf, restData, restLen);
+            }
+        } else {
+            return sBuffer_single_write(curBuf, found.single.index, data, len);
+        }
     }
 }
 
-SMARTBUFFER_LEN_T sBuffer_insert_helper(sBuffer * buf, sBuffer_index_descr found, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T size) {
+SMARTBUFFER_LEN_T sBuffer_insert_helper(sBuffer * buf, sBuffer_index_descr found, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
     // if we insert between two sBuffer_single, we just insert a new sBuffer_single
-    if (found.single.index == 0 /* || found.single.index == sBuffer_single_count(found.single.buf)*/) {
-        sBuffer_single_ptr newbuf = sBuffer_single_create(size);
-        const SMARTBUFFER_LEN_T written = sBuffer_single_add(newbuf, data, size);
-        sBuffer_insert_single(buf, found.index, newbuf);
-        return written;
+    if (found.single.index == 0 /*|| found.single.index == sBuffer_single_count(*found.single.bufP)*/) {
+        return sBuffer_intern_insert_new_single(buf, found.index, data, len);
     }
-    // else insert into the sBuffer_single
-    // TODO: In the future the buffer may be split (splitting must be implemented) and a new sBuffer_single can be inserted
-    //return sBuffer_single_insert(found.single.buf, found.single.index, data, size);
+    // else split the sBuffer_single into children and insert between them
     sBuffer_single_ptr curBuf = *found.single.bufP;
     sBuffer_single_ptr part1 = sBuffer_single_create_child(curBuf, 0, found.single.index);
     sBuffer_single_ptr part2 = sBuffer_single_create_child(curBuf, found.single.index, sBuffer_single_count(curBuf) - found.single.index);
-    sBuffer_remove_single(buf, curBuf);
 
-    sBuffer_single_ptr newbuf = sBuffer_single_create(size);
-    const SMARTBUFFER_LEN_T written = sBuffer_single_add(newbuf, data, size);
+    SMARTBUFFER_LEN_T written = 0;
+    sBuffer_single_ptr newbuf = sBuffer_intern_create_single(data, len, &written);
+    sBuffer_intern_split_replace(buf, found, newbuf, part1, part2);
 
-    sBuffer_insert_single(buf, found.index, part1);
-    sBuffer_insert_single(buf, found.index+1, newbuf);
-    sBuffer_insert_single(buf, found.index+2, part2);
-    sBuffer_single_usageCount_decrease(part1);
-    sBuffer_single_usageCount_decrease(part2);
-
-    //sBuffer_single_free(part1);
-    //sBuffer_single_free(part2);
     return written;
 }
 
