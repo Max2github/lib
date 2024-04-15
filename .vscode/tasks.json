@@ -23,7 +23,7 @@
         {
             "type": "cppbuild",
             "label": "C++: g++ Aktive Datei kompilieren",
-            "command": "/usr/bin/g++",
+            "command": "g++",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",

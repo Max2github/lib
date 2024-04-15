@@ -5,14 +5,17 @@ if ($ARCH -ne "x86" -and $ARCH -ne "x64" -and $ARCH -ne "ARM64") {
     exit
 }
 
-$OPTFLAGS = 
-if ($Config -eq "Release") {
+$OPTFLAGS = ""
+if ("$Config" -eq "Release") {
     $OPTFLAGS = "-O3"
-} elseif ($Config -eq "Debug") {
+}
+if ("$Config" -eq "Debug") {
     $OPTFLAGS = "-g"
 }
 
 . ..\..\..\make_clang_alias.ps1
+
+echo "clang-$ARCH -std=c++14 -Wall -Wextra $OPTFLAGS $CXXFLAGS -o bin/$TEST.exe $TEST.cpp -L../../../build/benchmark/$ARCH -L../../../build -isystem .\tools\benchmark\include\ -lsmartstring -lsmartbuffer -lword_pick -lwords -lbenchmark -lshlwapi"
 
 &"clang-$ARCH" -std=c++14 -Wall -Wextra "$OPTFLAGS" "$CXXFLAGS" -o "bin/$TEST.exe" "$TEST.cpp" "-L../../../build/benchmark/$ARCH" -L../../../build -isystem .\tools\benchmark\include\ -lsmartstring -lsmartbuffer -lword_pick -lwords -lbenchmark -lshlwapi
 

@@ -23,6 +23,7 @@ sBuffer_single_ptr sBuffer_single_alloc_own(SMARTBUFFER_LEN_T size, SMARTBUFFER_
             buf->own.allocated = size;
         }
     } else {
+        buf->own.data = NULL;
         buf->own.allocated = 0;
     }
     buf->len = 0;
@@ -46,7 +47,11 @@ SMARTBUFFER_BOOL_T sBuffer_single_realloc(sBuffer_single_ptr buf, SMARTBUFFER_LE
     // if only data is allocated
     if (buf->flags.is_data_allocated) {
         SMARTBUFFER_LEN_T newlen = buf->own.allocated + sBuffer_single_calc_extendSize(lenToAdd, 10, 1);
-        buf->own.data = (SMARTBUFFER_CHAR *) SMARTBUFFER_H_REALLOC(buf->own.data, newlen, buf->own.allocated);
+        if (buf->own.data && buf->own.allocated > 0) {
+            buf->own.data = (SMARTBUFFER_CHAR *) SMARTBUFFER_H_REALLOC(buf->own.data, newlen, buf->own.allocated);
+        } else {
+            buf->own.data = (SMARTBUFFER_CHAR *) SMARTBUFFER_H_MALLOC(newlen);
+        }
         buf->own.allocated = newlen;
         return true;
     }
