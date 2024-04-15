@@ -227,6 +227,8 @@ SMARTBUFFER_LEN_T sBuffer_single_write(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T
     // check if we need to reallocate
     sBuffer_single_check_realloc(buf, lenToAdd);
 
+    // TODO: check if we can write and how much we can write!!!
+
     // copy
     SMARTBUFFER_H_MEMCOPY(&(buf->own.data[index]), data, len);
 

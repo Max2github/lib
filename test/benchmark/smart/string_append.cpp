@@ -44,7 +44,7 @@ void BM_SmartBuffer(benchmark::State& state) {
     for (const auto _ : state) {
         BM_INIT(m::smart::Buffer hi(10));
 
-        hi.Add(m::smart::Buffer::SinglePtr::NewReadonly(str, STRLEN(str)));
+        hi.Append(str, STRLEN(str));
     }
 
     BM_SET_COMPLEXITY_N;
@@ -56,7 +56,7 @@ void BM_Minibuffer(benchmark::State& state) {
     BM_SETUP;
 
     for (const auto _ : state) {
-        BM_INIT(m::smart::buffer::SinglePtr hi(nullptr));
+        BM_INIT(m::smart::buffer::SinglePtr hi = m::smart::buffer::SinglePtr::New(0));
 
         hi.Append((m::smart::buffer::char_t *) str, STRLEN(str));
     }
@@ -76,6 +76,8 @@ void BM_CString(benchmark::State& state) {
         hi = (char *) BM_MALLOC(size+1);
         *hi = '\0';
         strcat(hi, str);
+
+        BM_FREE(hi);
     }
 
     BM_SET_COMPLEXITY_N;

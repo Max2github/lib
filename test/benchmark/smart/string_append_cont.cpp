@@ -38,7 +38,7 @@ void BM_SmartBuffer(benchmark::State& state) {
         //hi.Add(m::smart::buffer::SinglePtr(str, STRLEN(str)));
 
         for (int64_t i = 0; i < numIterations; i++) {
-            hi.Add(m::smart::buffer::SinglePtr::NewReadonly(str, STRLEN(str)));
+            hi.Append(str, STRLEN(str));
         }
     }
 
@@ -46,12 +46,12 @@ void BM_SmartBuffer(benchmark::State& state) {
 }
 BENCHMARK(BM_SmartBuffer)->Apply(SetBenchmarkParams);
 
-#if 1
+#if 0
 void BM_Minibuffer(benchmark::State& state) {
     const int64_t numIterations = state.range(0);
 
     for (const auto _ : state) {
-        m::smart::Buffer::SinglePtr hi(nullptr);
+        m::smart::buffer::SinglePtr hi = m::smart::buffer::SinglePtr::New(0);
         //m::smart::Buffer::SinglePtr hi(str, STRLEN(str));
 
         for (int64_t i = 0; i < numIterations; i++) {

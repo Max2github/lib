@@ -28,7 +28,7 @@ BENCHMARK(BM_SmartBuffer)->Apply(SetBenchmarkParams);
 #if 1
 void BM_Minibuffer(benchmark::State& state) {
     for (const auto _ : state) {
-        m::smart::buffer::SinglePtr hi(nullptr);
+        m::smart::buffer::SinglePtr hi = m::smart::buffer::SinglePtr::New(0);
         benchmark::DoNotOptimize(hi);
     }
 }
