@@ -115,6 +115,9 @@ namespace m {
 
                 size_t Clear();
                 void Delete();
+
+                char_t operator[](index_t index);
+
             private:
                 void SetNull(); // this does not free the data!!!
                 const sBuffer_single_ptr& GetIntern() const;
@@ -130,12 +133,14 @@ namespace m {
             class Iterator {
                 public:
                     static Iterator Start(const Buffer& buffer);
+                    static Iterator AtIndex(const Buffer& buffer, index_t index);
                     static Iterator End(const Buffer& buffer);
 
                     Iterator& Next();
                     Iterator& Advance(size_t len);
 
                     Iterator& GoToStart();
+                    Iterator& GoToIndex(index_t index);
                     Iterator& GoToEnd();
                     Iterator& SetEnd();
 
@@ -248,23 +253,25 @@ namespace m {
                 Iterator begin() const;
                 Iterator end() const;
 
+                Iterator FindIndex(index_t index) const;
+
     //#if 0
                 Buffer& operator=(const Buffer&);
 
                 #if LANG_CPP_STD >= 2011
-                Buffer& operator=(const Buffer&&);
+                Buffer& operator=(Buffer&&);
                 #endif
 
                 Buffer operator+(const SinglePtr&) const;
 
                 #if LANG_CPP_STD >= 2011
-                Buffer operator+(const SinglePtr&&) const;
+                Buffer operator+(SinglePtr&&) const;
                 #endif
     //#endif
                 inline Buffer& operator+=(const SinglePtr& other) { this->Add(other); return *this; }
 
                 #if LANG_CPP_STD >= 2011
-                inline Buffer& operator+=(const SinglePtr&& other) { this->Add(other); return *this; }
+                inline Buffer& operator+=(SinglePtr&& other) { this->Add(other); return *this; }
                 #endif
 
                 //inline SmartBuffer& operator+=(const SmartBuffer& other) { this->ForEach<SmartBuffer *, const SmartBufferSinglePtr&>::run(this, &SmartBuffer::Add, this, other); }

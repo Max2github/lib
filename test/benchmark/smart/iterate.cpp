@@ -21,8 +21,8 @@ void BM_SmartBuffer_index(benchmark::State& state) {
     hi.Append(str, STRLEN(str));
 
     for (const auto _ : state) {
-        for (m::smart::buffer::char_t c : hi) {
-            benchmark::DoNotOptimize(c);
+        for (m::smart::buffer::size_t i = 0; i < hi.Length(); i++) {
+            benchmark::DoNotOptimize(hi.FindIndex(i).Get());
         }
     }
 }
@@ -42,8 +42,20 @@ void BM_SmartBuffer_it(benchmark::State& state) {
 }
 BENCHMARK(BM_SmartBuffer_it)->Apply(SetBenchmarkParams);
 
-#if 1
 void BM_Minibuffer_index(benchmark::State& state) {
+    BM_SETUP;
+
+    m::smart::buffer::SinglePtr hi = m::smart::buffer::SinglePtr::NewReadonly(str, STRLEN(str));
+
+    for (const auto _ : state) {
+        for (m::smart::buffer::size_t i = 0; i < hi.Length(); i++) {
+            benchmark::DoNotOptimize(hi[i]);
+        }
+    }
+}
+BENCHMARK(BM_Minibuffer_index)->Apply(SetBenchmarkParams);
+
+void BM_Minibuffer_indexStr(benchmark::State& state) {
     BM_SETUP;
 
     m::smart::buffer::SinglePtr hi = m::smart::buffer::SinglePtr::NewReadonly(str, STRLEN(str));
@@ -57,8 +69,7 @@ void BM_Minibuffer_index(benchmark::State& state) {
         }
     }
 }
-BENCHMARK(BM_Minibuffer_index)->Apply(SetBenchmarkParams);
-#endif
+BENCHMARK(BM_Minibuffer_indexStr)->Apply(SetBenchmarkParams);
 
 void BM_StdStringOwnAlloc_index(benchmark::State& state) {
     using string = std::basic_string<char, std::char_traits<char>, OwnAllocator<char> >;
@@ -68,7 +79,7 @@ void BM_StdStringOwnAlloc_index(benchmark::State& state) {
     string hi(str);
 
     for (const auto _ : state) {
-        for (int i = 0; i < hi.size(); i++) {
+        for (size_t i = 0; i < hi.size(); i++) {
             benchmark::DoNotOptimize(hi[i]);
         }
     }
@@ -96,7 +107,7 @@ void BM_StdString_index(benchmark::State& state) {
     std::string hi(str);
 
     for (const auto _ : state) {
-        for (int i = 0; i < hi.size(); i++) {
+        for (size_t i = 0; i < hi.size(); i++) {
             benchmark::DoNotOptimize(hi[i]);
         }
     }

@@ -77,6 +77,10 @@ namespace m {
             return Iterator::End(*this);
         }
 
+        Buffer::Iterator Buffer::FindIndex(index_t index) const {
+            return Iterator::AtIndex(*this, index);
+        }
+
 //if 0
         Buffer& Buffer::operator=(const Buffer& other) {
             if (this == &other) { return *this; } // Guard self assignment
@@ -88,7 +92,7 @@ namespace m {
         }
 
 #if LANG_CPP_STD >= 2011
-        Buffer& Buffer::operator=(const Buffer&& other) {
+        Buffer& Buffer::operator=(Buffer&& other) {
             if (this == &other) { return *this; } // Guard self assignment
             this->Delete();
             for (buffer::index_t i = 0; i < other.Count(); i++) {
@@ -106,7 +110,7 @@ namespace m {
         }
 
 #if LANG_CPP_STD >= 2011
-        Buffer Buffer::operator+(const Buffer::SinglePtr&& other) const {
+        Buffer Buffer::operator+(Buffer::SinglePtr&& other) const {
             Buffer ret(this->Count() + 1);
             for (buffer::index_t i = 0; i < this->Count(); i++) { ret.Add(this->Get(i)); }
             ret.Add(other);
@@ -220,6 +224,11 @@ namespace m {
                     this->SetNull();
                 }
             }
+ 
+            char_t SinglePtr::operator[](index_t index) {
+                const char_t * s = sBuffer_single_get(m_buffer);
+                return s[index];
+            }
 
             // private
 
@@ -237,6 +246,7 @@ namespace m {
             Iterator::Iterator(const Buffer& buffer) : m_buffer(buffer.m_buffer), m_isEnd(false) {}
 
             Iterator Iterator::Start(const Buffer& buffer) { return Iterator(buffer).GoToStart(); }
+            Iterator Iterator::AtIndex(const Buffer& buffer, index_t index) { return Iterator(buffer).GoToIndex(index); }
             Iterator Iterator::End(const Buffer& buffer) { return Iterator(buffer).SetEnd(); }
 
             Iterator& Iterator::Next() {
@@ -267,6 +277,11 @@ namespace m {
                 m_current.index = 0;
                 m_current.single.bufP = sBuffer_getP(&m_buffer, 0);
                 m_current.single.index = 0;
+                return *this;
+            }
+
+            Iterator& Iterator::GoToIndex(index_t index) {
+                m_current = sBuffer_find_index(&m_buffer, index);
                 return *this;
             }
 
