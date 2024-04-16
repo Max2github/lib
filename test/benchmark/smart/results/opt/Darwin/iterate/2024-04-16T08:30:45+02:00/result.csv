@@ -1,0 +1,53 @@
+2024-04-16T08:31:54+02:00
+Running ./bin/iterate
+Run on (8 X 24 MHz CPU s)
+CPU Caches:
+  L1 Data 64 KiB
+  L1 Instruction 128 KiB
+  L2 Unified 4096 KiB (x8)
+Load Average: 3.24, 3.37, 3.43
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_SmartBuffer_it/1024/min_warmup_time:5000000000.000",208835,3333.46,3330.37,ns,,,,,
+"BM_SmartBuffer_it/2048/min_warmup_time:5000000000.000",103881,6654.53,6644.2,ns,,,,,
+"BM_SmartBuffer_it/4096/min_warmup_time:5000000000.000",53418,13165.5,13127.2,ns,,,,,
+"BM_SmartBuffer_it/8192/min_warmup_time:5000000000.000",26788,26188.8,26152.6,ns,,,,,
+"BM_SmartBuffer_it/16384/min_warmup_time:5000000000.000",13074,52456.4,52404.5,ns,,,,,
+"BM_SmartBuffer_it/32768/min_warmup_time:5000000000.000",6699,104786,104630,ns,,,,,
+"BM_SmartBuffer_it/65536/min_warmup_time:5000000000.000",3189,245588,223466,ns,,,,,
+"BM_SmartBuffer_it/131072/min_warmup_time:5000000000.000",1650,436491,431070,ns,,,,,
+"BM_SmartBuffer_it/262144/min_warmup_time:5000000000.000",829,854955,848747,ns,,,,,
+"BM_SmartBuffer_it/min_warmup_time:5000000000.000_BigO",,193735,189952,(1),,,,,
+"BM_SmartBuffer_it/min_warmup_time:5000000000.000_RMS",,1.39634,1.41042,,,,,,
+"BM_Minibuffer_index/1024/min_warmup_time:5000000000.000",706101,1220.47,1073.31,ns,,,,,
+"BM_Minibuffer_index/2048/min_warmup_time:5000000000.000",344322,1999.36,1985.74,ns,,,,,
+"BM_Minibuffer_index/4096/min_warmup_time:5000000000.000",176302,3976.41,3954.91,ns,,,,,
+"BM_Minibuffer_index/8192/min_warmup_time:5000000000.000",88470,7935.01,7889.02,ns,,,,,
+"BM_Minibuffer_index/16384/min_warmup_time:5000000000.000",44554,17511,16692.4,ns,,,,,
+"BM_Minibuffer_index/32768/min_warmup_time:5000000000.000",22206,32683.6,32174.1,ns,,,,,
+"BM_Minibuffer_index/65536/min_warmup_time:5000000000.000",11137,64211.5,63564.4,ns,,,,,
+"BM_Minibuffer_index/131072/min_warmup_time:5000000000.000",5374,126596,125995,ns,,,,,
+"BM_Minibuffer_index/262144/min_warmup_time:5000000000.000",2745,253748,252592,ns,,,,,
+"BM_Minibuffer_index/min_warmup_time:5000000000.000_BigO",,56653.4,56213.4,(1),,,,,
+"BM_Minibuffer_index/min_warmup_time:5000000000.000_RMS",,1.40608,1.41167,,,,,,
+"BM_StdStringOwnAlloc_it/1024/min_warmup_time:5000000000.000",2067568,339.748,338.506,ns,,,,,
+"BM_StdStringOwnAlloc_it/2048/min_warmup_time:5000000000.000",1052742,666.824,663.445,ns,,,,,
+"BM_StdStringOwnAlloc_it/4096/min_warmup_time:5000000000.000",526118,1327.95,1324.04,ns,,,,,
+"BM_StdStringOwnAlloc_it/8192/min_warmup_time:5000000000.000",253801,2826.21,2736.4,ns,,,,,
+"BM_StdStringOwnAlloc_it/16384/min_warmup_time:5000000000.000",133161,5296.4,5267.74,ns,,,,,
+"BM_StdStringOwnAlloc_it/32768/min_warmup_time:5000000000.000",66251,10527.6,10485.9,ns,,,,,
+"BM_StdStringOwnAlloc_it/65536/min_warmup_time:5000000000.000",33523,21155.3,21053.8,ns,,,,,
+"BM_StdStringOwnAlloc_it/131072/min_warmup_time:5000000000.000",15953,43760,43073.7,ns,,,,,
+"BM_StdStringOwnAlloc_it/262144/min_warmup_time:5000000000.000",8217,84544.2,84068.5,ns,,,,,
+"BM_StdStringOwnAlloc_it/min_warmup_time:5000000000.000_BigO",,18938.2,18779.1,(1),,,,,
+"BM_StdStringOwnAlloc_it/min_warmup_time:5000000000.000_RMS",,1.41154,1.41331,,,,,,
+"BM_StdString_it/1024/min_warmup_time:5000000000.000",2058055,343.973,341.143,ns,,,,,
+"BM_StdString_it/2048/min_warmup_time:5000000000.000",1056668,666.718,664.033,ns,,,,,
+"BM_StdString_it/4096/min_warmup_time:5000000000.000",508813,1328.02,1322.14,ns,,,,,
+"BM_StdString_it/8192/min_warmup_time:5000000000.000",266433,2644.26,2630.11,ns,,,,,
+"BM_StdString_it/16384/min_warmup_time:5000000000.000",132981,5269.81,5253.73,ns,,,,,
+"BM_StdString_it/32768/min_warmup_time:5000000000.000",66331,10517.9,10477.9,ns,,,,,
+"BM_StdString_it/65536/min_warmup_time:5000000000.000",33431,21537.8,21445.9,ns,,,,,
+"BM_StdString_it/131072/min_warmup_time:5000000000.000",16386,44083.4,43764.8,ns,,,,,
+"BM_StdString_it/262144/min_warmup_time:5000000000.000",8389,84361.1,83995.4,ns,,,,,
+"BM_StdString_it/min_warmup_time:5000000000.000_BigO",,18972.6,18877.2,(1),,,,,
+"BM_StdString_it/min_warmup_time:5000000000.000_RMS",,1.40906,1.40932,,,,,,
