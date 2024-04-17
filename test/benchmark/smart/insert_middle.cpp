@@ -80,13 +80,13 @@ void BM_StdStringOwnAlloc(benchmark::State& state) {
 }
 BENCHMARK(BM_StdStringOwnAlloc)->Apply(SetBenchmarkParams);
 
-#if 0 //ndef MEMORY_TEST
+#ifndef MEMORY_TEST
 void BM_StdString(benchmark::State& state) {
     BM_SETUP;
 
     for (const auto _ : state) {
         MM_START;
-        BM_INIT(std::string hi);
+        BM_INIT(std::string hi(str));
 
         hi.insert(middle, str);
         MM_STOP;
