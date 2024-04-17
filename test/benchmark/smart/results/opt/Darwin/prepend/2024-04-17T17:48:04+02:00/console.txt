@@ -1,0 +1,55 @@
+2024-04-17T17:48:05+02:00
+Running ./bin/prepend
+Run on (8 X 24 MHz CPU s)
+CPU Caches:
+  L1 Data 64 KiB
+  L1 Instruction 128 KiB
+  L2 Unified 4096 KiB (x8)
+Load Average: 4.02, 3.68, 5.37
+--------------------------------------------------------------------------------------------
+Benchmark                                                  Time             CPU   Iterations
+--------------------------------------------------------------------------------------------
+BM_SmartBuffer/1024/min_warmup_time:5.000                794 ns          797 ns       913480
+BM_SmartBuffer/2048/min_warmup_time:5.000                818 ns          820 ns       865416
+BM_SmartBuffer/4096/min_warmup_time:5.000                929 ns          933 ns       753920
+BM_SmartBuffer/8192/min_warmup_time:5.000               1049 ns         1050 ns       611354
+BM_SmartBuffer/16384/min_warmup_time:5.000              1476 ns         1470 ns       460499
+BM_SmartBuffer/32768/min_warmup_time:5.000              2170 ns         2169 ns       322423
+BM_SmartBuffer/65536/min_warmup_time:5.000              3415 ns         3406 ns       220817
+BM_SmartBuffer/131072/min_warmup_time:5.000             5545 ns         5539 ns       125615
+BM_SmartBuffer/262144/min_warmup_time:5.000            10983 ns        10973 ns        63661
+BM_SmartBuffer/min_warmup_time:5.000_BigO               0.04 N          0.04 N    
+BM_SmartBuffer/min_warmup_time:5.000_RMS                  21 %            21 %    
+BM_Minibuffer/1024/min_warmup_time:5.000                 790 ns          790 ns       875383
+BM_Minibuffer/2048/min_warmup_time:5.000                 838 ns          841 ns       830013
+BM_Minibuffer/4096/min_warmup_time:5.000                 965 ns          963 ns       721359
+BM_Minibuffer/8192/min_warmup_time:5.000                1234 ns         1233 ns       564052
+BM_Minibuffer/16384/min_warmup_time:5.000               1713 ns         1708 ns       408456
+BM_Minibuffer/32768/min_warmup_time:5.000               3056 ns         3055 ns       228671
+BM_Minibuffer/65536/min_warmup_time:5.000              11710 ns        11690 ns        55087
+BM_Minibuffer/131072/min_warmup_time:5.000             11936 ns        11925 ns        68711
+BM_Minibuffer/262144/min_warmup_time:5.000             19888 ns        19866 ns        46603
+BM_Minibuffer/min_warmup_time:5.000_BigO                0.08 N          0.08 N    
+BM_Minibuffer/min_warmup_time:5.000_RMS                   39 %            39 %    
+BM_StdStringOwnAlloc/1024/min_warmup_time:5.000          742 ns          742 ns       952614
+BM_StdStringOwnAlloc/2048/min_warmup_time:5.000          807 ns          808 ns       868282
+BM_StdStringOwnAlloc/4096/min_warmup_time:5.000          912 ns          913 ns       764443
+BM_StdStringOwnAlloc/8192/min_warmup_time:5.000         1126 ns         1125 ns       630125
+BM_StdStringOwnAlloc/16384/min_warmup_time:5.000        1715 ns         1699 ns       401722
+BM_StdStringOwnAlloc/32768/min_warmup_time:5.000        2482 ns         2477 ns       281352
+BM_StdStringOwnAlloc/65536/min_warmup_time:5.000        4407 ns         4358 ns       162543
+BM_StdStringOwnAlloc/131072/min_warmup_time:5.000       8290 ns         8254 ns        82891
+BM_StdStringOwnAlloc/262144/min_warmup_time:5.000      16005 ns        15928 ns        44928
+BM_StdStringOwnAlloc/min_warmup_time:5.000_BigO         0.06 N          0.06 N    
+BM_StdStringOwnAlloc/min_warmup_time:5.000_RMS            13 %            13 %    
+BM_StdString/1024/min_warmup_time:5.000                  723 ns          719 ns       982043
+BM_StdString/2048/min_warmup_time:5.000                  753 ns          751 ns       935491
+BM_StdString/4096/min_warmup_time:5.000                  866 ns          861 ns       815870
+BM_StdString/8192/min_warmup_time:5.000                 1005 ns         1002 ns       701698
+BM_StdString/16384/min_warmup_time:5.000                1346 ns         1340 ns       530383
+BM_StdString/32768/min_warmup_time:5.000                1951 ns         1945 ns       365919
+BM_StdString/65536/min_warmup_time:5.000                3093 ns         3080 ns       226604
+BM_StdString/131072/min_warmup_time:5.000               5622 ns         5573 ns       126651
+BM_StdString/262144/min_warmup_time:5.000              10821 ns        10763 ns        63826
+BM_StdString/min_warmup_time:5.000_BigO                 0.04 N          0.04 N    
+BM_StdString/min_warmup_time:5.000_RMS                    19 %            19 %    

@@ -198,22 +198,26 @@ SMARTBUFFER_LEN_T sBuffer_single_shift_right(sBuffer_single_ptr buf, SMARTBUFFER
         realAmount = toShift;
     }
 
-    SMARTBUFFER_CHAR * writeP = buf->own.data;
     SMARTBUFFER_LEN_T written = 0;
 
-    #ifdef SMARTBUFFER_H_OPT_MEMMOVE
-        sBuffer_single_check_realloc(buf, realAmount);
-        SMARTBUFFER_H_OPT_MEMMOVE(writeP, writeP + realAmount, toShift);
-        written = toShift;
-    #else
-        // append the last elements
-        written += sBuffer_single_add(buf, writeP + (len - realAmount), realAmount);
-        // move the previous element to the current index (from end to beginning)
-        for (SMARTBUFFER_LEN_T curIndex = len - 1; curIndex >= (index + realAmount); curIndex--) {
-            writeP[curIndex] = writeP[curIndex - realAmount];
-        }
-        written += len - (index + realAmount);
-    #endif
+    if (sBuffer_single_check_realloc(buf, realAmount)) {
+        SMARTBUFFER_CHAR * writeP = buf->own.data;
+        #ifdef SMARTBUFFER_H_OPT_MEMMOVE
+            SMARTBUFFER_H_OPT_MEMMOVE(writeP + realAmount, writeP, toShift);
+            written = toShift;
+        #else
+            // append the last elements
+            SMARTBUFFER_CHAR * endP = writeP + len;
+            SMARTBUFFER_H_MEMCOPY(endP, endP - realAmount, realAmount);
+            written += realAmount;
+            //written += sBuffer_single_add(buf, writeP + (len - realAmount), realAmount);
+            // move the previous element to the current index (from end to beginning)
+            for (SMARTBUFFER_LEN_T curIndex = len - 1; curIndex >= (index + realAmount); curIndex--) {
+                writeP[curIndex] = writeP[curIndex - realAmount];
+            }
+            written += len - (index + realAmount);
+        #endif
+    }
 
     return written;
 }

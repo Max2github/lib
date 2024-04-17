@@ -1,0 +1,53 @@
+2024-04-17T17:49:59+02:00
+Running ./bin/prepend
+Run on (8 X 24 MHz CPU s)
+CPU Caches:
+  L1 Data 64 KiB
+  L1 Instruction 128 KiB
+  L2 Unified 4096 KiB (x8)
+Load Average: 2.95, 3.30, 5.01
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_SmartBuffer/1024/min_warmup_time:5.000",927718,763.367,764.092,ns,,,,,
+"BM_SmartBuffer/2048/min_warmup_time:5.000",870636,807.896,806.713,ns,,,,,
+"BM_SmartBuffer/4096/min_warmup_time:5.000",775383,899,900.269,ns,,,,,
+"BM_SmartBuffer/8192/min_warmup_time:5.000",655990,1371.53,1367.97,ns,,,,,
+"BM_SmartBuffer/16384/min_warmup_time:5.000",485528,1515.59,1517.3,ns,,,,,
+"BM_SmartBuffer/32768/min_warmup_time:5.000",343955,2095.99,2090.54,ns,,,,,
+"BM_SmartBuffer/65536/min_warmup_time:5.000",204596,3528.91,3529.86,ns,,,,,
+"BM_SmartBuffer/131072/min_warmup_time:5.000",125480,5541.26,5536.36,ns,,,,,
+"BM_SmartBuffer/262144/min_warmup_time:5.000",63879,11002.5,10993.5,ns,,,,,
+"BM_SmartBuffer/min_warmup_time:5.000_BigO",,0.0431393,0.0431053,N,,,,,
+"BM_SmartBuffer/min_warmup_time:5.000_RMS",,0.226321,0.226408,,,,,,
+"BM_Minibuffer/1024/min_warmup_time:5.000",836690,800.613,804.221,ns,,,,,
+"BM_Minibuffer/2048/min_warmup_time:5.000",831275,858.349,858.962,ns,,,,,
+"BM_Minibuffer/4096/min_warmup_time:5.000",699545,979.317,978.763,ns,,,,,
+"BM_Minibuffer/8192/min_warmup_time:5.000",585196,1184.58,1179.65,ns,,,,,
+"BM_Minibuffer/16384/min_warmup_time:5.000",410456,1719.16,1710.83,ns,,,,,
+"BM_Minibuffer/32768/min_warmup_time:5.000",230470,3074.69,3063.83,ns,,,,,
+"BM_Minibuffer/65536/min_warmup_time:5.000",54333,12704.9,12640.1,ns,,,,,
+"BM_Minibuffer/131072/min_warmup_time:5.000",69021,10118.2,10057.9,ns,,,,,
+"BM_Minibuffer/262144/min_warmup_time:5.000",36522,17224.8,17127,ns,,,,,
+"BM_Minibuffer/min_warmup_time:5.000_BigO",,0.0744272,0.074009,N,,,,,
+"BM_Minibuffer/min_warmup_time:5.000_RMS",,0.512387,0.512604,,,,,,
+"BM_StdStringOwnAlloc/1024/min_warmup_time:5.000",942926,748.665,746.171,ns,,,,,
+"BM_StdStringOwnAlloc/2048/min_warmup_time:5.000",852162,812.913,809.643,ns,,,,,
+"BM_StdStringOwnAlloc/4096/min_warmup_time:5.000",748727,931.994,930.254,ns,,,,,
+"BM_StdStringOwnAlloc/8192/min_warmup_time:5.000",606433,1142.33,1136.42,ns,,,,,
+"BM_StdStringOwnAlloc/16384/min_warmup_time:5.000",433504,1790.45,1782.32,ns,,,,,
+"BM_StdStringOwnAlloc/32768/min_warmup_time:5.000",287440,2450.13,2438.74,ns,,,,,
+"BM_StdStringOwnAlloc/65536/min_warmup_time:5.000",161806,4361.09,4304.68,ns,,,,,
+"BM_StdStringOwnAlloc/131072/min_warmup_time:5.000",84660,8104.09,8084.85,ns,,,,,
+"BM_StdStringOwnAlloc/262144/min_warmup_time:5.000",43998,15626.1,15609.7,ns,,,,,
+"BM_StdStringOwnAlloc/min_warmup_time:5.000_BigO",,0.0607858,0.0606649,N,,,,,
+"BM_StdStringOwnAlloc/min_warmup_time:5.000_RMS",,0.142638,0.141256,,,,,,
+"BM_StdString/1024/min_warmup_time:5.000",983934,708.301,709.76,ns,,,,,
+"BM_StdString/2048/min_warmup_time:5.000",942241,744.94,745.946,ns,,,,,
+"BM_StdString/4096/min_warmup_time:5.000",835262,846.26,848.53,ns,,,,,
+"BM_StdString/8192/min_warmup_time:5.000",713616,982.212,983.324,ns,,,,,
+"BM_StdString/16384/min_warmup_time:5.000",525754,1377.57,1376.58,ns,,,,,
+"BM_StdString/32768/min_warmup_time:5.000",368318,2014.61,2014.21,ns,,,,,
+"BM_StdString/65536/min_warmup_time:5.000",214057,3216.7,3217.45,ns,,,,,
+"BM_StdString/131072/min_warmup_time:5.000",127852,5419.59,5420.36,ns,,,,,
+"BM_StdString/262144/min_warmup_time:5.000",64606,10850,10836.7,ns,,,,,
+"BM_StdString/min_warmup_time:5.000_BigO",,0.042213,0.0421763,N,,,,,
+"BM_StdString/min_warmup_time:5.000_RMS",,0.194129,0.194597,,,,,,
