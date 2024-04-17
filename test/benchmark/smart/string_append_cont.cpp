@@ -40,6 +40,8 @@ void BM_SmartBuffer(benchmark::State& state) {
         for (int64_t i = 0; i < numIterations; i++) {
             hi.Append(str, STRLEN(str));
         }
+
+        MM_STOP;
     }
 
     state.SetComplexityN(numIterations);
@@ -57,6 +59,8 @@ void BM_Minibuffer(benchmark::State& state) {
         for (int64_t i = 0; i < numIterations; i++) {
             hi.Append((m::smart::buffer::char_t *) str, STRLEN(str));
         }
+
+        MM_STOP;
     }
 
     state.SetComplexityN(numIterations);
@@ -73,6 +77,8 @@ void BM_CString(benchmark::State& state) {
             hi = (char *) realloc(hi, STRLEN(hi) + STRLEN(str) + 1);
             hi = strcat(hi, str);
         }
+
+        MM_STOP;
 
         free(hi);
     }
@@ -93,6 +99,8 @@ void BM_StdStringOwnAlloc(benchmark::State& state) {
         for (int64_t i = 0; i < numIterations; i++) {
             hi.append(str);
         }
+
+        MM_STOP;
     }
 
     state.SetComplexityN(numIterations);

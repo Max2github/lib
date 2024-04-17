@@ -31,6 +31,8 @@ void BM_SmartString(benchmark::State& state) {
         BM_INIT(smart::string::String hi);
 
         hi.Append(str);
+
+        MM_STOP;
     }
 
     BM_SET_COMPLEXITY_N;
@@ -45,6 +47,8 @@ void BM_SmartBuffer(benchmark::State& state) {
         BM_INIT(m::smart::Buffer hi(10));
 
         hi.Append(str, STRLEN(str));
+
+        MM_STOP;
     }
 
     BM_SET_COMPLEXITY_N;
@@ -59,6 +63,8 @@ void BM_Minibuffer(benchmark::State& state) {
         BM_INIT(m::smart::buffer::SinglePtr hi = m::smart::buffer::SinglePtr::New(0));
 
         hi.Append((m::smart::buffer::char_t *) str, STRLEN(str));
+
+        MM_STOP;
     }
 
     BM_SET_COMPLEXITY_N;
@@ -77,6 +83,8 @@ void BM_CString(benchmark::State& state) {
         *hi = '\0';
         strcat(hi, str);
 
+        MM_STOP;
+
         BM_FREE(hi);
     }
 
@@ -94,6 +102,8 @@ void BM_StdStringOwnAlloc(benchmark::State& state) {
         BM_INIT(string hi);
 
         hi.append(str);
+
+        MM_STOP;
     }
 
     BM_SET_COMPLEXITY_N;
@@ -107,6 +117,8 @@ void BM_StdString(benchmark::State& state) {
         BM_INIT(std::string hi);
 
         hi.append(str);
+
+        MM_STOP;
     }
 
     BM_SET_COMPLEXITY_N;

@@ -18,11 +18,14 @@ public:
         m_started = true;
     }
 
-    void Stop(Result& result) BENCHMARK_OVERRIDE {
-        result = m_result;
-        //result.max_bytes_used = m_result.max_bytes_used;
+    void Stop() {
         m_map.clear();
         m_started = false;
+    }
+
+    void Stop(Result& result) BENCHMARK_OVERRIDE {
+        result = m_result;
+        this->Stop();
     }
 
     void * Alloc(int64_t size, alloc_f a) {
@@ -100,6 +103,10 @@ private:
 MemoryCounter MemoryCounter::mm;
 
 #define SMARTSTRING_HPP_MALLOC(size) MemoryCounter::mm.Alloc(size, malloc);
-#define SMARTSTRING_HPP_REALLOC(oldP, size) MemoryCounter::mm.Realloc(oldP, size, realloc);
+#define SMARTSTRING_HPP_REALLOC(oldP, size, oldSize) MemoryCounter::mm.Realloc(oldP, size, realloc);
 #define SMARTSTRING_HPP_FREE(p) MemoryCounter::mm.Free(p, free);
+
+#define MM_STOP MemoryCounter::mm.Stop()
+#else
+#define MM_STOP
 #endif
