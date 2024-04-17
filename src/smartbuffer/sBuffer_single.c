@@ -191,20 +191,22 @@ SMARTBUFFER_LEN_T sBuffer_single_shift_right(sBuffer_single_ptr buf, SMARTBUFFER
 
     if (amount <= 0 || index >= len) { return 0; }
 
+    SMARTBUFFER_LEN_T written = 0;
+
     const SMARTBUFFER_LEN_T toShift = len - index;
     SMARTBUFFER_LEN_T realAmount = amount;
     // in case that there are less elements to shift then we should shift
     if (toShift < amount) {
         realAmount = toShift;
+        written = amount - toShift;
+        buf->len += written;
     }
-
-    SMARTBUFFER_LEN_T written = 0;
 
     if (sBuffer_single_check_realloc(buf, realAmount)) {
         SMARTBUFFER_CHAR * writeP = buf->own.data;
         #ifdef SMARTBUFFER_H_OPT_MEMMOVE
-            SMARTBUFFER_H_OPT_MEMMOVE(writeP + realAmount, writeP, toShift);
-            written = toShift;
+            SMARTBUFFER_H_OPT_MEMMOVE(writeP + realAmount, writeP, realAmount);
+            written += realAmount;
         #else
             // append the last elements
             SMARTBUFFER_CHAR * endP = writeP + len;
