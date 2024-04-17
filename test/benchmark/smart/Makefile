@@ -67,6 +67,9 @@ memtest: nolib
 norealloc: CXXFLAGS += -DNO_REALLOC
 norealloc: nolib
 
+usesizet: CXXFLAGS += -DUSE_SIZE_T=1
+usesizet: nolib
+
 run: $(BINDIR)/$(DEST)
 	./$(BINDIR)/$(DEST) $(PARAMETERS)
 

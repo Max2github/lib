@@ -20,7 +20,9 @@
 #ifndef SMARTBUFFER_CUSTOM
 #define SMARTBUFFER_CUSTOM
 #define SMARTBUFFER_CHAR char // index8
+#ifndef SMARTBUFFER_LEN_T
 #define SMARTBUFFER_LEN_T index64
+#endif
 #define SMARTBUFFER_BOOL_T bool
 #define SMARTBUFFER_TRUE true
 #define SMARTBUFFER_FALSE false

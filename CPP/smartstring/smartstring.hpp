@@ -12,7 +12,7 @@
     #endif
 
     #ifndef SMARTSTRING_HPP_REALLOC
-    #define SMARTSTRING_HPP_REALLOC(oldP, size, oldSize) realloc(oldP, size, oldSize)
+    #define SMARTSTRING_HPP_REALLOC(oldP, size, oldSize) realloc(oldP, size)
     #endif
 
     #ifndef SMARTSTRING_HPP_FREE

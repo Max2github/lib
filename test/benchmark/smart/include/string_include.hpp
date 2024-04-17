@@ -1,11 +1,17 @@
-#include "../../../../CPP/smartstring/smartstring.hpp"
-#include "../../../../CPP/smartbuffer/smartbuffer.hpp"
-
 #ifdef USE_CHAR_TRAITS
 
 #include <string>
 //#define SIMPLE_ARRAY_MEMCOPY(dest, src, size) __builtin_memcpy((void *) (dest), (const void *) (src), (unsigned long long) (size))
 #define SIMPLE_ARRAY_MEMCOPY(dest, src, size) std::char_traits<char>::copy((char *)dest, (const char *)src, size)
+
+#endif
+
+#ifdef USE_SIZE_T
+
+    // set to same as size_t, which std::string uses
+    #define SMARTBUFFER_LEN_T std::size_t
+
+    #define INCLUDE_C_SOURCES 1
 
 #endif
 
@@ -28,11 +34,14 @@ void * no_realloc(void* oldPtr, const size_t newsize, const size_t oldSize) {
 
 #define INCLUDE_CPP_SOURCES 1
 
+#include "../../../../CPP/smartstring/smartstring.hpp"
+#include "../../../../CPP/smartbuffer/smartbuffer.hpp"
+
 #ifdef INCLUDE_C_SOURCES
 #include "../../../../src/smartbuffer/smartbuffer.c"
 #include "../../../../src/smartbuffer/sBuffer_single.c"
 #include "../../../../src/smartstring/smartstring.c"
-#endif
+#endif 
 
 #ifdef INCLUDE_CPP_SOURCES
 #include "../../../../CPP/smartbuffer/smartbuffer.cpp"
