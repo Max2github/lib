@@ -107,21 +107,23 @@ sBuffer sBuffer_copy_deep(const sBuffer *);
 /**
  * @brief Read from the buffer
  * @param 0 (const sBuffer *) a pointer to the buffer
- * @param 1 (sBuffer_readHandler) a function pointer - the reader function to whom the data will be passed
+ * @param 1 (const sBuffer *) a pointer to the the index descriptor or NULL for index 0
  * @param 2 (SMARTBUFFER_LEN_T) the maximum lenth to read - please only up to sBuffer_count()
- * @param 3 (void *) some data the user wants to pass to the reader function
+ * @param 3 (sBuffer_readHandler) a function pointer - the reader function to whom the data will be passed
+ * @param 4 (void *) some data the user wants to pass to the reader function
  * @return sBuffer_single_ptr
  */
-SMARTBUFFER_LEN_T sBuffer_read(const sBuffer *, sBuffer_readHandler, SMARTBUFFER_LEN_T, void *);
+SMARTBUFFER_LEN_T sBuffer_read(const sBuffer *, const sBuffer_index_descr *, SMARTBUFFER_LEN_T, sBuffer_readHandler, void *);
 
 /**
  * @brief Read from the buffer to an array of SMARTBUFFER_CHAR
- * @param 1 (SMARTBUFFER_CHAR *) a pointer where to write the data to
+ * @param 0 (SMARTBUFFER_CHAR *) a pointer where to write the data to
  * @param 1 (const sBuffer *) a pointer to the buffer
- * @param 2 (SMARTBUFFER_LEN_T) the maximum lenth to read - please only up to sBuffer_count()
+ * @param 2 (const sBuffer *) a pointer to the the index descriptor or NULL for index 0
+ * @param 3 (SMARTBUFFER_LEN_T) the maximum lenth to read - please only up to sBuffer_count()
  * @return sBuffer_single_ptr
  */
-SMARTBUFFER_LEN_T sBuffer_read_to(SMARTBUFFER_CHAR *, const sBuffer *, SMARTBUFFER_LEN_T);
+SMARTBUFFER_LEN_T sBuffer_read_to(SMARTBUFFER_CHAR *, const sBuffer *, const sBuffer_index_descr *, SMARTBUFFER_LEN_T);
 
 /**
  * @brief Search in which sBuffer_single a index is

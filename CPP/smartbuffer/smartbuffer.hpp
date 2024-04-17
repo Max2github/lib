@@ -134,49 +134,44 @@ namespace m {
                 public:
                     static Iterator Start(const Buffer& buffer);
                     static Iterator AtIndex(const Buffer& buffer, index_t index);
-                    static Iterator End(const Buffer& buffer);
+                    static Iterator End();
 
                     Iterator& Next();
                     Iterator& Advance(size_t len);
 
                     Iterator& GoToStart();
                     Iterator& GoToIndex(index_t index);
-                    Iterator& GoToEnd();
+                    Iterator& GoToLast();
                     Iterator& SetEnd();
 
                     char_t Get() const;
 
-                    bool AtEnd() const;
+                    bool IsLastElement() const;
 
                     inline Iterator& operator++() { return this->Next(); }
                     inline Iterator& operator++(int) { return this->Next(); }
                     inline char_t operator*() const { return this->Get(); }
 
-                    inline friend bool operator==(const Iterator& it1, const Iterator& it2) {
-                        // if one of them is end, then both must be end
-                        if (it1.m_isEnd || it2.m_isEnd) {
-                            return it1.m_isEnd == it2.m_isEnd && &it1.m_buffer == &it2.m_buffer;
-                        }
-                        return
-                            &it1.m_buffer == &it2.m_buffer &&
-                            it1.m_current.index == it2.m_current.index &&
-                            it1.m_current.single.index == it2.m_current.single.index
-                        ;
-                    }
+                    friend bool operator==(const Iterator& it1, const Iterator& it2);
                     inline friend bool operator!=(const Iterator& it1, const Iterator& it2) {
                         return !(it1 == it2);
                     }
 
                 private:
-                    Iterator(const Buffer& buffer);
+                    explicit Iterator(const sBuffer * buffer);
+                    Iterator(const sBuffer * buffer, const sBuffer_index_descr& indexDescr);
                     Iterator& NextSingle();
                     size_t AdvanceSingle(size_t len);
                     bool AtEndOfSingle() const;
 
+                    static sBuffer_index_descr GetStartDescr(const sBuffer *);
+                    static sBuffer_index_descr GetLastDescr(const sBuffer *);
+
                 private:
-                    const sBuffer& m_buffer;
+                    const sBuffer * m_buffer;
                     sBuffer_index_descr m_current;
-                    bool m_isEnd;
+
+                friend class m::smart::Buffer;
             };
 
         } // namespace buffer
@@ -221,8 +216,9 @@ namespace m {
 
                 void Clear();
 
-                size_t Read(reader_t readerFunction, size_t length, void * userData = nullptr) const;
-                size_t ReadTo(char_t * dest, size_t len) const;
+                size_t Read(const Iterator& pos, size_t length, reader_t readerFunction, void * userData = nullptr) const;
+                size_t ReadTo(char_t * dest, const Iterator& pos, size_t len) const;
+                size_t ReadTo(SinglePtr& dest, const Iterator& pos) const;
     #if 0
                 template<typename... args_t>
                 void ForEach(void (*func)(args_t...), args_t... args) {

@@ -169,8 +169,8 @@ SMARTBUFFER_LEN_T sBuffer_single_count(const sBuffer_single_ptr buf) {
 }
 
 SMARTBUFFER_LEN_T sBuffer_single_size(const sBuffer_single_ptr buf) {
-    if (buf->flags.is_data_allocated) {
-        return buf->own.allocated;
+    if (!buf->flags.is_child) {
+        return buf->own.allocated > buf->len ? buf->own.allocated : buf->len;
     }
     return buf->len;
 }

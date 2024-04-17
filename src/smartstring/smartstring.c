@@ -113,7 +113,7 @@ sString sString_subStr(const sString * s, sString_len_t from, sString_len_t len)
     }
 }
 
-void sString_read(const sString * str, sString_readHandler reader, sString_len_t len, void * userData) { sBuffer_read(SSTRING_GETBUF_ADDR_P(str), reader, len, userData); }
+void sString_read(const sString * str, sString_readHandler reader, sString_len_t len, void * userData) { sBuffer_read(SSTRING_GETBUF_ADDR_P(str), NULL, len, reader, userData); }
 
 void sString_toCstr_reader(void * userData, const sString_char_t * str, sString_len_t len) {
     char * dest = (char *) userData;
@@ -125,8 +125,8 @@ char * sString_toCstr(sString * s) {
     sString_len_t len = sBuffer_count(&(s->buf));
     char * ret = (char *) SMARTSTRING_H_MALLOC(len + 1);
     *ret = '\0';
-    
-    /*sString_len_t read = */sBuffer_read(&(s->buf), sString_toCstr_reader, len, ret);
+
+    /*sString_len_t read = */sBuffer_read(&(s->buf), NULL, len, sString_toCstr_reader, ret);
 
     return ret;
 }

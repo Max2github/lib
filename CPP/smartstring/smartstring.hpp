@@ -149,7 +149,7 @@ namespace smart {
                             data++;
                         }
                     };
-                    sBuffer_read(SSTRING_GETBUF_ADDR_V(m_str), func, this->Length(), (void *) &out);
+                    sBuffer_read(SSTRING_GETBUF_ADDR_V(m_str), NULL, this->Length(), func, (void *) &out);
                     return *this;
                 }
 
