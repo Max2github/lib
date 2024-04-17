@@ -30,8 +30,10 @@ void MM_free(void * p) { return MemoryCounter::mm.Free(p, free); }
 #define SIMPLE_ARRAY_H_REALLOC(oldP, size, oldSize) MM_realloc(oldP, size)
 #define SIMPLE_ARRAY_H_FREE(p) MM_free(p)
 
-#define MM_STOP MemoryCounter::mm.Stop()
+#define MM_START MemoryCounter::mm.Start()
+#define MM_STOP  MemoryCounter::mm.Stop()
 #else
+#define MM_START
 #define MM_STOP
 #endif
 

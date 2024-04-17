@@ -10,6 +10,10 @@ public:
     typedef void*(*realloc_f)(void*, size_t);
     typedef void(*free_f)(void*);
 
+    MemoryCounter() : m_result(), m_started(false), m_map() {
+
+    }
+
     void Start() BENCHMARK_OVERRIDE {
         // reset to default
         m_result = benchmark::MemoryManager::Result();
@@ -91,13 +95,8 @@ public:
 
 private:
     benchmark::MemoryManager::Result m_result;
-    //int64_t m_total_deallocated_bytes;
 
-    bool m_started = true;
-
-    //alloc_f m_alloc;
-    //realloc_f m_realloc;
-    //free_f m_free;
+    bool m_started;
 
     std::map<void *, int64_t> m_map;
 };
