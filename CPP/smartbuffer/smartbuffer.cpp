@@ -60,6 +60,7 @@ namespace m {
 
         Buffer::size_t Buffer::Insert(index_t index, const char_t * data, size_t len) { return sBuffer_insert(&m_buffer, index, data, len); }
         Buffer::size_t Buffer::Append(const char_t * data, size_t len) { return sBuffer_append(&m_buffer, data, len); }
+        Buffer::size_t Buffer::Prepend(const char_t * data, size_t len) { return sBuffer_insert(&m_buffer, 0, data, len); }
 
         void Buffer::Clear() { return sBuffer_clear(&m_buffer); }
 

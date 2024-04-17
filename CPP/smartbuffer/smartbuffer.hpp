@@ -216,6 +216,7 @@ namespace m {
 
                 size_t Insert(index_t index, const char_t * data, size_t len);
                 size_t Append(const char_t * data, size_t len);
+                size_t Prepend(const char_t * data, size_t len);
 
                 void Clear();
 
