@@ -1,3 +1,6 @@
+#ifndef MEMORY_COUNTER_HPP
+#define MEMORY_COUNTER_HPP
+
 #include "../../../../templates/def.h"
 #include <benchmark/benchmark.h>
 
@@ -90,7 +93,7 @@ private:
     benchmark::MemoryManager::Result m_result;
     //int64_t m_total_deallocated_bytes;
 
-    bool m_started = false;
+    bool m_started = true;
 
     //alloc_f m_alloc;
     //realloc_f m_realloc;
@@ -99,14 +102,4 @@ private:
     std::map<void *, int64_t> m_map;
 };
 
-#ifdef MEMORY_TEST
-MemoryCounter MemoryCounter::mm;
-
-#define SMARTSTRING_HPP_MALLOC(size) MemoryCounter::mm.Alloc(size, malloc);
-#define SMARTSTRING_HPP_REALLOC(oldP, size, oldSize) MemoryCounter::mm.Realloc(oldP, size, realloc);
-#define SMARTSTRING_HPP_FREE(p) MemoryCounter::mm.Free(p, free);
-
-#define MM_STOP MemoryCounter::mm.Stop()
-#else
-#define MM_STOP
-#endif
+#endif // MEMORY_COUNTER_HPP

@@ -6,6 +6,35 @@
 
 #endif
 
+#ifdef MEMORY_TEST
+#include "MemoryCounter.hpp"
+MemoryCounter MemoryCounter::mm;
+
+#define SMARTSTRING_HPP_MALLOC(size) MemoryCounter::mm.Alloc(size, malloc);
+#define SMARTSTRING_HPP_REALLOC(oldP, size, oldSize) MemoryCounter::mm.Realloc(oldP, size, realloc);
+#define SMARTSTRING_HPP_FREE(p) MemoryCounter::mm.Free(p, free);
+
+#define SMARTBUFFER_HPP_MALLOC(size) MemoryCounter::mm.Alloc(size, malloc);
+#define SMARTBUFFER_HPP_REALLOC(oldP, size, oldSize) MemoryCounter::mm.Realloc(oldP, size, realloc);
+#define SMARTBUFFER_HPP_FREE(p) MemoryCounter::mm.Free(p, free);
+
+#define SMARTBUFFER_H_MALLOC(size) MemoryCounter::mm.Alloc(size, malloc);
+#define SMARTBUFFER_H_REALLOC(oldP, size, oldSize) MemoryCounter::mm.Realloc(oldP, size, realloc);
+#define SMARTBUFFER_H_FREE(p) MemoryCounter::mm.Free(p, free);
+
+void * MM_alloc(size_t size) { return MemoryCounter::mm.Alloc(size, malloc); }
+void * MM_realloc(void * oldP, size_t size) { return MemoryCounter::mm.Realloc(oldP, size, realloc); }
+void MM_free(void * p) { return MemoryCounter::mm.Free(p, free); }
+
+#define SIMPLE_ARRAY_H_MALLOC(size) MM_alloc(size)
+#define SIMPLE_ARRAY_H_REALLOC(oldP, size, oldSize) MM_realloc(oldP, size)
+#define SIMPLE_ARRAY_H_FREE(p) MM_free(p)
+
+#define MM_STOP MemoryCounter::mm.Stop()
+#else
+#define MM_STOP
+#endif
+
 #ifdef USE_SIZE_T
 
     // set to same as size_t, which std::string uses
@@ -29,6 +58,7 @@ void * no_realloc(void* oldPtr, const size_t newsize, const size_t oldSize) {
 
 #undef SMARTSTRING_HPP_REALLOC
 #define SMARTSTRING_HPP_REALLOC(oldPtr, newsize, oldSize) no_realloc(oldPtr, newsize, oldSize)
+#define SMARTBUFFER_HPP_REALLOC(oldPtr, newsize, oldSize) no_realloc(oldPtr, newsize, oldSize)
 
 #endif
 
