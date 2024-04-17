@@ -14,5 +14,11 @@ CPP/list
 .fake
 m
 test/benchmark/smart/bin
-test/benchmark/smart/tools
+
+test/benchmark/smart/tools/benchmark
+test/benchmark/smart/tools/cmake_benchmark_win_x86_64.cmake
+test/benchmark/smart/tools/google_benchmark_plot
+
 test/benchmark/smart/cmake_benchmark
+test/benchmark/smart/VS/
+VS

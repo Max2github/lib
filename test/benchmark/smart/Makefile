@@ -111,4 +111,5 @@ autotest: autotest_mkdir
 	$(MAKE) autotest_csv     TEST=$(TEST) OPT=$(OPT) AUTOTEST_RESULTS_DIR=$(AUTOTEST_RESULTS_DIR)
 
 autotest_mem: autotest_mkdir autotest_json
+	tools/memtestJson.sh $(AUTOTEST_RESULTS_DIR)/result.json
 
