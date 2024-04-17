@@ -231,8 +231,7 @@ namespace m {
             }
  
             char_t SinglePtr::operator[](index_t index) {
-                const char_t * s = sBuffer_single_get(m_buffer);
-                return s[index];
+                return sBuffer_single_get(m_buffer)[index];
             }
 
             // private
@@ -248,26 +247,27 @@ namespace m {
 
             // Iterator
 
-            Iterator::Iterator(const sBuffer * buffer) : m_buffer(buffer) {}
-            Iterator::Iterator(const sBuffer * buffer, const sBuffer_index_descr& indexDescr) : m_buffer(buffer), m_current(indexDescr) {}
+            Iterator::Iterator(const sBuffer * buffer) : m_buffer(buffer), m_current(GetNullDescr()), m_curlen(0) {}
+            Iterator::Iterator(const sBuffer * buffer, const sBuffer_index_descr& indexDescr) : m_buffer(buffer), m_current(indexDescr), m_curlen(sBuffer_single_count(*indexDescr.single.bufP)) {}
 
             Iterator Iterator::Start(const Buffer& buffer) { return Iterator(&buffer.m_buffer, GetStartDescr(&buffer.m_buffer)); }
             Iterator Iterator::AtIndex(const Buffer& buffer, index_t index) { return Iterator(&buffer.m_buffer, sBuffer_find_index(&buffer.m_buffer, index)); }
             Iterator Iterator::End() { return Iterator(nullptr); }
 
             Iterator& Iterator::Next() {
+                // next inside the minibuffer
+                if (m_current.single.index < m_curlen) {
+                    ++m_current.single.index;
+                    return *this;
+                }
+
                 // Do not go further if we are at the end
-                if (this->IsLastElement()) {
+                if (this->IsLastSingle()) {
                     this->SetEnd();
                     return *this;
                 }
-                if (this->AtEndOfSingle()) {
-                    // Go to next buffer
-                    return this->NextSingle();
-                }
-                // else only go further in current buffer
-                ++m_current.single.index;
-                return *this;
+                // Go to next buffer
+                return this->NextSingle();
             }
 
             Iterator& Iterator::Advance(size_t len) {
@@ -310,7 +310,7 @@ namespace m {
             }
 
             bool Iterator::IsLastElement() const {
-                return m_current.single.index + 1 >= sBuffer_count_single(m_buffer) && this->AtEndOfSingle();
+                return this->IsLastSingle() && this->IsLastInSingle();
             }
 
             bool operator==(const Iterator& it1, const Iterator& it2) {
@@ -327,13 +327,19 @@ namespace m {
 
             // private methods
 
-            bool Iterator::AtEndOfSingle() const {
-                return m_current.single.index + 1 >= sBuffer_single_count(*m_current.single.bufP);
+            bool Iterator::IsLastInSingle() const {
+                return m_current.single.index + 1 >= m_curlen;
+                //return m_current.single.index + 1 >= sBuffer_single_count(*m_current.single.bufP);
+            }
+
+            bool Iterator::IsLastSingle() const {
+                return m_current.index + 1 >= sBuffer_count_single(m_buffer);
             }
 
             Iterator& Iterator::NextSingle() {
                 m_current.single.bufP = sBuffer_getP(m_buffer, (++m_current.index));
                 m_current.single.index = 0;
+                m_curlen = sBuffer_single_count(*m_current.single.bufP);
                 return *this;
             }
 
@@ -354,6 +360,9 @@ namespace m {
                 descr.single.bufP = sBuffer_getP(buf, descr.index);
                 descr.single.index = sBuffer_single_count(*descr.single.bufP) - 1;
                 return descr;
+            }
+            sBuffer_index_descr Iterator::GetNullDescr() {
+                return (sBuffer_index_descr) { (sBuffer_single_with_index) { NULL, 0 }, 0 };
             }
 
         } // namespace buffer

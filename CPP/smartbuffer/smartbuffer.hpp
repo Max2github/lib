@@ -162,14 +162,17 @@ namespace m {
                     Iterator(const sBuffer * buffer, const sBuffer_index_descr& indexDescr);
                     Iterator& NextSingle();
                     size_t AdvanceSingle(size_t len);
-                    bool AtEndOfSingle() const;
+                    bool IsLastInSingle() const;
+                    bool IsLastSingle() const;
 
                     static sBuffer_index_descr GetStartDescr(const sBuffer *);
                     static sBuffer_index_descr GetLastDescr(const sBuffer *);
+                    static sBuffer_index_descr GetNullDescr();
 
                 private:
                     const sBuffer * m_buffer;
                     sBuffer_index_descr m_current;
+                    size_t m_curlen;
 
                 friend class m::smart::Buffer;
             };
