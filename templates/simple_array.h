@@ -113,6 +113,7 @@ struct { \
         indexP realAmount = (amount); \
         if (maxAmount < (amount)) { \
             realAmount = maxAmount; \
+            (arr).written += (amount) - maxAmount; /* advance */ \
         } \
         /* append the last elements*/ \
         for (indexP curAmount = realAmount; curAmount > 0; curAmount--) { \
