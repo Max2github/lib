@@ -1,0 +1,35 @@
+2024-04-17T19:26:08+02:00
+Running ./bin/iterate_fragmentation
+Run on (8 X 24 MHz CPU s)
+CPU Caches:
+  L1 Data 64 KiB
+  L1 Instruction 128 KiB
+  L2 Unified 4096 KiB (x8)
+Load Average: 1.74, 2.40, 2.52
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_SmartBuffer_index/1/min_warmup_time:5000000000.000",27345,25552.8,25488,ns,,,,,
+"BM_SmartBuffer_index/2/min_warmup_time:5000000000.000",18470,38262.3,38169.2,ns,,,,,
+"BM_SmartBuffer_index/4/min_warmup_time:5000000000.000",14053,50139.9,49845.5,ns,,,,,
+"BM_SmartBuffer_index/8/min_warmup_time:5000000000.000",9504,73778.6,73581,ns,,,,,
+"BM_SmartBuffer_index/16/min_warmup_time:5000000000.000",5785,122350,121684,ns,,,,,
+"BM_SmartBuffer_index/32/min_warmup_time:5000000000.000",3224,218183,217319,ns,,,,,
+"BM_SmartBuffer_index/64/min_warmup_time:5000000000.000",1618,435226,434515,ns,,,,,
+"BM_SmartBuffer_index/128/min_warmup_time:5000000000.000",861,817497,816334,ns,,,,,
+"BM_SmartBuffer_index/256/min_warmup_time:5000000000.000",446,1.57417e+06,1.57113e+06,ns,,,,,
+"BM_SmartBuffer_index/512/min_warmup_time:5000000000.000",227,3.08058e+06,3.07616e+06,ns,,,,,
+"BM_SmartBuffer_index/1024/min_warmup_time:5000000000.000",116,6.09004e+06,6.07857e+06,ns,,,,,
+"BM_SmartBuffer_index/min_warmup_time:5000000000.000_BigO",,1.13871e+06,1.13662e+06,(1),,,,,
+"BM_SmartBuffer_index/min_warmup_time:5000000000.000_RMS",,1.5826,1.58268,,,,,,
+"BM_SmartBuffer_it/1/min_warmup_time:5000000000.000",65946,10649.6,10630.2,ns,,,,,
+"BM_SmartBuffer_it/2/min_warmup_time:5000000000.000",65943,10647.4,10629.1,ns,,,,,
+"BM_SmartBuffer_it/4/min_warmup_time:5000000000.000",65766,10730.6,10709.1,ns,,,,,
+"BM_SmartBuffer_it/8/min_warmup_time:5000000000.000",63974,10764.8,10752.3,ns,,,,,
+"BM_SmartBuffer_it/16/min_warmup_time:5000000000.000",65018,10783.5,10771.9,ns,,,,,
+"BM_SmartBuffer_it/32/min_warmup_time:5000000000.000",63317,10905.1,10893.3,ns,,,,,
+"BM_SmartBuffer_it/64/min_warmup_time:5000000000.000",62309,11258.6,11233.8,ns,,,,,
+"BM_SmartBuffer_it/128/min_warmup_time:5000000000.000",58630,11909.3,11889.4,ns,,,,,
+"BM_SmartBuffer_it/256/min_warmup_time:5000000000.000",57410,12205.5,12192.8,ns,,,,,
+"BM_SmartBuffer_it/512/min_warmup_time:5000000000.000",51033,13739.2,13721.7,ns,,,,,
+"BM_SmartBuffer_it/1024/min_warmup_time:5000000000.000",40984,17217.9,17180.7,ns,,,,,
+"BM_SmartBuffer_it/min_warmup_time:5000000000.000_BigO",,11892,11873.1,(1),,,,,
+"BM_SmartBuffer_it/min_warmup_time:5000000000.000_RMS",,0.160739,0.160559,,,,,,
