@@ -8,7 +8,7 @@ void SetBenchmarkParams(benchmark::internal::Benchmark * benchmark) {
         ->MinWarmUpTime(std::chrono::seconds(5).count())
         //->Iterations(1000)
         //->RangeMultiplier(2)->Range(1<<10, 1<<18)
-        ->RangeMultiplier(2)->Range(1, 1<<10)
+        ->RangeMultiplier(3)->Range(1, 1<<10)
         ->Complexity(benchmark::BigO::oAuto)
     ;
 }
