@@ -110,6 +110,7 @@ void BM_StdStringOwnAlloc(benchmark::State& state) {
 }
 BENCHMARK(BM_StdStringOwnAlloc)->Apply(SetBenchmarkParams);
 
+#ifndef MEMORY_TEST
 void BM_StdString(benchmark::State& state) {
     BM_SETUP;
 
@@ -124,3 +125,4 @@ void BM_StdString(benchmark::State& state) {
     BM_SET_COMPLEXITY_N;
 }
 BENCHMARK(BM_StdString)->Apply(SetBenchmarkParams);
+#endif
