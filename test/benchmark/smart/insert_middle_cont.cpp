@@ -66,7 +66,7 @@ void BM_StdStringOwnAlloc(benchmark::State& state) {
     for (const auto _ : state) {
         MM_START;
 
-        string hi(strToAdd);
+        string hi(str);
 
         for (int64_t i = 0; i < numIterations; i++) {
             hi.insert(middle, str);
@@ -84,7 +84,7 @@ void BM_StdString(benchmark::State& state) {
     const int64_t numIterations = state.range(0);
 
     for (const auto _ : state) {
-        std::string hi(strToAdd);
+        std::string hi(str);
 
         for (int64_t i = 0; i < numIterations; i++) {
             hi.insert(middle, str);

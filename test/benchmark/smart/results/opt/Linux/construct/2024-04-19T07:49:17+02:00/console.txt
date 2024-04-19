@@ -1,0 +1,11 @@
+2024-04-19T07:49:18+02:00
+Running ./bin/construct
+Run on (2 X 48 MHz CPU s)
+Load Average: 2.19, 1.54, 0.86
+-------------------------------------------------------------------------------------
+Benchmark                                           Time             CPU   Iterations
+-------------------------------------------------------------------------------------
+BM_SmartBuffer/min_warmup_time:5.000             10.2 ns         10.0 ns     73365107
+BM_Minibuffer/min_warmup_time:5.000              14.6 ns         14.6 ns     44427391
+BM_StdStringOwnAlloc/min_warmup_time:5.000      0.662 ns        0.661 ns   1018854262
+BM_StdString/min_warmup_time:5.000              0.688 ns        0.676 ns   1058185733

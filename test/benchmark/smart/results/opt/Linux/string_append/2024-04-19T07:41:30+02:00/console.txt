@@ -1,0 +1,62 @@
+2024-04-19T07:41:30+02:00
+Running ./bin/string_append
+Run on (2 X 48 MHz CPU s)
+Load Average: 0.39, 0.32, 0.22
+--------------------------------------------------------------------------------------------
+Benchmark                                                  Time             CPU   Iterations
+--------------------------------------------------------------------------------------------
+BM_SmartBuffer/1024/min_warmup_time:5.000                348 ns          344 ns      2057923
+BM_SmartBuffer/2048/min_warmup_time:5.000                380 ns          361 ns      1895220
+BM_SmartBuffer/4096/min_warmup_time:5.000                433 ns          433 ns      1596115
+BM_SmartBuffer/8192/min_warmup_time:5.000                756 ns          700 ns      1185194
+BM_SmartBuffer/16384/min_warmup_time:5.000              1108 ns          959 ns       610042
+BM_SmartBuffer/32768/min_warmup_time:5.000              1235 ns         1237 ns       574511
+BM_SmartBuffer/65536/min_warmup_time:5.000              2065 ns         2093 ns       313297
+BM_SmartBuffer/131072/min_warmup_time:5.000             4472 ns         4549 ns       151877
+BM_SmartBuffer/262144/min_warmup_time:5.000            10356 ns        10437 ns        68600
+BM_SmartBuffer/min_warmup_time:5.000_BigO               0.00 NlgN       0.00 NlgN 
+BM_SmartBuffer/min_warmup_time:5.000_RMS                  15 %            14 %    
+BM_Minibuffer/1024/min_warmup_time:5.000                 335 ns          335 ns      2030216
+BM_Minibuffer/2048/min_warmup_time:5.000                 363 ns          363 ns      1957587
+BM_Minibuffer/4096/min_warmup_time:5.000                 420 ns          420 ns      1665623
+BM_Minibuffer/8192/min_warmup_time:5.000                 519 ns          518 ns      1269314
+BM_Minibuffer/16384/min_warmup_time:5.000                728 ns          727 ns       981850
+BM_Minibuffer/32768/min_warmup_time:5.000               1146 ns         1143 ns       624721
+BM_Minibuffer/65536/min_warmup_time:5.000               1852 ns         1858 ns       323598
+BM_Minibuffer/131072/min_warmup_time:5.000              3760 ns         3827 ns       184744
+BM_Minibuffer/262144/min_warmup_time:5.000              8235 ns         8299 ns        75074
+BM_Minibuffer/min_warmup_time:5.000_BigO                0.03 N          0.03 N    
+BM_Minibuffer/min_warmup_time:5.000_RMS                   13 %            12 %    
+BM_CString/1024/min_warmup_time:5.000                    297 ns          300 ns      2330696
+BM_CString/2048/min_warmup_time:5.000                    347 ns          351 ns      2049596
+BM_CString/4096/min_warmup_time:5.000                    394 ns          396 ns      1790995
+BM_CString/8192/min_warmup_time:5.000                    519 ns          522 ns      1214341
+BM_CString/16384/min_warmup_time:5.000                   735 ns          738 ns       953115
+BM_CString/32768/min_warmup_time:5.000                  1133 ns         1136 ns       616590
+BM_CString/65536/min_warmup_time:5.000                  2063 ns         2065 ns       340267
+BM_CString/131072/min_warmup_time:5.000                 5500 ns         4578 ns       183905
+BM_CString/262144/min_warmup_time:5.000                 7037 ns         7086 ns        98596
+BM_CString/min_warmup_time:5.000_BigO                   0.03 N          0.03 N    
+BM_CString/min_warmup_time:5.000_RMS                      31 %            20 %    
+BM_StdStringOwnAlloc/1024/min_warmup_time:5.000          323 ns          325 ns      2092212
+BM_StdStringOwnAlloc/2048/min_warmup_time:5.000          350 ns          348 ns      1978887
+BM_StdStringOwnAlloc/4096/min_warmup_time:5.000          406 ns          407 ns      1629904
+BM_StdStringOwnAlloc/8192/min_warmup_time:5.000          510 ns          512 ns      1348068
+BM_StdStringOwnAlloc/16384/min_warmup_time:5.000         718 ns          721 ns       948274
+BM_StdStringOwnAlloc/32768/min_warmup_time:5.000        1117 ns         1120 ns       612041
+BM_StdStringOwnAlloc/65536/min_warmup_time:5.000        1959 ns         1910 ns       374146
+BM_StdStringOwnAlloc/131072/min_warmup_time:5.000       3663 ns         3734 ns       184394
+BM_StdStringOwnAlloc/262144/min_warmup_time:5.000       9200 ns         9271 ns        74148
+BM_StdStringOwnAlloc/min_warmup_time:5.000_BigO         0.00 NlgN       0.00 NlgN 
+BM_StdStringOwnAlloc/min_warmup_time:5.000_RMS            15 %            15 %    
+BM_StdString/1024/min_warmup_time:5.000                  297 ns          301 ns      2370694
+BM_StdString/2048/min_warmup_time:5.000                  341 ns          332 ns      2162900
+BM_StdString/4096/min_warmup_time:5.000                  382 ns          385 ns      1821635
+BM_StdString/8192/min_warmup_time:5.000                  489 ns          492 ns      1361944
+BM_StdString/16384/min_warmup_time:5.000                 697 ns          700 ns      1005146
+BM_StdString/32768/min_warmup_time:5.000                1154 ns         1132 ns       640880
+BM_StdString/65536/min_warmup_time:5.000                1839 ns         1848 ns       368132
+BM_StdString/131072/min_warmup_time:5.000               3699 ns         3771 ns       184785
+BM_StdString/262144/min_warmup_time:5.000               9115 ns         9184 ns        75953
+BM_StdString/min_warmup_time:5.000_BigO                 0.00 NlgN       0.00 NlgN 
+BM_StdString/min_warmup_time:5.000_RMS                    15 %            14 %    
