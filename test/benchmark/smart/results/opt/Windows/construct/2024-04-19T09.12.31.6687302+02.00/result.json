@@ -1,0 +1,89 @@
+{
+  "context": {
+    "date": "2024-04-19T09:12:34+02:00",
+    "host_name": "MAXORNIKF642",
+    "executable": "Y:\\C\\privat\\lib\\test\\benchmark\\smart\\bin\\construct.exe",
+    "num_cpus": 4,
+    "mhz_per_cpu": 3200,
+    "caches": [
+      {
+        "type": "Instruction",
+        "level": 1,
+        "size": 196608,
+        "num_sharing": 1
+      },
+      {
+        "type": "Data",
+        "level": 1,
+        "size": 131072,
+        "num_sharing": 1
+      },
+      {
+        "type": "Unified",
+        "level": 2,
+        "size": 12582912,
+        "num_sharing": 1
+      }
+    ],
+    "load_avg": [],
+    "library_build_type": "release"
+  },
+  "benchmarks": [
+    {
+      "name": "BM_SmartBuffer/min_warmup_time:5.000",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_SmartBuffer/min_warmup_time:5.000",
+      "run_type": "iteration",
+      "repetitions": 1,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 8960000,
+      "real_time": 6.6609100667847088e+01,
+      "cpu_time": 6.1035156250000000e+01,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_Minibuffer/min_warmup_time:5.000",
+      "family_index": 1,
+      "per_family_instance_index": 0,
+      "run_name": "BM_Minibuffer/min_warmup_time:5.000",
+      "run_type": "iteration",
+      "repetitions": 1,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 10000000,
+      "real_time": 5.3508766705635935e+01,
+      "cpu_time": 5.3125000000000000e+01,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_StdStringOwnAlloc/min_warmup_time:5.000",
+      "family_index": 2,
+      "per_family_instance_index": 0,
+      "run_name": "BM_StdStringOwnAlloc/min_warmup_time:5.000",
+      "run_type": "iteration",
+      "repetitions": 1,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 1000000000,
+      "real_time": 5.0343800010159612e-01,
+      "cpu_time": 4.8437500000000000e-01,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_StdString/min_warmup_time:5.000",
+      "family_index": 3,
+      "per_family_instance_index": 0,
+      "run_name": "BM_StdString/min_warmup_time:5.000",
+      "run_type": "iteration",
+      "repetitions": 1,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 1000000000,
+      "real_time": 4.9438870896119624e-01,
+      "cpu_time": 4.6875000000000000e-01,
+      "time_unit": "ns"
+    }
+  ]
+}

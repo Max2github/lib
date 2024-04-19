@@ -1,0 +1,14 @@
+2024-04-19T09:12:31+02:00
+Running Y:\C\privat\lib\test\benchmark\smart\bin\construct.exe
+Run on (4 X 3200 MHz CPU s)
+CPU Caches:
+  L1 Instruction 192 KiB (x4)
+  L1 Data 128 KiB (x4)
+  L2 Unified 12288 KiB (x4)
+-------------------------------------------------------------------------------------
+Benchmark                                           Time             CPU   Iterations
+-------------------------------------------------------------------------------------
+BM_SmartBuffer/min_warmup_time:5.000             68.7 ns         57.8 ns     10000000
+BM_Minibuffer/min_warmup_time:5.000              57.0 ns         53.1 ns     10000000
+BM_StdStringOwnAlloc/min_warmup_time:5.000      0.505 ns        0.516 ns   1000000000
+BM_StdString/min_warmup_time:5.000              0.560 ns        0.562 ns   1000000000

@@ -1,0 +1,36 @@
+2024-04-19T09:16:06+02:00
+Running Y:\C\privat\lib\test\benchmark\smart\bin\iterate_fragmentation.exe
+Run on (4 X 3200 MHz CPU s)
+CPU Caches:
+  L1 Instruction 192 KiB (x4)
+  L1 Data 128 KiB (x4)
+  L2 Unified 12288 KiB (x4)
+---------------------------------------------------------------------------------------------------
+Benchmark                                                         Time             CPU   Iterations
+---------------------------------------------------------------------------------------------------
+BM_SmartBuffer_index/1/min_warmup_time:5000000000.000         27974 ns        27169 ns        23579
+BM_SmartBuffer_index/2/min_warmup_time:5000000000.000         37939 ns        36062 ns        20364
+BM_SmartBuffer_index/4/min_warmup_time:5000000000.000         58327 ns        56250 ns        10000
+BM_SmartBuffer_index/8/min_warmup_time:5000000000.000         74284 ns        73242 ns         8960
+BM_SmartBuffer_index/16/min_warmup_time:5000000000.000       124158 ns       124512 ns         6400
+BM_SmartBuffer_index/32/min_warmup_time:5000000000.000       219320 ns       219727 ns         3200
+BM_SmartBuffer_index/64/min_warmup_time:5000000000.000       477826 ns       446429 ns         1120
+BM_SmartBuffer_index/128/min_warmup_time:5000000000.000      878558 ns       836680 ns          747
+BM_SmartBuffer_index/256/min_warmup_time:5000000000.000     1797464 ns      1727580 ns          407
+BM_SmartBuffer_index/512/min_warmup_time:5000000000.000     3214712 ns      3154343 ns          213
+BM_SmartBuffer_index/1024/min_warmup_time:5000000000.000    6551722 ns      6562500 ns          100
+BM_SmartBuffer_index/min_warmup_time:5000000000.000_BigO 1223844.10 (1)  1205863.04 (1)  
+BM_SmartBuffer_index/min_warmup_time:5000000000.000_RMS         158 %           160 %    
+BM_SmartBuffer_it/1/min_warmup_time:5000000000.000            12206 ns        12277 ns        56000
+BM_SmartBuffer_it/2/min_warmup_time:5000000000.000            15747 ns        14160 ns        64000
+BM_SmartBuffer_it/4/min_warmup_time:5000000000.000            12032 ns        11963 ns        64000
+BM_SmartBuffer_it/8/min_warmup_time:5000000000.000            11984 ns        11963 ns        64000
+BM_SmartBuffer_it/16/min_warmup_time:5000000000.000           12578 ns        12695 ns        64000
+BM_SmartBuffer_it/32/min_warmup_time:5000000000.000           12998 ns        12695 ns        64000
+BM_SmartBuffer_it/64/min_warmup_time:5000000000.000           12878 ns        12870 ns        49778
+BM_SmartBuffer_it/128/min_warmup_time:5000000000.000          14028 ns        14125 ns        49778
+BM_SmartBuffer_it/256/min_warmup_time:5000000000.000          16354 ns        15346 ns        56000
+BM_SmartBuffer_it/512/min_warmup_time:5000000000.000          15425 ns        15067 ns        49778
+BM_SmartBuffer_it/1024/min_warmup_time:5000000000.000         18212 ns        17997 ns        37333
+BM_SmartBuffer_it/min_warmup_time:5000000000.000_BigO      14040.26 (1)    13741.63 (1)  
+BM_SmartBuffer_it/min_warmup_time:5000000000.000_RMS             14 %            13 %    
