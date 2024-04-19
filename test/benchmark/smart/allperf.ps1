@@ -33,7 +33,7 @@ echo "Running Tests..."
 .\autotest_win.ps1 -TEST prepend -OPT 1
 .\autotest_win.ps1 -TEST prepend_cont -OPT 1
 
-.\autotest_win.ps1 -TEST insert_middle_cont -OPT 1
+.\autotest_win.ps1 -TEST insert_middle -OPT 1
 .\autotest_win.ps1 -TEST insert_middle_cont -OPT 1
 
 .\autotest_win.ps1 -TEST construct -OPT 1
