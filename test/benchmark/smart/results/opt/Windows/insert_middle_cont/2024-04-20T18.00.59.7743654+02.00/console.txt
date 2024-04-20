@@ -1,0 +1,50 @@
+2024-04-20T18:00:59+02:00
+Running Y:\C\privat\lib\test\benchmark\smart\bin\insert_middle_cont.exe
+Run on (4 X 3200 MHz CPU s)
+CPU Caches:
+  L1 Instruction 192 KiB (x4)
+  L1 Data 128 KiB (x4)
+  L2 Unified 12288 KiB (x4)
+------------------------------------------------------------------------------------------
+Benchmark                                                Time             CPU   Iterations
+------------------------------------------------------------------------------------------
+BM_SmartBuffer/1/min_warmup_time:5.000                 854 ns          781 ns      1120000
+BM_SmartBuffer/3/min_warmup_time:5.000                1764 ns         1688 ns       407273
+BM_SmartBuffer/9/min_warmup_time:5.000                4854 ns         4855 ns       154483
+BM_SmartBuffer/27/min_warmup_time:5.000              15881 ns        15695 ns        49778
+BM_SmartBuffer/81/min_warmup_time:5.000              60784 ns        59375 ns        10000
+BM_SmartBuffer/243/min_warmup_time:5.000            537866 ns       544085 ns         1120
+BM_SmartBuffer/729/min_warmup_time:5.000           2513240 ns      2515890 ns          236
+BM_SmartBuffer/1024/min_warmup_time:5.000          4503959 ns      4362825 ns          154
+BM_SmartBuffer/min_warmup_time:5.000_BigO             4.40 N^2        4.29 N^2  
+BM_SmartBuffer/min_warmup_time:5.000_RMS                13 %            15 %    
+BM_Minibuffer/1/min_warmup_time:5.000                  722 ns          715 ns       896000
+BM_Minibuffer/3/min_warmup_time:5.000                 2070 ns         2002 ns       320000
+BM_Minibuffer/9/min_warmup_time:5.000                 8336 ns         8371 ns        89600
+BM_Minibuffer/27/min_warmup_time:5.000               42623 ns        42375 ns        16593
+BM_Minibuffer/81/min_warmup_time:5.000              381474 ns       376607 ns         1867
+BM_Minibuffer/243/min_warmup_time:5.000            7553974 ns      7465278 ns           90
+BM_Minibuffer/729/min_warmup_time:5.000          366285292 ns    367187500 ns            2
+BM_Minibuffer/1024/min_warmup_time:5.000         786573417 ns    796875000 ns            1
+BM_Minibuffer/min_warmup_time:5.000_BigO            736.13 N^2      744.27 N^2  
+BM_Minibuffer/min_warmup_time:5.000_RMS                 11 %            12 %    
+BM_StdStringOwnAlloc/1/min_warmup_time:5.000          1017 ns         1025 ns       746667
+BM_StdStringOwnAlloc/3/min_warmup_time:5.000          2227 ns         2246 ns       320000
+BM_StdStringOwnAlloc/9/min_warmup_time:5.000          8129 ns         8196 ns        89600
+BM_StdStringOwnAlloc/27/min_warmup_time:5.000        40143 ns        38992 ns        17231
+BM_StdStringOwnAlloc/81/min_warmup_time:5.000       329131 ns       320871 ns         2240
+BM_StdStringOwnAlloc/243/min_warmup_time:5.000     3059270 ns      2979343 ns          236
+BM_StdStringOwnAlloc/729/min_warmup_time:5.000    24418232 ns     24479167 ns           30
+BM_StdStringOwnAlloc/1024/min_warmup_time:5.000   46701906 ns     44791667 ns           15
+BM_StdStringOwnAlloc/min_warmup_time:5.000_BigO      44.84 N^2       43.42 N^2  
+BM_StdStringOwnAlloc/min_warmup_time:5.000_RMS           3 %             6 %    
+BM_StdString/1/min_warmup_time:5.000                   979 ns         1004 ns       746667
+BM_StdString/3/min_warmup_time:5.000                  2214 ns         2197 ns       320000
+BM_StdString/9/min_warmup_time:5.000                  8229 ns         8231 ns       112000
+BM_StdString/27/min_warmup_time:5.000                40524 ns        40806 ns        17231
+BM_StdString/81/min_warmup_time:5.000               329601 ns       329641 ns         2133
+BM_StdString/243/min_warmup_time:5.000             3050384 ns      2934272 ns          213
+BM_StdString/729/min_warmup_time:5.000            24382967 ns     24553571 ns           28
+BM_StdString/1024/min_warmup_time:5.000           46354689 ns     44791667 ns           15
+BM_StdString/min_warmup_time:5.000_BigO              44.57 N^2       43.44 N^2  
+BM_StdString/min_warmup_time:5.000_RMS                   3 %             7 %    

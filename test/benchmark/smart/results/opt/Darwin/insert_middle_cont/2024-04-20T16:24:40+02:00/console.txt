@@ -1,0 +1,51 @@
+2024-04-20T16:24:41+02:00
+Running ./bin/insert_middle_cont
+Run on (8 X 24 MHz CPU s)
+CPU Caches:
+  L1 Data 64 KiB
+  L1 Instruction 128 KiB
+  L2 Unified 4096 KiB (x8)
+Load Average: 3.81, 3.49, 3.21
+------------------------------------------------------------------------------------------
+Benchmark                                                Time             CPU   Iterations
+------------------------------------------------------------------------------------------
+BM_SmartBuffer/1/min_warmup_time:5.000                 321 ns          321 ns      2211921
+BM_SmartBuffer/3/min_warmup_time:5.000                 789 ns          788 ns       859571
+BM_SmartBuffer/9/min_warmup_time:5.000                2431 ns         2423 ns       295506
+BM_SmartBuffer/27/min_warmup_time:5.000               7064 ns         7044 ns        98992
+BM_SmartBuffer/81/min_warmup_time:5.000              24828 ns        24778 ns        28221
+BM_SmartBuffer/243/min_warmup_time:5.000            104518 ns       104340 ns         6770
+BM_SmartBuffer/729/min_warmup_time:5.000            548874 ns       547250 ns         1248
+BM_SmartBuffer/1024/min_warmup_time:5.000          1004186 ns      1001916 ns          691
+BM_SmartBuffer/min_warmup_time:5.000_BigO             0.98 N^2        0.97 N^2  
+BM_SmartBuffer/min_warmup_time:5.000_RMS                10 %            10 %    
+BM_Minibuffer/1/min_warmup_time:5.000                  343 ns          342 ns      2072416
+BM_Minibuffer/3/min_warmup_time:5.000                  948 ns          946 ns       799488
+BM_Minibuffer/9/min_warmup_time:5.000                 4282 ns         4276 ns       167229
+BM_Minibuffer/27/min_warmup_time:5.000               26253 ns        26205 ns        26759
+BM_Minibuffer/81/min_warmup_time:5.000              248485 ns       248232 ns         2830
+BM_Minibuffer/243/min_warmup_time:5.000            2195481 ns      2193432 ns          322
+BM_Minibuffer/729/min_warmup_time:5.000           19283308 ns     19267611 ns           36
+BM_Minibuffer/1024/min_warmup_time:5.000          38252921 ns     38190944 ns           18
+BM_Minibuffer/min_warmup_time:5.000_BigO             36.44 N^2       36.39 N^2  
+BM_Minibuffer/min_warmup_time:5.000_RMS                  0 %             0 %    
+BM_StdStringOwnAlloc/1/min_warmup_time:5.000           405 ns          404 ns      1668446
+BM_StdStringOwnAlloc/3/min_warmup_time:5.000          1040 ns         1038 ns       678584
+BM_StdStringOwnAlloc/9/min_warmup_time:5.000          4007 ns         4002 ns       175134
+BM_StdStringOwnAlloc/27/min_warmup_time:5.000        29492 ns        29318 ns        27343
+BM_StdStringOwnAlloc/81/min_warmup_time:5.000       263797 ns       263419 ns         2675
+BM_StdStringOwnAlloc/243/min_warmup_time:5.000     2239123 ns      2235626 ns          305
+BM_StdStringOwnAlloc/729/min_warmup_time:5.000    19546707 ns     19528528 ns           36
+BM_StdStringOwnAlloc/1024/min_warmup_time:5.000   40444213 ns     39938111 ns           18
+BM_StdStringOwnAlloc/min_warmup_time:5.000_BigO      38.20 N^2       37.81 N^2  
+BM_StdStringOwnAlloc/min_warmup_time:5.000_RMS           4 %             3 %    
+BM_StdString/1/min_warmup_time:5.000                   425 ns          424 ns      1650640
+BM_StdString/3/min_warmup_time:5.000                  1059 ns         1058 ns       667150
+BM_StdString/9/min_warmup_time:5.000                  4055 ns         4050 ns       173729
+BM_StdString/27/min_warmup_time:5.000                25876 ns        25845 ns        23938
+BM_StdString/81/min_warmup_time:5.000               263962 ns       263474 ns         2666
+BM_StdString/243/min_warmup_time:5.000             2253890 ns      2250358 ns          307
+BM_StdString/729/min_warmup_time:5.000            19717898 ns     19701086 ns           35
+BM_StdString/1024/min_warmup_time:5.000           38474433 ns     38431056 ns           18
+BM_StdString/min_warmup_time:5.000_BigO              36.78 N^2       36.74 N^2  
+BM_StdString/min_warmup_time:5.000_RMS                   1 %             1 %    
