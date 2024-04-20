@@ -151,6 +151,9 @@ SMARTBUFFER_LEN_T sBuffer_single_add(sBuffer_single_ptr buf, const SMARTBUFFER_C
 
 SMARTBUFFER_LEN_T sBuffer_single_insert(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T index, const SMARTBUFFER_CHAR * data, SMARTBUFFER_LEN_T len) {
     if (buf->flags.is_readonly) { return 0; }
+    if (buf->len == 0) {
+        return sBuffer_single_add(buf, data, len);
+    }
     if (index < sBuffer_single_count(buf)) {
         sBuffer_single_shift_right(buf, index, len);
     }
@@ -199,7 +202,6 @@ SMARTBUFFER_LEN_T sBuffer_single_shift_right(sBuffer_single_ptr buf, SMARTBUFFER
     if (toShift < amount) {
         realAmount = toShift;
         written = amount - toShift;
-        buf->len += written;
     }
 
     if (sBuffer_single_check_realloc(buf, realAmount)) {
@@ -220,6 +222,7 @@ SMARTBUFFER_LEN_T sBuffer_single_shift_right(sBuffer_single_ptr buf, SMARTBUFFER
             written += len - (index + realAmount);
         #endif
     }
+    buf->len += realAmount;
 
     return written;
 }
@@ -233,7 +236,7 @@ SMARTBUFFER_LEN_T sBuffer_single_write(sBuffer_single_ptr buf, SMARTBUFFER_LEN_T
     // index cannot be bigger than the length
     if (index > buf->len) { return 0; }
 
-    const SMARTBUFFER_LEN_T lenToAdd = (index + len) - buf->len;
+    const SMARTBUFFER_LEN_T lenToAdd = (index + len > buf->len) ? (index + len) - buf->len : 0;
 
     // check if we need to reallocate (and if we can)
     if (sBuffer_single_check_realloc(buf, lenToAdd)) {
