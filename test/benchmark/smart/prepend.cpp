@@ -85,7 +85,7 @@ void BM_StdString(benchmark::State& state) {
 
     for (const auto _ : state) {
         MM_START;
-        BM_INIT(std::string hi);
+        BM_INIT(std::string hi(str));
 
         hi.insert(0, str);
         MM_STOP;
