@@ -149,7 +149,7 @@ namespace m {
                     bool IsLastElement() const;
 
                     inline Iterator& operator++() { return this->Next(); }
-                    inline Iterator& operator++(int) { return this->Next(); }
+                    inline Iterator& operator++(int) { return this->Next(); } // TODO: this is not right - would in fact need to copy the iterator and return a copy
                     inline char_t operator*() const { return this->Get(); }
 
                     friend bool operator==(const Iterator& it1, const Iterator& it2);

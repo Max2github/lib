@@ -154,6 +154,7 @@ namespace m {
 
     #if LANG_CPP_STD >= 2011
             SinglePtr::SinglePtr(sBuffer_single_ptr&& internal) : m_buffer(internal) {
+                // TODO: in fact usage count should ALWAYS be increased
                 if (sBuffer_single_usageCount_get(internal) == 0) { sBuffer_single_usageCount_increase(internal); }
                 internal = nullptr;
             }

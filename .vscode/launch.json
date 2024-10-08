@@ -19,8 +19,11 @@
                 "MIMode": "lldb"
             },
             "windows": {
-                "MIMode": "gdb",
-                "miDebuggerPath": "C:\\Program Files\\CodeBlocks\\MinGW\\bin\\gdb.exe"//"C:\\MinGw\\bin\\gdb.exe"
+                //"MIMode": "gdb",
+                //"miDebuggerPath": "C:\\Program Files\\CodeBlocks\\MinGW\\bin\\gdb.exe", //"C:\\MinGw\\bin\\gdb.exe"
+                "MIMode": "lldb",
+                "miDebuggerPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Preview\\VC\\Tools\\Llvm\\ARM64\\bin\\lldb.exe",
+                "program": "${fileDirname}\\${fileBasenameNoExtension}.exe"
             },
         },
         {
