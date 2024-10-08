@@ -4,6 +4,11 @@
 #include "../../../../templates/def.h"
 #include <benchmark/benchmark.h>
 
+#if OS_WINDOWS && defined(MEMORY_TEST)
+    const int64_t benchmark::MemoryManager::TombstoneValue =
+    std::numeric_limits<int64_t>::max();
+#endif
+
 class MemoryCounter: public benchmark::MemoryManager {
 public:
     typedef void*(*alloc_f)(size_t);
