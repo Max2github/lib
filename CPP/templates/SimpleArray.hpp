@@ -1,7 +1,7 @@
 #ifndef SIMPLE_ARRAY_HPP
 #define SIMPLE_ARRAY_HPP
 
-#include "../../templates/simple_array.h"
+#include <m/templates/simple_array.h>
 
 namespace m {
     namespace templates {
@@ -13,8 +13,8 @@ namespace m {
                 typedef indexP size_t;
 
             public:
-                SimpleArray() : m_arr(SIMPLE_ARRAY_CREATE(T)) {}
-                explicit SimpleArray(size_t size) : m_arr(SIMPLE_ARRAY_CREATE_SIZE(T, size)) {}
+                SimpleArray() : m_arr((arr_t) SIMPLE_ARRAY_CREATE(T)) {}
+                explicit SimpleArray(size_t size) : m_arr((arr_t) SIMPLE_ARRAY_CREATE_SIZE(T, size)) {}
 
                 /**
                  * @brief Construct from an intern SIMPLE_ARRAY
@@ -69,6 +69,7 @@ namespace m {
                  * @param inner
                  */
                 static SimpleArray<T> Wrap(arr_t inner) {
+                    ASSERT_COMPILE_TIME(sizeof(inner) == sizeof(SimpleArray<T>), "SimpleArray<T>::Wrap - size does not match");
                     return CAST_REINTERPRETE_DANGEROUS(SimpleArray<T>, inner);
                 }
 

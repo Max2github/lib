@@ -26,7 +26,7 @@
 #endif
 
 #define SIMPLE_ARRAY_TYPE_FROM_ARR(arr) SIMPLE_ARRAY_DECLTYPE((arr).data)
-#define SIMPLE_ARRAY_CAST_TO_POINTER(arr, p) (SIMPLE_ARRAY_TYPE_FROM_ARR(arr) (p))
+#define SIMPLE_ARRAY_CAST_TO_POINTER(arr, p) ((SIMPLE_ARRAY_TYPE_FROM_ARR(arr)) (p))
 
 #define SIMPLE_ARRAY(type) \
 struct { \
@@ -80,7 +80,7 @@ struct { \
 { \
     if ((arr).written + (len) > (arr).count) { \
         SIMPLE_ARRAY_H_FREE((void *) (arr).data); \
-        arr = SIMPLE_ARRAY_CREATE_SIZE_VAR(*Data, (arr).count + SIMPLE_ARRAY_EXTEND(len)); \
+        arr = (SIMPLE_ARRAY_DECLTYPE(arr)) SIMPLE_ARRAY_CREATE_SIZE_VAR(*Data, (arr).count + SIMPLE_ARRAY_EXTEND(len)); \
         (arr).count = SIMPLE_ARRAY_EXTEND(len); \
     } \
     SIMPLE_ARRAY_WRITE_NO_CHECK(arr, 0, Data, len); \
