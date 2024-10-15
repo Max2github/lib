@@ -36,7 +36,7 @@
 #define SMARTBUFFER_H_FREE    SMARTSTRING_H_FREE
 
 // #include "/usr/local/Cellar/icu4c/72.1/include/unicode/utf8.h"
-#include "smartbuffer.h"
+#include <m/smart/buffer.h>
 
 CHEADER_START
 

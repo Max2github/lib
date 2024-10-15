@@ -1,4 +1,4 @@
-#include "../../templates/def.h"
+#include <m/templates/def.h>
 #include "smartstring.hpp"
 
 //#include "../../src/words.h"
@@ -6,8 +6,8 @@
 #include "../../words_h.h"
 #include "../../word_pick_h.h"
 
-#include "../../smartbuffer.h"
-#include "../../src/smartbuffer/smartbuffer_intern.h"
+#include <m/smart/buffer.h>
+#include "../../smart/buffer/include/smartbuffer_intern.h"
 
 smart::string::String::String() : m_str(sString_create()) {}
 smart::string::String::String(const char * cstr) : m_str(sString_init((sString_char_t *) cstr, word_len(cstr), SMARTSTRING_FLAG_U_ZERO)) {}

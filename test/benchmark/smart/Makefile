@@ -5,12 +5,21 @@ BINDIR := bin
 CXX := g++
 CXXFLAGS = -std=c++11 -Wall -Wextra
 
+# for including source code directly
+CXXFLAGS += -I../../../smart/buffer/c++/include/
+CXXFLAGS += -I../../../smart/buffer/include/
+
 # for macos
 LDFLAGS = -L/opt/homebrew/lib
+LDFLAGS += -L/usr/local/lib
 LDFLAGS += -L$(BUILDDIR)
 
 LDFLAGS += -isystem benchmark/include
 LDFLAGS += -lbenchmark
+
+LDFLAGS_NOLIB := $(LDFLAGS)
+
+LDFLAGS += -lsmartbuffer -lc++smartbuffer -lsmartstring
 
 TESTS := #\
 	string_append_cont
@@ -23,7 +32,6 @@ LIBS_DEP := \
 	$(BUILDDIR)/libword_pick.a
 
 LIBS = $(LIBS_DEP) \
-	$(BUILDDIR)/libsmartbuffer.a \
 	$(BUILDDIR)/libsmartstring.a
 
 #OPT=0
@@ -55,9 +63,9 @@ endif
 # -L $(BUILDDIR) -lsmartbuffer -lsmartstring -lwords -lword_pick
 
 build: $(LIBS)
-	$(CXX) $(CXXFLAGS) -o $(BINDIR)/$(DEST) $(SRC) $(LDFLAGS) -lsmartstring -lsmartbuffer -lword_pick -lwords
+	$(CXX) $(CXXFLAGS) -o $(BINDIR)/$(DEST) $(SRC) $(LDFLAGS) -lword_pick -lwords
 
-nolib: LIBS = $(LIBS_DEP)
+nolib: LDFLAGS = $(LDFLAGS_NOLIB)
 nolib: CXXFLAGS += -DINCLUDE_C_SOURCES=1
 nolib: build
 

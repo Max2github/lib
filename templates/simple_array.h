@@ -20,13 +20,13 @@
 #define SIMPLE_ARRAY_EXTEND_SIZE 10
 
 #if LANG_CPP && LANG_CPP_STD >= 2011
-    #define SIMPLE_ARRAY_DECLTYPE(var) decltype(var)
+    #define SIMPLE_ARRAY_DECLTYPE(var) (decltype(var))
 #else
     #define SIMPLE_ARRAY_DECLTYPE(var)
 #endif
 
 #define SIMPLE_ARRAY_TYPE_FROM_ARR(arr) SIMPLE_ARRAY_DECLTYPE((arr).data)
-#define SIMPLE_ARRAY_CAST_TO_POINTER(arr, p) ((SIMPLE_ARRAY_TYPE_FROM_ARR(arr)) (p))
+#define SIMPLE_ARRAY_CAST_TO_POINTER(arr, p) SIMPLE_ARRAY_TYPE_FROM_ARR(arr) (p)
 
 #define SIMPLE_ARRAY(type) \
 struct { \

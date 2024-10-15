@@ -67,15 +67,15 @@ void * no_realloc(void* oldPtr, const size_t newsize, const size_t oldSize) {
 #define INCLUDE_CPP_SOURCES 1
 
 #include "../../../../CPP/smartstring/smartstring.hpp"
-#include "../../../../CPP/smartbuffer/smartbuffer.hpp"
+#include <m/smart/buffer.hpp>
 
 #ifdef INCLUDE_C_SOURCES
-#include "../../../../src/smartbuffer/smartbuffer.c"
-#include "../../../../src/smartbuffer/sBuffer_single.c"
+#include "../../../../smart/buffer/src/smartbuffer.c"
+#include "../../../../smart/buffer/src/sBuffer_single.c"
 #include "../../../../src/smartstring/smartstring.c"
 #endif 
 
 #ifdef INCLUDE_CPP_SOURCES
-#include "../../../../CPP/smartbuffer/smartbuffer.cpp"
+#include "../../../../smart/buffer/c++/src/smartbuffer.cpp"
 #include "../../../../CPP/smartstring/smartstring.cpp"
 #endif
